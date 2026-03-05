@@ -346,36 +346,52 @@
       importLookupStatus.style.color = 'var(--accent)';
 
       const lookupCharacterFn = typeof lookupCharacter === 'function' ? lookupCharacter : () => null;
-      const fetchedResults = await runWithConcurrency(
-        toFetch,
-        async ({ index, name }) => {
+      async function doOneLookup(index, name, retriesLeft = 1) {
+        const cacheKey = region + ':' + name.toLowerCase();
+        const emptyRow = () => ({ name, level: null, cls: null, world: null, imageUrl: null });
+        for (let attempt = 0; attempt <= retriesLeft; attempt++) {
           try {
-            const result = await lookupCharacterFn(name, region);
-            const cacheKey = region + ':' + name.toLowerCase();
+            const raw = await lookupCharacterFn(name, region);
+            const result = (raw && typeof raw === 'object' && raw.result !== undefined) ? raw.result : raw;
             if (result && typeof result === 'object') {
               const row = { name: result.name || name, level: result.level ?? null, cls: result.cls || null, world: result.world || null, imageUrl: result.imageUrl || null };
-              importLookupCache.set(cacheKey, row);
-              return { index, row };
+              const hasData = row.level != null || row.cls || row.world || row.imageUrl;
+              if (hasData) {
+                importLookupCache.set(cacheKey, row);
+                return { index, row };
+              }
             }
             importLookupCache.set(cacheKey, null);
-          } catch (_) {}
-          return { index, row: { name, level: null, cls: null, world: null, imageUrl: null } };
-        },
+            if (attempt < retriesLeft) await new Promise(r => setTimeout(r, 1000));
+          } catch (_) {
+            if (attempt < retriesLeft) await new Promise(r => setTimeout(r, 1000));
+          }
+        }
+        return { index, row: emptyRow() };
+      }
+      const fetchedResults = await runWithConcurrency(
+        toFetch,
+        (item) => doOneLookup(item.index, item.name),
         (done, total) => {
           importLookupStatus.textContent = `Looking up ${done}/${total}…`;
         }
       );
 
       let fetched = 0;
+      let failed = 0;
       fetchedResults.forEach((r, j) => {
         if (r && r.row) {
           results[toFetch[j].index] = r.row;
-          if (r.row.level != null || r.row.cls || r.row.imageUrl) fetched++;
+          const hasData = r.row.level != null || r.row.cls || r.row.world || r.row.imageUrl;
+          if (hasData) fetched++; else failed++;
         }
       });
 
       lastImportSearchEndTime = Date.now();
-      importLookupStatus.textContent = `Done — ${results.length} row(s), ${fetched} new lookup(s). Wait 5s before searching again.`;
+      let statusText = `Done — ${results.length} row(s), ${fetched} with data.`;
+      if (failed > 0) statusText += ` ${failed} lookup(s) had no data — click Search again to retry.`;
+      statusText += ' Wait 5s before searching again.';
+      importLookupStatus.textContent = statusText;
       importLookupStatus.style.color = 'var(--text-muted)';
       importLookupBtn.disabled = false;
       showReview(dedupeRows(results));
