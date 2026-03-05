@@ -47,7 +47,8 @@ const ALLOW_ORIGINS = [
 ];
 
 function corsHeaders(origin) {
-  const allow = ALLOW_ORIGINS.includes(origin) ? origin : ALLOW_ORIGINS[0];
+  const allowed = ALLOW_ORIGINS.find(o => origin === o || (origin && origin.replace(/\/$/, '') === o));
+  const allow = allowed || ALLOW_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
