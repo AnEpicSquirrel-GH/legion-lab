@@ -153,11 +153,10 @@ function getLookupProxyUrl() {
   } catch (e) { return null; }
 }
 
-function getEffectiveLookupProxyUrl(hasSameOriginApi) {
+function getEffectiveLookupProxyUrl() {
   const user = getLookupProxyUrl();
   if (user) return user;
-  if (!hasSameOriginApi) return DEFAULT_LOOKUP_PROXY;
-  return null;
+  return DEFAULT_LOOKUP_PROXY;
 }
 
 function worldToNexonRegion(world) {
@@ -245,7 +244,7 @@ async function lookupCharacter(name, regionOrWorld = 'gms', options = {}) {
   let origin = '';
   try { origin = (typeof location !== 'undefined' && location.origin) ? location.origin : ''; } catch (_) {}
   const hasSameOriginApi = origin && origin !== 'null' && origin.toLowerCase().slice(0, 7) !== 'file://';
-  const proxyUrl = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl(hasSameOriginApi) : (getLookupProxyUrl && getLookupProxyUrl());
+  const proxyUrl = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl() : (getLookupProxyUrl && getLookupProxyUrl());
   const hasProxy = !!(proxyUrl && proxyUrl.trim());
 
   if (debugOut) {
@@ -312,7 +311,7 @@ async function lookupCharacter(name, regionOrWorld = 'gms', options = {}) {
       return debug ? { result: null, debug: debugOut } : null;
     }
 
-    const proxyUrlFallback = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl(hasSameOriginApi) : (getLookupProxyUrl && getLookupProxyUrl());
+    const proxyUrlFallback = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl() : (getLookupProxyUrl && getLookupProxyUrl());
     if (proxyUrlFallback && proxyUrlFallback.trim()) {
       const proxyResult = await lookupViaProxy(trimmed, nexonRegion, proxyUrlFallback.trim(), debugOut || {});
       if (proxyResult && (proxyResult.level != null || proxyResult.cls || proxyResult.imageUrl)) {
@@ -324,7 +323,7 @@ async function lookupCharacter(name, regionOrWorld = 'gms', options = {}) {
     if (debugOut) debugOut.error = debugOut.error || ('HTTP ' + res.status + (res.statusText ? ' ' + res.statusText : ''));
     return debug ? { result: null, debug: debugOut } : null;
   } catch (e) {
-    const proxyUrlCatch = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl(hasSameOriginApi) : (getLookupProxyUrl && getLookupProxyUrl());
+    const proxyUrlCatch = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl() : (getLookupProxyUrl && getLookupProxyUrl());
     if (proxyUrlCatch && proxyUrlCatch.trim()) {
       try {
         const proxyResult = await lookupViaProxy(trimmed, nexonRegion, proxyUrlCatch.trim(), debugOut || {});
