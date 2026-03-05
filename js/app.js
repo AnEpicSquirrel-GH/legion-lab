@@ -20,8 +20,10 @@ function applyDevModeUI() {
   if (toggleBgBtn) toggleBgBtn.style.display = devMode ? '' : 'none';
   const screenshotsTab = document.querySelector('.import-tab-btn[data-tab="screenshots"]');
   if (screenshotsTab) screenshotsTab.style.display = devMode ? '' : 'none';
-  const siteTitle = document.getElementById('siteTitle');
-  if (siteTitle) siteTitle.textContent = devMode ? 'Legion Labussy' : 'Legion Lab';
+  const siteTitleText = document.getElementById('siteTitleText');
+  const siteTitleBeta = document.getElementById('siteTitleBeta');
+  if (siteTitleText) siteTitleText.textContent = devMode ? 'Legion Labussy' : 'Legion Lab';
+  if (siteTitleBeta) siteTitleBeta.style.display = devMode ? 'none' : '';
   document.querySelectorAll('.import-debug-dev-only, .lookup-debug-dev-only').forEach(function (el) {
     el.style.display = devMode ? '' : 'none';
   });
