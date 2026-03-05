@@ -601,10 +601,6 @@ async function handleLookup() {
     setLookupStatus('Please enter a character name first.', 'err');
     return;
   }
-  if (name === lastSearchedName) {
-    setLookupStatus('Name unchanged. Change the name to search again.', 'err');
-    return;
-  }
   const now = Date.now();
   if (lastSearchTime && (now - lastSearchTime < SEARCH_COOLDOWN_MS)) {
     const wait = Math.ceil((SEARCH_COOLDOWN_MS - (now - lastSearchTime)) / 1000);
