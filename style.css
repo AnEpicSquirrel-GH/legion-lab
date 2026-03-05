@@ -263,7 +263,8 @@ body {
   justify-content: center;
   padding: 8px 10px;
   min-width: 135px;
-  width: 135px;
+  width: max-content;
+  max-width: 240px;
   background: var(--bg-card);
   border-right: 1px solid var(--border);
   flex-shrink: 0;
