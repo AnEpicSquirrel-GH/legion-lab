@@ -347,7 +347,11 @@ function gearIconPath(setName, slot, charClass) {
   if (!suffix) return null;
 
   if (CLASS_SPECIFIC_SLOTS.has(slot)) {
-    const cat = CLASS_CATEGORY[charClass] || 'Warrior';
+    let cat = CLASS_CATEGORY[charClass] || 'Warrior';
+    // Xenon: MapleIcons has no Xenon armor; wiki treats Xenon as Thief for class-dependent content (Hat/Top/Bottom)
+    if (charClass === 'Xenon' && (slot === 'Hat' || slot === 'Top/Overall' || slot === 'Bottom')) {
+      cat = 'Thief';
+    }
     return `MapleIcons/Gear Icons/${prefix}${suffix}${cat}.png`;
   }
   return `MapleIcons/Gear Icons/${prefix}${suffix}.png`;
