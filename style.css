@@ -22,12 +22,17 @@
   --c-eternal:   #D4AF37;
 }
 
+html {
+  overflow: auto;
+  scroll-behavior: smooth;
+}
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
   font-size: 13px;
   min-height: 100vh;
+  overflow: auto;
 }
 
 /* ── Header ───────────────────────────────────────────────── */
@@ -65,7 +70,11 @@ body {
 }
 
 /* ── Layout ───────────────────────────────────────────────── */
-.main-content { padding: 18px 20px; }
+.main-content {
+  padding: 18px 20px;
+  min-height: 0;
+  overflow: visible;
+}
 
 .controls {
   display: flex;
@@ -134,11 +143,12 @@ body {
 .char-section {
   border: 1px solid var(--border);
   border-radius: 5px;
-  overflow: hidden;
+  overflow: auto;
   background: var(--bg-dark);
   transition: border-color .15s;
   width: fit-content;
   max-width: 100%;
+  max-height: min(calc(100vh - 200px), 88vh);
 }
 /* Zebra: odd-indexed character cards have cell backings 15% darker (not text, icons, image, or gear) */
 .char-section.zebra-odd { background: color-mix(in srgb, var(--bg-dark) 85%, black 15%); }
