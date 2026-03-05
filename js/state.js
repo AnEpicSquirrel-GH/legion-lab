@@ -145,6 +145,12 @@ function load() {
 ──────────────────────────────────────────────────────────────── */
 const LOOKUP_PROXY_KEY = 'll_lookup_proxy';
 const DEFAULT_LOOKUP_PROXY = 'https://api.allorigins.win/raw';
+const LOOKUP_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min
+const lookupCache = new Map(); // key: region:nameLower, value: { result, ts }
+// Hosted lookup API for the main GitHub Pages app (fast, no public proxy). Deploy api/ to Vercel and set this URL.
+const OFFICIAL_APP_ORIGIN = 'https://anepicsquirrel-gh.github.io';
+const LOOKUP_API_BASE_URL = 'https://legion-lab-vercel.vercel.app';
+const LOOKUP_FETCH_TIMEOUT_MS = 12000;
 
 function getLookupProxyUrl() {
   try {
@@ -243,21 +249,74 @@ async function lookupCharacter(name, regionOrWorld = 'gms', options = {}) {
   const nexonRegion = worldToNexonRegion(regionOrWorld);
   let origin = '';
   try { origin = (typeof location !== 'undefined' && location.origin) ? location.origin : ''; } catch (_) {}
-  const hasSameOriginApi = origin && origin !== 'null' && origin.toLowerCase().slice(0, 7) !== 'file://';
+  const isLocalhost = /^https?:\/\/localhost(:\d+)?$/i.test(origin || '');
+  const isOfficialOrigin = (origin || '') === OFFICIAL_APP_ORIGIN;
+  const hasSameOriginApi = isLocalhost;
+  const useHostedApi = isOfficialOrigin;
   const proxyUrl = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl() : (getLookupProxyUrl && getLookupProxyUrl());
   const hasProxy = !!(proxyUrl && proxyUrl.trim());
 
   if (debugOut) {
     debugOut.pageOrigin = origin || '—';
-    debugOut.targetUrl = hasSameOriginApi ? (origin + '/api/nexon-lookup?name=…') : '—';
-    debugOut.url = hasSameOriginApi ? (origin + '/api/nexon-lookup?name=' + encodeURIComponent(trimmed) + '&region=' + encodeURIComponent(nexonRegion)) : '—';
+    debugOut.targetUrl = hasSameOriginApi ? (origin + '/api/nexon-lookup?name=…') : (useHostedApi ? (LOOKUP_API_BASE_URL + '/api/nexon-lookup?name=…') : '—');
+    debugOut.url = hasSameOriginApi ? (origin + '/api/nexon-lookup?name=' + encodeURIComponent(trimmed) + '&region=' + encodeURIComponent(nexonRegion)) : (useHostedApi ? (LOOKUP_API_BASE_URL + '/api/nexon-lookup?name=' + encodeURIComponent(trimmed) + '&region=' + encodeURIComponent(nexonRegion)) : '—');
+  }
+
+  if (useHostedApi) {
+    const cacheKey = nexonRegion + ':' + trimmed.toLowerCase();
+    const cached = lookupCache.get(cacheKey);
+    if (cached && (Date.now() - cached.ts < LOOKUP_CACHE_TTL_MS)) {
+      if (debug) return { result: cached.result, debug: debugOut };
+      return cached.result;
+    }
+    const baseUrl = LOOKUP_API_BASE_URL;
+    let targetUrl = baseUrl + '/api/nexon-lookup?name=' + encodeURIComponent(trimmed) + '&region=' + encodeURIComponent(nexonRegion);
+    if (debug) targetUrl += '&debug=1';
+    if (debugOut) { debugOut.targetUrl = targetUrl; debugOut.url = targetUrl; }
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), LOOKUP_FETCH_TIMEOUT_MS);
+      const res = await fetch(targetUrl, { method: 'GET', signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (debugOut) { debugOut.status = res.status; debugOut.statusText = res.statusText || ''; }
+      const text = await res.text();
+      if (debugOut && text) { debugOut.responsePreview = text.length > 800 ? text.slice(0, 800) + '\n… (truncated)' : text; }
+      if (res.ok) {
+        let data;
+        try { data = text ? JSON.parse(text) : null; } catch (parseErr) {
+          if (debugOut) debugOut.error = 'Invalid JSON: ' + (parseErr && parseErr.message ? parseErr.message : String(parseErr));
+          return debug ? { result: null, debug: debugOut } : null;
+        }
+        if (data && typeof data === 'object' && data.no_result_slipped !== 'Not found' && data.error !== 'Not found') {
+          const num = (v) => (v != null && v !== '' && String(v).toLowerCase() !== 'null' ? Number(v) : null);
+          const str = (v) => (v != null && v !== '' && String(v).toLowerCase() !== 'null' ? String(v).trim() || null : null);
+          const result = { name: str(data.name ?? data.hand) || trimmed, level: num(data.level), cls: str(data.cls ?? data.class ?? data.job), world: str(data.world), imageUrl: str(data.imageUrl) };
+          lookupCache.set(cacheKey, { result, ts: Date.now() });
+          if (debug) return { result, debug: debugOut };
+          return result;
+        }
+      }
+      if (debugOut) debugOut.error = debugOut.error || ('HTTP ' + res.status + (res.statusText ? ' ' + res.statusText : ''));
+      return debug ? { result: null, debug: debugOut } : null;
+    } catch (e) {
+      if (debugOut) debugOut.error = (e && e.name === 'AbortError') ? 'Request timed out' : ((e && e.message) ? e.message : String(e));
+      return debug ? { result: null, debug: debugOut } : null;
+    }
   }
 
   if (!hasSameOriginApi && hasProxy) {
+    const cacheKey = nexonRegion + ':' + trimmed.toLowerCase();
+    const cached = lookupCache.get(cacheKey);
+    if (cached && (Date.now() - cached.ts < LOOKUP_CACHE_TTL_MS)) {
+      if (debugOut) debugOut.viaProxy = true;
+      if (debug) return { result: cached.result, debug: debugOut };
+      return cached.result;
+    }
     if (debugOut) debugOut.viaProxy = true;
     try {
       const proxyResult = await lookupViaProxy(trimmed, nexonRegion, proxyUrl.trim(), debugOut || {});
       if (proxyResult && (proxyResult.level != null || proxyResult.cls || proxyResult.imageUrl)) {
+        lookupCache.set(cacheKey, { result: proxyResult, ts: Date.now() });
         if (debug) return { result: proxyResult, debug: debugOut };
         return proxyResult;
       }
@@ -313,8 +372,15 @@ async function lookupCharacter(name, regionOrWorld = 'gms', options = {}) {
 
     const proxyUrlFallback = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl() : (getLookupProxyUrl && getLookupProxyUrl());
     if (proxyUrlFallback && proxyUrlFallback.trim()) {
+      const cacheKeyF = nexonRegion + ':' + trimmed.toLowerCase();
+      const cachedF = lookupCache.get(cacheKeyF);
+      if (cachedF && (Date.now() - cachedF.ts < LOOKUP_CACHE_TTL_MS)) {
+        if (debug) return { result: cachedF.result, debug: debugOut };
+        return cachedF.result;
+      }
       const proxyResult = await lookupViaProxy(trimmed, nexonRegion, proxyUrlFallback.trim(), debugOut || {});
       if (proxyResult && (proxyResult.level != null || proxyResult.cls || proxyResult.imageUrl)) {
+        lookupCache.set(cacheKeyF, { result: proxyResult, ts: Date.now() });
         if (debug) return { result: proxyResult, debug: debugOut };
         return proxyResult;
       }
@@ -325,9 +391,16 @@ async function lookupCharacter(name, regionOrWorld = 'gms', options = {}) {
   } catch (e) {
     const proxyUrlCatch = typeof getEffectiveLookupProxyUrl === 'function' ? getEffectiveLookupProxyUrl() : (getLookupProxyUrl && getLookupProxyUrl());
     if (proxyUrlCatch && proxyUrlCatch.trim()) {
+      const cacheKeyC = nexonRegion + ':' + trimmed.toLowerCase();
+      const cachedC = lookupCache.get(cacheKeyC);
+      if (cachedC && (Date.now() - cachedC.ts < LOOKUP_CACHE_TTL_MS)) {
+        if (debug) return { result: cachedC.result, debug: debugOut };
+        return cachedC.result;
+      }
       try {
         const proxyResult = await lookupViaProxy(trimmed, nexonRegion, proxyUrlCatch.trim(), debugOut || {});
         if (proxyResult && (proxyResult.level != null || proxyResult.cls || proxyResult.imageUrl)) {
+          lookupCache.set(cacheKeyC, { result: proxyResult, ts: Date.now() });
           if (debug) return { result: proxyResult, debug: debugOut };
           return proxyResult;
         }
