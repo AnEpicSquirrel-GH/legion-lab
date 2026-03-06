@@ -333,6 +333,14 @@ function render() {
   if (typeof multiSelectMode !== 'undefined' && multiSelectMode) {
     list.classList.add('multiselect-active');
   }
+  var atLimit = typeof MAX_CHARACTERS !== 'undefined' && chars.length >= MAX_CHARACTERS;
+  ['openAddBtn', 'openAddBtn2', 'openImportBtn'].forEach(function (id) {
+    var btn = document.getElementById(id);
+    if (btn) {
+      btn.disabled = atLimit;
+      btn.title = atLimit ? 'Character limit (' + MAX_CHARACTERS + ') reached' : '';
+    }
+  });
 }
 
 /** Rebuild only the section at index (avoids full list re-render for single-character updates). */

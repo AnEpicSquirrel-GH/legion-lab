@@ -1329,6 +1329,47 @@ body {
 .badge-new    { color: var(--success); font-size: 10px; font-weight: 700; }
 .badge-exists { color: var(--text-muted); font-size: 10px; }
 
+/* ── Site footer ──────────────────────────────────────────── */
+.site-footer {
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.footer-link:hover { color: var(--accent); }
+
+/* ── Feedback modal ───────────────────────────────────────── */
+.feedback-modal { max-width: 420px; }
+.feedback-intro {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 1rem 0;
+}
+.feedback-field {
+  margin-bottom: 0.75rem;
+}
+.feedback-field label { display: block; font-size: 12px; margin-bottom: 2px; color: var(--text-muted); }
+.feedback-field .required { color: var(--danger); }
+.feedback-field .form-input { width: 100%; box-sizing: border-box; }
+.feedback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.feedback-status { font-size: 12px; margin: 0 0 0 0.5rem; }
+.feedback-fallback-msg { font-size: 13px; color: var(--text-muted); }
+
 /* ── Scrollbar ────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }

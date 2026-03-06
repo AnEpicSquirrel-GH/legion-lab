@@ -7,6 +7,27 @@
   <link rel="icon" href="MapleIcons/Legion%20Lab%20Icon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
 
+  <!-- Analytics: we do not track anything personal (no names, classes, worlds, or other user data).
+       We only record aggregate usage (e.g. visit counts, total characters added) for understanding tool usage. -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0VBXZGQ5PY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    // Privacy leaning: disable Google Signals + ad personalization.
+    gtag('config', 'G-0VBXZGQ5PY', {
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+    });
+  </script>
+
+  <script>
+    // Formspree endpoint for Feedback/Bug Report modal (no user accounts required).
+    window.LEGION_LAB_FEEDBACK_ENDPOINT = 'https://formspree.io/f/mgoneeae';
+  </script>
+
   <!-- Dependency order: data first, then logic layers, then UI, then app init -->
   <script defer src="js/utils.js"></script>
   <script defer src="js/data.js"></script>
@@ -56,7 +77,47 @@
     <button class="add-char-dashed" id="openAddBtn2">+ Add Character</button>
   </div>
 
+  <footer class="site-footer">
+    <button type="button" class="footer-link" id="openFeedbackBtn">Feedback / Bug Report</button>
+  </footer>
+
 </main>
+
+<!-- ══════════════════════════════════════════════════════════════
+     FEEDBACK MODAL
+═══════════════════════════════════════════════════════════════ -->
+<div class="overlay hidden" id="feedbackOverlay">
+  <div class="modal feedback-modal" role="dialog" aria-labelledby="feedbackModalTitle">
+    <h2 class="modal-title" id="feedbackModalTitle">Feedback / Bug Report</h2>
+    <p class="feedback-intro">No account needed. Your message will be sent to the maintainer.</p>
+    <div id="feedbackFormWrap">
+      <div class="feedback-field">
+        <label for="feedbackType">Type</label>
+        <select id="feedbackType" class="form-input">
+          <option value="Feedback">Feedback</option>
+          <option value="Bug Report">Bug Report</option>
+        </select>
+      </div>
+      <div class="feedback-field">
+        <label for="feedbackMessage">Message <span class="required">*</span></label>
+        <textarea id="feedbackMessage" class="form-input" rows="4" placeholder="Describe your feedback or the bug (what happened, steps to reproduce, etc.)" required></textarea>
+      </div>
+      <div class="feedback-field">
+        <label for="feedbackEmail">Your email (optional, if you want a reply)</label>
+        <input type="email" id="feedbackEmail" class="form-input" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="feedback-actions">
+        <button type="button" class="btn btn-primary" id="feedbackSubmitBtn">Send</button>
+        <button type="button" class="btn" id="feedbackCancelBtn">Cancel</button>
+        <p id="feedbackStatus" class="feedback-status" aria-live="polite"></p>
+      </div>
+    </div>
+    <div id="feedbackFallbackWrap" class="hidden">
+      <p class="feedback-fallback-msg">Feedback form is not configured for this site. You can open an issue on the project’s GitHub repo or contact the maintainer directly.</p>
+      <button type="button" class="btn" id="feedbackFallbackClose" style="margin-top:10px">Close</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════════════════════════
      IMPORT MODAL

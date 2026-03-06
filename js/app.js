@@ -737,6 +737,89 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ────────────────────────────────────────────────────────────────
+   FEEDBACK / BUG REPORT
+   Set window.LEGION_LAB_FEEDBACK_ENDPOINT to your Formspree (or similar) URL
+   e.g. https://formspree.io/f/xxxxxxxx — submissions appear in Formspree dashboard / email.
+──────────────────────────────────────────────────────────────── */
+(function feedbackModal() {
+  const overlay = document.getElementById('feedbackOverlay');
+  const formWrap = document.getElementById('feedbackFormWrap');
+  const fallbackWrap = document.getElementById('feedbackFallbackWrap');
+  const typeEl = document.getElementById('feedbackType');
+  const messageEl = document.getElementById('feedbackMessage');
+  const emailEl = document.getElementById('feedbackEmail');
+  const statusEl = document.getElementById('feedbackStatus');
+  const endpoint = (typeof window !== 'undefined' && window.LEGION_LAB_FEEDBACK_ENDPOINT) || '';
+
+  document.getElementById('openFeedbackBtn').addEventListener('click', function () {
+    if (!endpoint) {
+      if (formWrap) formWrap.classList.add('hidden');
+      if (fallbackWrap) fallbackWrap.classList.remove('hidden');
+    } else {
+      if (formWrap) formWrap.classList.remove('hidden');
+      if (fallbackWrap) fallbackWrap.classList.add('hidden');
+      if (statusEl) statusEl.textContent = '';
+      if (messageEl) messageEl.value = '';
+      if (emailEl) emailEl.value = '';
+      if (typeEl) typeEl.value = 'Feedback';
+    }
+    if (overlay) overlay.classList.remove('hidden');
+    if (messageEl) messageEl.focus();
+  });
+
+  document.getElementById('feedbackCancelBtn').addEventListener('click', function () {
+    if (overlay) overlay.classList.add('hidden');
+  });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) overlay.classList.add('hidden');
+  });
+
+  var fallbackClose = document.getElementById('feedbackFallbackClose');
+  if (fallbackClose) fallbackClose.addEventListener('click', function () { overlay.classList.add('hidden'); });
+
+  document.getElementById('feedbackSubmitBtn').addEventListener('click', function () {
+    if (!endpoint || !messageEl) return;
+    const message = (messageEl.value || '').trim();
+    if (!message) {
+      statusEl.textContent = 'Please enter a message.';
+      statusEl.style.color = 'var(--danger, #e74c3c)';
+      return;
+    }
+    const type = (typeEl && typeEl.value) || 'Feedback';
+    const email = (emailEl && emailEl.value) || '';
+    statusEl.textContent = 'Sending…';
+    statusEl.style.color = '';
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: type,
+        message: message,
+        email: email || undefined,
+        _subject: type + ' – Legion Lab',
+      }),
+    })
+      .then(function (res) {
+        if (res.ok) {
+          statusEl.textContent = 'Thanks! Your message was sent.';
+          statusEl.style.color = 'var(--success, #27ae60)';
+          messageEl.value = '';
+          emailEl.value = '';
+        } else {
+          statusEl.textContent = 'Something went wrong. Please try again or contact the maintainer another way.';
+          statusEl.style.color = 'var(--danger, #e74c3c)';
+        }
+      })
+      .catch(function () {
+        statusEl.textContent = 'Could not send. Check your connection or try again later.';
+        statusEl.style.color = 'var(--danger, #e74c3c)';
+      });
+  });
+})();
+
+/* ────────────────────────────────────────────────────────────────
    INIT
 ──────────────────────────────────────────────────────────────── */
 try {

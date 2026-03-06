@@ -40,7 +40,14 @@ function getLegionRank(level, cls) {
   return null;
 }
 
+/** Resolve display/API class name (e.g. I/L, F/P) to canonical for lookups. */
+function resolveClassForLegion(cls) {
+  if (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[cls]) return CLASS_NAME_ALIAS[cls];
+  return cls;
+}
+
 function getLegionTileIcon(cls, level) {
+  cls = resolveClassForLegion(cls);
   const rank     = getLegionRank(level, cls);
   const category = CLASS_CATEGORY[cls] ?? null;
   if (!rank || !category) return null;
@@ -247,13 +254,14 @@ function getLinkSkillLevel(level) {
 
 /** Builds the inner HTML for the class hover tooltip. */
 function buildClassTooltipHTML(cls, level) {
-  const link   = LINK_SKILL[cls];
-  const legion = LEGION_EFFECT[cls];
-  const rank   = getLegionRank(level, cls);
+  const canonical = resolveClassForLegion(cls);
+  const link   = LINK_SKILL[canonical];
+  const legion = LEGION_EFFECT[canonical];
+  const rank   = getLegionRank(level, canonical);
   const lv     = getLinkSkillLevel(level);
 
-  const cat = CLASS_CATEGORY[cls] ?? '';
-  let html = `<div class="ctt-title" data-cls-cat="${escHtml(cat)}">${escHtml(cls)}</div>`;
+  const cat = CLASS_CATEGORY[canonical] ?? '';
+  let html = `<div class="ctt-title" data-cls-cat="${escHtml(cat)}">${escHtml(canonical)}</div>`;
 
   // ── Link Skill ──
   if (link) {
@@ -281,7 +289,7 @@ function buildClassTooltipHTML(cls, level) {
   if (legion) {
     const [stat, vals] = legion;
     const rankIdx = _RANKS.indexOf(rank);
-    const tileIconPath = getLegionTileIcon(cls, level);
+    const tileIconPath = getLegionTileIcon(canonical, level);
     const tileIconHTML = tileIconPath
       ? `<img class="ctt-link-icon" src="${escHtml(tileIconPath)}" alt="${escHtml(rank ?? '')}">`
       : '';

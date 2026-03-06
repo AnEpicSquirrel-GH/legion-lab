@@ -1043,9 +1043,19 @@
       alert('Please select a class for all selected characters.');
       return;
     }
+    const limit = typeof MAX_CHARACTERS !== 'undefined' ? MAX_CHARACTERS : 999;
+    const slotsLeft = limit - chars.length;
+    if (slotsLeft <= 0 && toAdd.length) {
+      alert('Character limit (' + limit + ') reached. Remove a character to add more.');
+      return;
+    }
     if (toAdd.length) {
+      const capped = toAdd.slice(0, slotsLeft);
+      if (capped.length < toAdd.length) {
+        alert('Character limit is ' + limit + '. Only the first ' + capped.length + ' selected character(s) were added.');
+      }
       const lastWorld = localStorage.getItem('ll_last_world') || null;
-      toAdd.forEach(r => {
+      capped.forEach(r => {
         let gear = {};
         if (r.gear) {
           SLOTS.forEach(s => { gear[s] = r.gear[s] || { item: 'None', stars: 0 }; });
@@ -1066,7 +1076,9 @@
           gear,
         });
       });
-      save(); render();
+      if (typeof trackCharactersAdded === 'function') trackCharactersAdded(capped.length);
+      save();
+      render();
     }
     closeImport();
   });

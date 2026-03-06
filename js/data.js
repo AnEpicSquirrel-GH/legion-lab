@@ -68,7 +68,7 @@ const SETS = {
   Arcane:     { name: 'Arcane',      color: '#9B59B6', level: 200,  abbr: 'ARC' },
   Pitched:    { name: 'Pitched',     color: '#22C55E', level: 200,  abbr: 'PCH' },  // Pitched Boss set (incl. Genesis Weapon)
   Brilliant:  { name: 'Brilliant',   color: '#84CC16', level: 200,  abbr: 'BRL' },  // Brilliant Boss set
-  Frozen:     { name: 'Frozen',      color: '#bed1e9', level: 130,  abbr: 'FRZ' },  // Frozen set
+  Frozen:     { name: 'Frozen',      color: '#6B9EBE', level: 130,  abbr: 'FRZ' },  // Frozen set (same tier color as Pensalir)
   Eternal:    { name: 'Eternal',     color: '#FFD700', level: 250,  abbr: 'ETN' },
   Gollux:     { name: 'Gollux',      color: '#C2622D', level: 140,  abbr: 'GOL' },  // Superior Gollux only
   OzRing:     { name: 'Oz Ring',     color: '#3B82F6', level: 140,  abbr: 'OZR' },  // Oz Tower rings (level 1–6)
@@ -84,7 +84,7 @@ const _RING_ITEMS = [
   { label: 'Silver Blossom Ring',          tier: 'Pensalir'   },
   { label: 'Noble Ifia\'s Ring',           tier: 'Pensalir'   },
   { label: 'Guardian Angel Ring',          tier: 'Pensalir'   },
-  { label: 'Dawn Guardian Angel Ring',                    tier: 'Dawn'       },
+  { label: 'Dawn Guardian Angel Ring',     tier: 'Dawn'       },
   { label: "Kanna's Treasure",             tier: 'PrincessNo' },
   { label: 'Superior Gollux Ring',         tier: 'Gollux'     },
   { label: 'Endless Terror',               tier: 'Pitched'    },
@@ -108,9 +108,7 @@ const _PENDANT_ITEMS = [
 const SLOT_ITEMS = {
   'Weapon': [
     { label: 'Pensalir Weapon',              tier: 'Pensalir' },
-    { label: 'Frozen Weapon',                tier: 'Frozen'   },
     { label: 'CRA Weapon',                   tier: 'Fafnir'   },
-    { label: 'Liberated Kaiserium',          tier: 'Fafnir',   cls: ['Kaiser'] },
     { label: 'Absolab Weapon',               tier: 'Absolab'  },
     { label: 'Arcane Umbra Weapon',          tier: 'Arcane'   },
     { label: 'Genesis Weapon',               tier: 'Pitched'  },
@@ -186,160 +184,33 @@ const SLOT_ITEMS = {
     { label: 'Dreamy Belt',                  tier: 'Pitched'    },
   ],
   'Secondary Weapon': [
-    // ── Generic Lv. 100 hidden for all classes with a named option (see LV100_SECONDARY_BY_CLASS in presets.js) ──
-    { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade', 'Zero', 'Hero', 'Paladin', 'Dark Knight', 'Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Bowmaster', 'Marksman', 'Pathfinder', 'Night Lord', 'Shadower', 'Buccaneer', 'Corsair', 'Cannon Master', 'Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker', 'Mihile', 'Adele', 'Evan', 'Battle Mage', 'Aran', 'Luminous', 'Mercedes', 'Phantom', 'Shade (Eunwol)', 'Blaster', 'Demon Slayer', 'Demon Avenger', 'Mechanic', 'Wild Hunter', 'Xenon', 'Kaiser', 'Angelic Buster', 'Cadena', 'Kain', 'Illium', 'Khali', 'Ark', 'Hoyoung', 'Lara', 'Ren', 'Hayato', 'Kanna', 'Lynn', 'Mo Xuan', 'Kinesis', 'Sia Astelle'] },
-    // ── Explorer Lv. 100 (named) ──
-    { label: 'Virtues Medallion',           tier: 'Pensalir',  cls: ['Hero'] },
-    { label: 'Deimos Warrior Shield',        tier: 'Pensalir',  cls: ['Paladin'], hasStars: true },
-    { label: 'Berserk Chain',                tier: 'Pensalir',  cls: ['Dark Knight'] },
-    { label: 'Rusty Book (Epode)',           tier: 'Pensalir',  cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)'] },
-    { label: 'White Gold Book (Epode)',      tier: 'Pensalir',  cls: ['Bishop'] },
-    { label: 'Blasted Feather',              tier: 'Pensalir',  cls: ['Bowmaster'] },
-    { label: 'True Shot',                    tier: 'Pensalir',  cls: ['Marksman'] },
-    { label: 'Perfect Relic',                tier: 'Pensalir',  cls: ['Pathfinder'] },
-    { label: 'Death Sender Charm',           tier: 'Pensalir',  cls: ['Night Lord'] },
-    { label: 'Deimos Shadow Shield',         tier: 'Pensalir',  cls: ['Shadower'], hasStars: true },
-    { label: 'Wrist Armor',                  tier: 'Pensalir',  cls: ['Buccaneer'] },
-    { label: 'Falcon Eye',                   tier: 'Pensalir',  cls: ['Corsair'] },
-    { label: 'Center Fire Bomb',             tier: 'Pensalir',  cls: ['Cannon Master'] },
-    // ── Other Mages (non-Explorer) ──
-    { label: 'Deimos Sage Shield',           tier: 'Pensalir',  cls: ['Blaze Wizard', 'Evan', 'Battle Mage'], hasStars: true },
-    // ── Cygnus Knights: Jewel = Ereve Brilliance; Mihile only uses Soul Shield ──
-    { label: 'Ereve Brilliance',             tier: 'Pensalir',  cls: ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker'] },
-    { label: 'Soul Shield of Justice',       tier: 'Pensalir',  cls: ['Mihile'], hasStars: true },
+    // ── All classes (except Dual Blade who use Kataras) ──
+    { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade'] },
+    // ── Explorer Warriors ──
+    { label: 'Deimos Warrior Shield',        tier: 'Pensalir',  cls: ['Hero', 'Paladin', 'Dawn Warrior'], hasStars: true },
+    // ── Explorer + Other Mages ──
+    { label: 'Deimos Sage Shield',           tier: 'Pensalir',  cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Blaze Wizard', 'Evan', 'Battle Mage'], hasStars: true },
+    // ── All Cygnus Knights ──
+    { label: 'Ereve Brilliance',             tier: 'Pensalir',  cls: ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker', 'Mihile'] },
     // ── Adele (Bladebinder) ──
     { label: 'Noble Bladebinder',            tier: 'Pensalir',  cls: ['Adele'] },
-    // ── Heroes ──
-    { label: 'Dragon Mass',                  tier: 'Pensalir',  cls: ['Aran'] },
-    { label: 'Karma Orb',                    tier: 'Pensalir',  cls: ['Luminous'] },
-    { label: 'Golden Pearl Leaf',            tier: 'Pensalir',  cls: ['Mercedes', 'Lynn'] },
-    { label: 'Carte Finale',                 tier: 'Pensalir',  cls: ['Phantom'] },
-    { label: 'Golden Fox Marble',             tier: 'Pensalir',  cls: ['Shade (Eunwol)'] },
-    // ── Resistance ──
-    { label: 'Masterwork Charges',           tier: 'Pensalir',  cls: ['Blaster'] },
-    { label: 'Eternal Magnum',               tier: 'Pensalir',  cls: ['Mechanic', 'Angelic Buster'] },
-    { label: 'Wild Heron',                   tier: 'Pensalir',  cls: ['Wild Hunter'] },
-    { label: 'Octa Core Controller',         tier: 'Pensalir',  cls: ['Xenon'] },
-    { label: 'Queen Chess Piece',            tier: 'Pensalir',  cls: ['Kinesis'] },
-    // ── Nova ──
-    { label: 'Nova Truth Essence',           tier: 'Pensalir',  cls: ['Kaiser'] },
-    { label: 'Warp Forge',                   tier: 'Pensalir',  cls: ['Cadena'] },
-    { label: 'D100 Custom Weapon Belt',      tier: 'Pensalir',  cls: ['Kain'] },
-    // ── Flora ──
-    { label: 'Glory Lucent Wings',           tier: 'Pensalir',  cls: ['Illium'] },
-    { label: 'Infinite Hex Seeker',          tier: 'Pensalir',  cls: ['Khali'] },
-    { label: 'Ultimate Path',                tier: 'Pensalir',  cls: ['Ark'] },
-    // ── Anima ──
-    { label: 'Moonstone Fan Tassel',         tier: 'Pensalir',  cls: ['Hoyoung'] },
-    { label: 'Radiant Four-Jade Ornament',    tier: 'Pensalir',  cls: ['Lara'] },
-    { label: 'Violet Imugi Gem',             tier: 'Pensalir',  cls: ['Ren'] },
-    // ── Sengoku ──
-    { label: 'Fire Phoenix Blade',           tier: 'Pensalir',  cls: ['Hayato'] },
-    { label: 'Pandemonium Talisman',         tier: 'Pensalir',  cls: ['Kanna'] },
-    // ── Jianghu ──
-    { label: 'Boundless Brace Band',         tier: 'Pensalir',  cls: ['Mo Xuan'] },
-    // ── Shine ──
-    { label: 'Evolving Compass',             tier: 'Pensalir',  cls: ['Sia Astelle'] },
-    // ── Frozen: named per class (all classes except Zero; see FROZEN_SECONDARY_BY_CLASS in presets.js) ──
-    { label: 'Frozen Medallion',             tier: 'Frozen',    cls: ['Hero'] },
-    { label: 'Frozen Rosary',                tier: 'Frozen',    cls: ['Paladin'] },
-    { label: 'Frozen Chain',                 tier: 'Frozen',    cls: ['Dark Knight'] },
-    { label: 'Frozen Rusty Book (Epode)',   tier: 'Frozen',    cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)'] },
-    { label: 'Frozen White Gold Book (Epode)', tier: 'Frozen',   cls: ['Bishop'] },
-    { label: 'Frozen Feather',               tier: 'Frozen',    cls: ['Bowmaster'] },
-    { label: 'Frozen True Shot',             tier: 'Frozen',    cls: ['Marksman'] },
-    { label: 'Frozen Relic',                 tier: 'Frozen',    cls: ['Pathfinder'] },
-    { label: 'Frozen Death Sender Charm',    tier: 'Frozen',    cls: ['Night Lord'] },
-    { label: 'Frozen Shadow',                tier: 'Frozen',    cls: ['Shadower'] },
-    { label: 'Frozen Katara',                tier: 'Frozen',    cls: ['Dual Blade'] },
-    { label: 'Frozen Wrist Armor',           tier: 'Frozen',    cls: ['Buccaneer'] },
-    { label: 'Frozen Falcon Eye',             tier: 'Frozen',    cls: ['Corsair'] },
-    { label: 'Frozen Center Fire Bomb',       tier: 'Frozen',    cls: ['Cannon Master'] },
-    { label: 'Frozen Soul Shield',           tier: 'Frozen',    cls: ['Mihile'] },
-    { label: 'Frozen Ereve Brilliance',      tier: 'Frozen',    cls: ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker'] },
-    { label: 'Frozen Dragon Mass',           tier: 'Frozen',    cls: ['Aran'] },
-    { label: "Frozen Dragon Master's Legacy", tier: 'Frozen',   cls: ['Evan'] },
-    { label: 'Frozen Orb',                   tier: 'Frozen',    cls: ['Luminous'] },
-    { label: 'Frozen Pearl Leaf',            tier: 'Frozen',    cls: ['Mercedes', 'Lynn'] },
-    { label: 'Carte Frozen',                 tier: 'Frozen',    cls: ['Phantom'] },
-    { label: 'Frozen Fox Marble',            tier: 'Frozen',    cls: ['Shade (Eunwol)'] },
-    { label: 'Frozen Maximizer Ball',        tier: 'Frozen',    cls: ['Battle Mage'] },
-    { label: 'Frozen Charges',               tier: 'Frozen',    cls: ['Blaster'] },
-    { label: 'Frozen Force Shield',          tier: 'Frozen',    cls: ['Demon Slayer', 'Demon Avenger'] },
-    { label: 'Frozen Magnum',                tier: 'Frozen',    cls: ['Mechanic'] },
-    { label: 'Frozen Wild Heron',            tier: 'Frozen',    cls: ['Wild Hunter'] },
-    { label: 'Frozen Octa Core Controller',  tier: 'Frozen',    cls: ['Xenon'] },
-    { label: 'Frozen Queen Chess Piece',      tier: 'Frozen',    cls: ['Kinesis'] },
-    { label: 'Frozen Dragon Essence',        tier: 'Frozen',    cls: ['Kaiser'] },
-    { label: 'Frozen Soul Ring',             tier: 'Frozen',    cls: ['Angelic Buster'] },
-    { label: 'Frozen Transmitter',            tier: 'Frozen',    cls: ['Cadena'] },
-    { label: 'Frozen D100 Weapon Belt',      tier: 'Frozen',    cls: ['Kain'] },
-    { label: 'Frozen Shiny Bladebinder',     tier: 'Frozen',    cls: ['Adele'] },
-    { label: 'Frozen Lucent Wings',          tier: 'Frozen',    cls: ['Illium'] },
-    { label: 'Frozen Infinite Hex Seeker',   tier: 'Frozen',    cls: ['Khali'] },
-    { label: 'Frozen Path',                  tier: 'Frozen',    cls: ['Ark'] },
-    { label: 'Frozen Fan Tassel',            tier: 'Frozen',    cls: ['Hoyoung'] },
-    { label: 'Frozen Four-Jade Ornament',    tier: 'Frozen',    cls: ['Lara'] },
-    { label: 'Frozen Imugi Gem',             tier: 'Frozen',    cls: ['Ren'] },
-    { label: 'Frozen Blade',                 tier: 'Frozen',    cls: ['Hayato'] },
-    { label: 'Frozen Talisman',               tier: 'Frozen',    cls: ['Kanna'] },
-    { label: 'Frozen Brace Band',            tier: 'Frozen',    cls: ['Mo Xuan'] },
-    { label: 'Frozen Compass',               tier: 'Frozen',    cls: ['Sia Astelle'] },
-    // ── Princess No: named per class (under Frozen for all except Dual Blade; Dual Blade = under Fafnir in katara block)
-    { label: "Princess No's Medal",         tier: 'PrincessNo', cls: ['Hero'] },
-    { label: "Princess No's Rosary",         tier: 'PrincessNo', cls: ['Paladin'] },
-    { label: "Princess No's Flower Chain",   tier: 'PrincessNo', cls: ['Dark Knight'] },
-    { label: "Princess No's Flaming Book",   tier: 'PrincessNo', cls: ['Arch Mage (Fire, Poison)'] },
-    { label: "Princess No's Damp Book",      tier: 'PrincessNo', cls: ['Arch Mage (Ice, Lightning)'] },
-    { label: "Princess No's Golden Book",    tier: 'PrincessNo', cls: ['Bishop'] },
-    { label: "Princess No's Feather",        tier: 'PrincessNo', cls: ['Bowmaster'] },
-    { label: "Princess No's Wreath",         tier: 'PrincessNo', cls: ['Marksman'] },
-    { label: "Princess No's Immortal Relic", tier: 'PrincessNo', cls: ['Pathfinder'] },
-    { label: "Princess No's Charm",          tier: 'PrincessNo', cls: ['Night Lord'] },
-    { label: "Princess No's Purple Shadow",  tier: 'PrincessNo', cls: ['Shadower'] },
-    { label: "Princess No's Skull Armor",    tier: 'PrincessNo', cls: ['Buccaneer'] },
-    { label: "Princess No's Falcon Eye",     tier: 'PrincessNo', cls: ['Corsair'] },
-    { label: "Princess No's Fire Bomb",      tier: 'PrincessNo', cls: ['Cannon Master'] },
-    { label: "Princess No's Soul Shield",    tier: 'PrincessNo', cls: ['Mihile'] },
-    { label: "Princess No's Floral Jewel",   tier: 'PrincessNo', cls: ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker'] },
-    { label: "Princess No's Flower Ballast", tier: 'PrincessNo', cls: ['Aran'] },
-    { label: "Princess No's Dragon Legacy",  tier: 'PrincessNo', cls: ['Evan'] },
-    { label: "Princess No's Soul Orb",       tier: 'PrincessNo', cls: ['Luminous'] },
-    { label: "Princess No's Accursed Arrow", tier: 'PrincessNo', cls: ['Mercedes'] },
-    { label: "Princess No's Carte",          tier: 'PrincessNo', cls: ['Phantom'] },
-    { label: "Princess No's Fox Marble",     tier: 'PrincessNo', cls: ['Shade (Eunwol)'] },
+    // ── Explorer Thieves ──
+    { label: 'Deimos Shadow Shield',         tier: 'Pensalir',  cls: ['Shadower'], hasStars: true },
+    { label: 'Frozen Secondary',             tier: 'Frozen',    excl: ['Dual Blade'] },
+    { label: 'Princess No Secondary',        tier: 'PrincessNo', excl: ['Dual Blade'] },
+    // ── Demon Aegis: Princess No (Lv 140) vs Ruin Force (Damien, Lv 100) ──
     { label: "Princess No's Accursed Shield", tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
-    { label: "Princess No's Megaton Charges", tier: 'PrincessNo', cls: ['Blaster'] },
-    { label: "Princess No's Accursed Marble", tier: 'PrincessNo', cls: ['Battle Mage'] },
-    { label: "Princess No's Arrowhead",     tier: 'PrincessNo', cls: ['Wild Hunter'] },
-    { label: "Princess No's Magnum",         tier: 'PrincessNo', cls: ['Mechanic'] },
-    { label: "Princess No's Oriental King Chess Piece", tier: 'PrincessNo', cls: ['Kinesis'] },
-    { label: "Princess No's Controller",     tier: 'PrincessNo', cls: ['Xenon'] },
-    { label: "Princess No's Dragon Essence", tier: 'PrincessNo', cls: ['Kaiser'] },
-    { label: "Princess No's Soul Ring",     tier: 'PrincessNo', cls: ['Angelic Buster'] },
-    { label: "Princess No's Transmitter",    tier: 'PrincessNo', cls: ['Cadena'] },
-    { label: "Princess No's Immortal Weapon Belt", tier: 'PrincessNo', cls: ['Kain'] },
-    { label: "Princess No's Immortal Bladebinder", tier: 'PrincessNo', cls: ['Adele'] },
-    { label: "Princess No's Lucent Wings",   tier: 'PrincessNo', cls: ['Illium'] },
-    { label: "Princess No's Immortal Hex Seeker", tier: 'PrincessNo', cls: ['Khali'] },
-    { label: "Princess No's Path",           tier: 'PrincessNo', cls: ['Ark'] },
-    { label: "Princess No's Fan Tassel",     tier: 'PrincessNo', cls: ['Hoyoung'] },
-    { label: "Princess No's Immortal Four-Jade Ornament", tier: 'PrincessNo', cls: ['Lara'] },
-    { label: "Princess No's Imugi Gem",     tier: 'PrincessNo', cls: ['Ren'] },
-    { label: "Princess No's Wakizashi",      tier: 'PrincessNo', cls: ['Hayato'] },
-    { label: "Princess No's Talisman",       tier: 'PrincessNo', cls: ['Kanna'] },
-    { label: "Princess No's Leaf",           tier: 'PrincessNo', cls: ['Lynn'] },
-    { label: "Princess No's Brace Band",     tier: 'PrincessNo', cls: ['Mo Xuan'] },
-    { label: "Princess No's Compass",        tier: 'PrincessNo', cls: ['Sia Astelle'] },
-    // ── Demon Aegis: Ruin Force (Damien, Lv 100) ──
     { label: 'Ruin Force Shield',            tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
-    // ── Dual Blade Kataras (Princess No under Fafnir) ──
-    { label: 'Utgard Katara',               tier: 'Pensalir',  cls: ['Dual Blade'] },
+    // ── Dual Blade Kataras ──
+    { label: 'Utgard Katara',                tier: 'Pensalir',  cls: ['Dual Blade'] },
     { label: 'Sweetwater Katara',            tier: 'Pensalir',  cls: ['Dual Blade'] },
     { label: 'Fafnir Rapid Edge',            tier: 'Fafnir',    cls: ['Dual Blade'] },
-    { label: "Princess No's Poisoned Sword", tier: 'PrincessNo', cls: ['Dual Blade'] },
     { label: 'AbsoLab Katara',               tier: 'Absolab',   cls: ['Dual Blade'] },
     { label: 'Arcane Umbra Katara',          tier: 'Arcane',    cls: ['Dual Blade'] },
+    { label: 'Carte Frozen',                 tier: 'Frozen',    cls: ['Phantom'] },
+    { label: 'Frozen Katara',                tier: 'Frozen',    cls: ['Dual Blade'] },
+    // ── Kaiser only ──
+    { label: 'Frozen Dragon Essence',        tier: 'Frozen',    cls: ['Kaiser'] },
   ],
   'Emblem': [
     // ── Silver tier ─────────────────────────────────────────────
@@ -580,17 +451,6 @@ const GEAR_PRESETS = [
     },
   },
   {
-    name: 'Frozen Set',
-    gear: {
-      'Hat':               'Frozen Hat',
-      'Top/Overall':       'Frozen Overall',
-      'Cape':              'Frozen Cape',
-      'Weapon':            'Frozen Weapon',
-      'Secondary Weapon':  'Frozen Secondary',
-      'Emblem':            '__GOLD_EMBLEM__',
-    },
-  },
-  {
     name: 'CRA / Abso Set',
     gear: {
       'Hat':               'CRA Hat',
@@ -666,7 +526,7 @@ function presetTierRank(tier) {
 }
 /** Weapon label → tier for sorting preset weapon list. */
 const PRESET_WEAPON_TIER = {
-  'Pensalir Weapon': 'Pensalir', 'Frozen Weapon': 'Frozen', 'CRA Weapon': 'Fafnir', 'Absolab Weapon': 'Absolab',
+  'Pensalir Weapon': 'Pensalir', 'CRA Weapon': 'Fafnir', 'Absolab Weapon': 'Absolab',
   'Arcane Umbra Weapon': 'Arcane', 'Genesis Weapon': 'Pitched', 'Destiny Weapon': 'Eternal',
 };
 
@@ -856,7 +716,6 @@ const SET_EFFECTS = {
     2: ['STR/DEX/INT/LUK +15', 'Max HP/MP +800'],
     3: ['Max HP/MP +8%', 'Attack/Magic Attack +40'],
     4: ['Boss Damage +15%'],
-    5: ['All Stats +8', 'Attack/Magic Attack +20', 'Ignore Enemy DEF +30%'],
   },
   Gollux: {
     2: ['STR/DEX/INT/LUK +25', 'Max HP/MP +1,000'],
@@ -892,24 +751,6 @@ const LUCKY_ITEMS = { 'Genesis Weapon': 'Weapon', 'Destiny Weapon': 'Weapon', 'C
 // ── Predefined named sets (Sets column uses these; CRA is class-specific) ──
 // Items: slot → Set of item labels that count. Weapon set filled by weapons.js after load.
 const GEAR_SETS = {
-  Frozen: {
-    name: 'Frozen Set',
-    shortName: 'Frozen',
-    color: SETS.Frozen.color,
-    slots: ['Hat', 'Top/Overall', 'Cape', 'Weapon', 'Secondary Weapon'],
-    items: (() => {
-      const out = {
-        'Hat': new Set(['Frozen Hat']),
-        'Top/Overall': new Set(['Frozen Overall']),
-        'Cape': new Set(['Frozen Cape']),
-        'Weapon': [], // filled by weapons.js
-        'Secondary Weapon': new Set(),
-      };
-      (SLOT_ITEMS['Secondary Weapon'] || []).forEach(it => { if (it.tier === 'Frozen') out['Secondary Weapon'].add(it.label); });
-      return out;
-    })(),
-    effects: SET_EFFECTS.Frozen,
-  },
   CRA: {
     name: 'Root Abyss Set',
     shortName: 'CRA',

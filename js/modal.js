@@ -806,6 +806,11 @@ function handleConfirmAdd() {
     return;
   }
 
+  if (typeof MAX_CHARACTERS !== 'undefined' && chars.length >= MAX_CHARACTERS) {
+    setLookupStatus('Character limit (' + MAX_CHARACTERS + ') reached. Remove a character to add another.', 'err');
+    return;
+  }
+
   const norm = (s) => (s || '').trim().toLowerCase();
   const nameNorm = norm(name);
   const worldNorm = norm(world);
@@ -831,6 +836,7 @@ function handleConfirmAdd() {
   if (starsCount)        setAllStars(newChar.gear, starsCount);
 
   chars.push(newChar);
+  if (typeof trackCharactersAdded === 'function') trackCharactersAdded(1);
   save();
   render();
   closeModal();
@@ -1284,11 +1290,27 @@ function handleConfirmAdd() {
       'Choose OK to replace your current list, or Cancel to merge (add to existing).'
     );
     const newChars = normalizeImportedChars(arr);
+    const limit = typeof MAX_CHARACTERS !== 'undefined' ? MAX_CHARACTERS : 999;
     if (replace) {
       chars.length = 0;
-      newChars.forEach(c => chars.push(c));
+      const toImport = newChars.slice(0, limit);
+      toImport.forEach(c => chars.push(c));
+      if (typeof trackCharactersAdded === 'function') trackCharactersAdded(toImport.length);
+      if (newChars.length > limit) {
+        alert('Character limit is ' + limit + '. Only the first ' + limit + ' characters from the backup were imported.');
+      }
     } else {
-      newChars.forEach(c => chars.push(c));
+      const slotsLeft = limit - chars.length;
+      if (slotsLeft <= 0) {
+        alert('Character limit (' + limit + ') reached. No characters from the backup were added.');
+      } else {
+        const toImport = newChars.slice(0, slotsLeft);
+        toImport.forEach(c => chars.push(c));
+        if (typeof trackCharactersAdded === 'function') trackCharactersAdded(toImport.length);
+        if (newChars.length > slotsLeft) {
+          alert('Character limit is ' + limit + '. Only ' + toImport.length + ' character(s) from the backup were added.');
+        }
+      }
     }
     if (Object.prototype.hasOwnProperty.call(payload, 'customGearPresets') && Array.isArray(payload.customGearPresets) && typeof saveCustomGearPresets === 'function') {
       saveCustomGearPresets(payload.customGearPresets);

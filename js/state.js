@@ -1,5 +1,17 @@
 'use strict';
 
+/** Maximum number of characters that can be registered. */
+const MAX_CHARACTERS = 60;
+
+function trackCharactersAdded(n) {
+  const count = Number(n || 0);
+  if (!count || count <= 0) return;
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    // GA4: use `value` so you can view totals by summing value.
+    window.gtag('event', 'characters_added', { value: count });
+  }
+}
+
 let chars       = [];    // array of character objects
 let dragSrcIdx  = null;
 let editingIdx  = null;  // null = adding new, number = editing existing
