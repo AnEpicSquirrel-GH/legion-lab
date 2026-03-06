@@ -440,6 +440,7 @@ const WEAPON_LABEL_ICON = (() => {
       if (!map[label]) map[label] = icon;
     }
   }
+  map['Liberated Kaiserium'] = 'Liberated_Kaiserium';  // Kaiser-only, before AbsoLab
   return map;
 })();
 
@@ -488,11 +489,11 @@ const WEAPON_LABEL_ICON = (() => {
 function getWeaponItemsForClass(cls) {
   const data = CLASS_WEAPON_DATA[cls];
   if (!data) return null;    // fall back to generic SLOT_ITEMS['Weapon']
-  // Zero: only Long Sword in weapon dropdown; Heavy is forced in Secondary
+  // Zero: only Long Sword in weapon dropdown; Heavy is forced in Secondary; Zero omits Frozen
   const weaponTypes = cls === 'Zero' ? ['Long Sword'] : data.weaponTypes;
   const seen   = new Set();
   const items  = [];
-  const TIER_ORDER = ['Frozen', 'Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
+  const TIER_ORDER = cls === 'Zero' ? ['Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'] : ['Frozen', 'Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
   const TIER_MAP   = { Frozen: 'Frozen', Pensalir: 'Pensalir', Fafnir: 'Fafnir', Sweetwater: 'Sweetwater',
                        Absolab: 'Absolab', Arcane: 'Arcane', Pitched: 'Pitched', Eternal: 'Eternal' };
   for (const tierKey of TIER_ORDER) {
@@ -503,6 +504,12 @@ function getWeaponItemsForClass(cls) {
       seen.add(entry.label);
       items.push({ label: entry.label, tier: TIER_MAP[tierKey] });
     }
+  }
+  // Kaiser only: Liberated Kaiserium before first Absolab
+  if (cls === 'Kaiser') {
+    const absIdx = items.findIndex(it => it.tier === 'Absolab');
+    if (absIdx >= 0) items.splice(absIdx, 0, { label: 'Liberated Kaiserium', tier: 'Fafnir' });
+    else items.push({ label: 'Liberated Kaiserium', tier: 'Fafnir' });
   }
   return items.length ? items : null;
 }

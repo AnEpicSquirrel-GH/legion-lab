@@ -35,8 +35,9 @@ const PRESET_SECONDARY_GENERIC = new Set(['Lv. 100 Secondary', 'Frozen Secondary
 /** Cygnus Knights (Jewel): Lv. 100 secondary is Ereve Brilliance. Mihile uses Soul Shield only. */
 const CYGNUS_KNIGHTS_JEWEL = ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker'];
 
-/** Explorer class → Lv. 100 secondary item label (named for uniformity). */
-const EXPLORER_LV100_SECONDARY = {
+/** Every class (except Dual Blade, Zero) → Lv. 100 secondary item label. Used for preset resolution and uniformity. */
+const LV100_SECONDARY_BY_CLASS = {
+  // Explorers
   'Hero': 'Virtues Medallion',
   'Paladin': 'Deimos Warrior Shield',
   'Dark Knight': 'Berserk Chain',
@@ -51,6 +52,184 @@ const EXPLORER_LV100_SECONDARY = {
   'Buccaneer': 'Wrist Armor',
   'Corsair': 'Falcon Eye',
   'Cannon Master': 'Center Fire Bomb',
+  // Cygnus
+  'Mihile': 'Soul Shield of Justice',
+  'Dawn Warrior': 'Ereve Brilliance',
+  'Blaze Wizard': 'Ereve Brilliance',
+  'Wind Archer': 'Ereve Brilliance',
+  'Night Walker': 'Ereve Brilliance',
+  'Thunder Breaker': 'Ereve Brilliance',
+  // Heroes
+  'Aran': 'Dragon Mass',
+  'Evan': 'Deimos Sage Shield',
+  'Luminous': 'Karma Orb',
+  'Mercedes': 'Golden Pearl Leaf',
+  'Phantom': 'Carte Finale',
+  'Shade (Eunwol)': 'Golden Fox Marble',
+  // Resistance
+  'Battle Mage': 'Deimos Sage Shield',
+  'Blaster': 'Masterwork Charges',
+  'Demon Slayer': 'Ruin Force Shield',
+  'Demon Avenger': 'Ruin Force Shield',
+  'Mechanic': 'Eternal Magnum',
+  'Wild Hunter': 'Wild Heron',
+  'Xenon': 'Octa Core Controller',
+  // Nova
+  'Kaiser': 'Nova Truth Essence',
+  'Angelic Buster': 'Eternal Magnum',
+  'Cadena': 'Warp Forge',
+  'Kain': 'D100 Custom Weapon Belt',
+  // Flora
+  'Adele': 'Noble Bladebinder',
+  'Illium': 'Glory Lucent Wings',
+  'Khali': 'Infinite Hex Seeker',
+  'Ark': 'Ultimate Path',
+  // Anima
+  'Hoyoung': 'Moonstone Fan Tassel',
+  'Lara': 'Radiant Four-Jade Ornament',
+  'Ren': 'Violet Imugi Gem',
+  // Sengoku
+  'Hayato': 'Fire Phoenix Blade',
+  'Kanna': 'Pandemonium Talisman',
+  // Jianghu
+  'Lynn': 'Golden Pearl Leaf',
+  'Mo Xuan': 'Boundless Brace Band',
+  // Friends World
+  'Kinesis': 'Queen Chess Piece',
+  // Shine
+  'Sia Astelle': 'Evolving Compass',
+};
+
+/** Every class (except Zero) → named Frozen secondary. Used for Frozen Set and preset resolution. */
+const FROZEN_SECONDARY_BY_CLASS = {
+  // Explorers
+  'Hero': 'Frozen Medallion',
+  'Paladin': 'Frozen Rosary',
+  'Dark Knight': 'Frozen Chain',
+  'Arch Mage (Fire, Poison)': 'Frozen Rusty Book (Epode)',
+  'Arch Mage (Ice, Lightning)': 'Frozen Rusty Book (Epode)',
+  'Bishop': 'Frozen White Gold Book (Epode)',
+  'Bowmaster': 'Frozen Feather',
+  'Marksman': 'Frozen True Shot',
+  'Pathfinder': 'Frozen Relic',
+  'Night Lord': 'Frozen Death Sender Charm',
+  'Shadower': 'Frozen Shadow',
+  'Dual Blade': 'Frozen Katara',
+  'Buccaneer': 'Frozen Wrist Armor',
+  'Corsair': 'Frozen Falcon Eye',
+  'Cannon Master': 'Frozen Center Fire Bomb',
+  // Cygnus
+  'Mihile': 'Frozen Soul Shield',
+  'Dawn Warrior': 'Frozen Ereve Brilliance',
+  'Blaze Wizard': 'Frozen Ereve Brilliance',
+  'Wind Archer': 'Frozen Ereve Brilliance',
+  'Night Walker': 'Frozen Ereve Brilliance',
+  'Thunder Breaker': 'Frozen Ereve Brilliance',
+  // Heroes
+  'Aran': 'Frozen Dragon Mass',
+  'Evan': "Frozen Dragon Master's Legacy",
+  'Luminous': 'Frozen Orb',
+  'Mercedes': 'Frozen Pearl Leaf',
+  'Phantom': 'Carte Frozen',
+  'Shade (Eunwol)': 'Frozen Fox Marble',
+  // Resistance
+  'Battle Mage': 'Frozen Maximizer Ball',
+  'Blaster': 'Frozen Charges',
+  'Demon Slayer': 'Frozen Force Shield',
+  'Demon Avenger': 'Frozen Force Shield',
+  'Mechanic': 'Frozen Magnum',
+  'Wild Hunter': 'Frozen Wild Heron',
+  'Xenon': 'Frozen Octa Core Controller',
+  // Nova
+  'Kaiser': 'Frozen Dragon Essence',
+  'Angelic Buster': 'Frozen Soul Ring',
+  'Cadena': 'Frozen Transmitter',
+  'Kain': 'Frozen D100 Weapon Belt',
+  // Flora
+  'Adele': 'Frozen Shiny Bladebinder',
+  'Illium': 'Frozen Lucent Wings',
+  'Khali': 'Frozen Infinite Hex Seeker',
+  'Ark': 'Frozen Path',
+  // Anima
+  'Hoyoung': 'Frozen Fan Tassel',
+  'Lara': 'Frozen Four-Jade Ornament',
+  'Ren': 'Frozen Imugi Gem',
+  // Sengoku
+  'Hayato': 'Frozen Blade',
+  'Kanna': 'Frozen Talisman',
+  // Jianghu
+  'Lynn': 'Frozen Pearl Leaf',
+  'Mo Xuan': 'Frozen Brace Band',
+  // Friends World
+  'Kinesis': 'Frozen Queen Chess Piece',
+  // Shine
+  'Sia Astelle': 'Frozen Compass',
+};
+
+/** Every class (except Zero) → named Princess No secondary. Used only for preset resolution; dropdown shows named items. */
+const PRINCESS_NO_SECONDARY_BY_CLASS = {
+  // Explorers
+  'Hero': "Princess No's Medal",
+  'Paladin': "Princess No's Rosary",
+  'Dark Knight': "Princess No's Flower Chain",
+  'Arch Mage (Fire, Poison)': "Princess No's Flaming Book",
+  'Arch Mage (Ice, Lightning)': "Princess No's Damp Book",
+  'Bishop': "Princess No's Golden Book",
+  'Bowmaster': "Princess No's Feather",
+  'Marksman': "Princess No's Wreath",
+  'Pathfinder': "Princess No's Immortal Relic",
+  'Night Lord': "Princess No's Charm",
+  'Shadower': "Princess No's Purple Shadow",
+  'Dual Blade': "Princess No's Poisoned Sword",
+  'Buccaneer': "Princess No's Skull Armor",
+  'Corsair': "Princess No's Falcon Eye",
+  'Cannon Master': "Princess No's Fire Bomb",
+  // Cygnus
+  'Mihile': "Princess No's Soul Shield",
+  'Dawn Warrior': "Princess No's Floral Jewel",
+  'Blaze Wizard': "Princess No's Floral Jewel",
+  'Wind Archer': "Princess No's Floral Jewel",
+  'Night Walker': "Princess No's Floral Jewel",
+  'Thunder Breaker': "Princess No's Floral Jewel",
+  // Heroes
+  'Aran': "Princess No's Flower Ballast",
+  'Evan': "Princess No's Dragon Legacy",
+  'Luminous': "Princess No's Soul Orb",
+  'Mercedes': "Princess No's Accursed Arrow",
+  'Phantom': "Princess No's Carte",
+  'Shade (Eunwol)': "Princess No's Fox Marble",
+  // Resistance
+  'Battle Mage': "Princess No's Accursed Marble",
+  'Blaster': "Princess No's Megaton Charges",
+  'Demon Slayer': "Princess No's Accursed Shield",
+  'Demon Avenger': "Princess No's Accursed Shield",
+  'Mechanic': "Princess No's Magnum",
+  'Wild Hunter': "Princess No's Arrowhead",
+  'Xenon': "Princess No's Controller",
+  // Nova
+  'Kaiser': "Princess No's Dragon Essence",
+  'Angelic Buster': "Princess No's Soul Ring",
+  'Cadena': "Princess No's Transmitter",
+  'Kain': "Princess No's Immortal Weapon Belt",
+  // Flora
+  'Adele': "Princess No's Immortal Bladebinder",
+  'Illium': "Princess No's Lucent Wings",
+  'Khali': "Princess No's Immortal Hex Seeker",
+  'Ark': "Princess No's Path",
+  // Anima
+  'Hoyoung': "Princess No's Fan Tassel",
+  'Lara': "Princess No's Immortal Four-Jade Ornament",
+  'Ren': "Princess No's Imugi Gem",
+  // Sengoku
+  'Hayato': "Princess No's Wakizashi",
+  'Kanna': "Princess No's Talisman",
+  // Jianghu
+  'Lynn': "Princess No's Leaf",
+  'Mo Xuan': "Princess No's Brace Band",
+  // Friends World
+  'Kinesis': "Princess No's Oriental King Chess Piece",
+  // Shine
+  'Sia Astelle': "Princess No's Compass",
 };
 
 /**
@@ -61,21 +240,17 @@ const EXPLORER_LV100_SECONDARY = {
  */
 function resolvePresetSecondary(charClass, genericLabel) {
   if (!PRESET_SECONDARY_GENERIC.has(genericLabel)) return null;
+  if (genericLabel === 'Frozen Secondary') {
+    if (charClass === 'Zero') return null;
+    return FROZEN_SECONDARY_BY_CLASS[charClass] || null;
+  }
   if (genericLabel === 'Lv. 100 Secondary') {
-    if (charClass === 'Mihile') return 'Soul Shield of Justice';
-    if (CYGNUS_KNIGHTS_JEWEL.includes(charClass)) return 'Ereve Brilliance';
-    if (EXPLORER_LV100_SECONDARY[charClass]) return EXPLORER_LV100_SECONDARY[charClass];
+    if (LV100_SECONDARY_BY_CLASS[charClass]) return LV100_SECONDARY_BY_CLASS[charClass];
     return genericLabel;
   }
-  if (genericLabel === 'Frozen Secondary') {
-    if (charClass === 'Dual Blade') return 'Frozen Katara';
-    if (charClass === 'Phantom') return 'Carte Frozen';
-    if (charClass === 'Kaiser') return 'Frozen Dragon Essence';
-    return 'Frozen Secondary';
-  }
   if (genericLabel === 'Princess No Secondary') {
-    if (charClass === 'Demon Slayer' || charClass === 'Demon Avenger') return "Princess No's Accursed Shield";
-    return 'Princess No Secondary';
+    if (charClass === 'Zero') return null;
+    return PRINCESS_NO_SECONDARY_BY_CLASS[charClass] || null;
   }
   return null;
 }
@@ -83,6 +258,8 @@ function resolvePresetSecondary(charClass, genericLabel) {
 function resolvePresetWeapon(charClass, genericWeaponLabel) {
   const tierKey = PRESET_WEAPON_TO_TIER[genericWeaponLabel];
   if (!tierKey || typeof CLASS_WEAPON_DATA === 'undefined' || typeof WEAPON_TIER_ITEMS === 'undefined') return null;
+  // Zero omits Frozen (no Frozen weapon or secondary)
+  if (charClass === 'Zero' && tierKey === 'Frozen') return null;
   const data = CLASS_WEAPON_DATA[charClass];
   if (!data || !data.weaponTypes || !data.weaponTypes.length) return null;
   const typesWithTier = data.weaponTypes.filter(wType => WEAPON_TIER_ITEMS[wType]?.[tierKey]);
@@ -170,10 +347,12 @@ function applyPreset(gear, presetName, charClass) {
     if (slot === 'Weapon' && PRESET_WEAPON_TO_TIER[label] && charClass) {
       const resolved = resolvePresetWeapon(charClass, label);
       if (resolved) label = resolved;
+      else if (label === 'Frozen Weapon') return; // Zero omits Frozen
     }
     if (slot === 'Secondary Weapon' && charClass && typeof resolvePresetSecondary === 'function') {
       const resolved = resolvePresetSecondary(charClass, label);
       if (resolved) label = resolved;
+      else if (label === 'Princess No Secondary' || label === 'Frozen Secondary') return; // Zero: no generic, skip slot; Zero block sets heavy
     }
     if (charClass && typeof resolvePresetGearSlot === 'function') {
       const resolved = resolvePresetGearSlot(slot, label, charClass);

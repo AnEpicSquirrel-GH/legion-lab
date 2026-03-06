@@ -664,6 +664,19 @@ function buildSlot(char, charIdx, slot, section) {
       if (typeof save === 'function') save();
     }
   }
+  // Resolve legacy generic Frozen / Princess No secondary to class-specific named item (Zero → set None)
+  if (slot === 'Secondary Weapon' && typeof resolvePresetSecondary === 'function') {
+    const resolved = resolvePresetSecondary(canonicalClass, currentItem);
+    if (resolved && resolved !== currentItem) {
+      currentItem = resolved;
+      chars[charIdx].gear[slot] = { ...chars[charIdx].gear[slot], item: resolved };
+      if (typeof save === 'function') save();
+    } else if (currentItem === 'Frozen Secondary' || currentItem === 'Princess No Secondary') {
+      currentItem = 'None';
+      chars[charIdx].gear[slot] = { ...chars[charIdx].gear[slot], item: 'None' };
+      if (typeof save === 'function') save();
+    }
+  }
 
   let items;
   let effectiveItem  = currentItem;
