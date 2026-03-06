@@ -68,7 +68,7 @@ const SETS = {
   Arcane:     { name: 'Arcane',      color: '#9B59B6', level: 200,  abbr: 'ARC' },
   Pitched:    { name: 'Pitched',     color: '#22C55E', level: 200,  abbr: 'PCH' },  // Pitched Boss set (incl. Genesis Weapon)
   Brilliant:  { name: 'Brilliant',   color: '#84CC16', level: 200,  abbr: 'BRL' },  // Brilliant Boss set
-  Frozen:     { name: 'Frozen',      color: '#6B9EBE', level: 130,  abbr: 'FRZ' },  // Frozen set (same tier color as Pensalir)
+  Frozen:     { name: 'Frozen',      color: '#DCE8F4', level: 130,  abbr: 'FRZ' },  // Frozen set (white-blue, mostly white)
   Eternal:    { name: 'Eternal',     color: '#FFD700', level: 250,  abbr: 'ETN' },
   Gollux:     { name: 'Gollux',      color: '#C2622D', level: 140,  abbr: 'GOL' },  // Superior Gollux only
   OzRing:     { name: 'Oz Ring',     color: '#3B82F6', level: 140,  abbr: 'OZR' },  // Oz Tower rings (level 1–6)
@@ -108,6 +108,7 @@ const _PENDANT_ITEMS = [
 const SLOT_ITEMS = {
   'Weapon': [
     { label: 'Pensalir Weapon',              tier: 'Pensalir' },
+    { label: 'Frozen Weapon',                tier: 'Frozen'   },
     { label: 'CRA Weapon',                   tier: 'Fafnir'   },
     { label: 'Absolab Weapon',               tier: 'Absolab'  },
     { label: 'Arcane Umbra Weapon',          tier: 'Arcane'   },
@@ -184,8 +185,8 @@ const SLOT_ITEMS = {
     { label: 'Dreamy Belt',                  tier: 'Pitched'    },
   ],
   'Secondary Weapon': [
-    // ── Generic Lv. 100 (Heroes, Resistance, etc.; Explorers & Cygnus use named secondaries) ──
-    { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade', 'Hero', 'Paladin', 'Dark Knight', 'Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Bowmaster', 'Marksman', 'Pathfinder', 'Night Lord', 'Shadower', 'Buccaneer', 'Corsair', 'Cannon Master', 'Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker', 'Mihile'] },
+    // ── Generic Lv. 100 (only for classes with no dedicated named Lv. 100 in this list) ──
+    { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade', 'Hero', 'Paladin', 'Dark Knight', 'Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Bowmaster', 'Marksman', 'Pathfinder', 'Night Lord', 'Shadower', 'Buccaneer', 'Corsair', 'Cannon Master', 'Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker', 'Mihile', 'Adele', 'Evan', 'Battle Mage'] },
     // ── Explorer Lv. 100 (named for uniformity) ──
     { label: 'Virtues Medallion',           tier: 'Pensalir',  cls: ['Hero'] },
     { label: 'Deimos Warrior Shield',        tier: 'Pensalir',  cls: ['Paladin'], hasStars: true },
@@ -462,6 +463,17 @@ const GEAR_PRESETS = [
     },
   },
   {
+    name: 'Frozen Set',
+    gear: {
+      'Hat':               'Frozen Hat',
+      'Top/Overall':       'Frozen Overall',
+      'Cape':              'Frozen Cape',
+      'Weapon':            'Frozen Weapon',
+      'Secondary Weapon':  'Frozen Secondary',
+      'Emblem':            '__GOLD_EMBLEM__',
+    },
+  },
+  {
     name: 'CRA / Abso Set',
     gear: {
       'Hat':               'CRA Hat',
@@ -537,7 +549,7 @@ function presetTierRank(tier) {
 }
 /** Weapon label → tier for sorting preset weapon list. */
 const PRESET_WEAPON_TIER = {
-  'Pensalir Weapon': 'Pensalir', 'CRA Weapon': 'Fafnir', 'Absolab Weapon': 'Absolab',
+  'Pensalir Weapon': 'Pensalir', 'Frozen Weapon': 'Frozen', 'CRA Weapon': 'Fafnir', 'Absolab Weapon': 'Absolab',
   'Arcane Umbra Weapon': 'Arcane', 'Genesis Weapon': 'Pitched', 'Destiny Weapon': 'Eternal',
 };
 
@@ -727,6 +739,7 @@ const SET_EFFECTS = {
     2: ['STR/DEX/INT/LUK +15', 'Max HP/MP +800'],
     3: ['Max HP/MP +8%', 'Attack/Magic Attack +40'],
     4: ['Boss Damage +15%'],
+    5: ['All Stats +8', 'Attack/Magic Attack +20', 'Ignore Enemy DEF +30%'],
   },
   Gollux: {
     2: ['STR/DEX/INT/LUK +25', 'Max HP/MP +1,000'],
@@ -762,6 +775,24 @@ const LUCKY_ITEMS = { 'Genesis Weapon': 'Weapon', 'Destiny Weapon': 'Weapon', 'C
 // ── Predefined named sets (Sets column uses these; CRA is class-specific) ──
 // Items: slot → Set of item labels that count. Weapon set filled by weapons.js after load.
 const GEAR_SETS = {
+  Frozen: {
+    name: 'Frozen Set',
+    shortName: 'Frozen',
+    color: '#DCE8F4',
+    slots: ['Hat', 'Top/Overall', 'Cape', 'Weapon', 'Secondary Weapon'],
+    items: (() => {
+      const out = {
+        'Hat': new Set(['Frozen Hat']),
+        'Top/Overall': new Set(['Frozen Overall']),
+        'Cape': new Set(['Frozen Cape']),
+        'Weapon': [], // filled by weapons.js
+        'Secondary Weapon': new Set(),
+      };
+      (SLOT_ITEMS['Secondary Weapon'] || []).forEach(it => { if (it.tier === 'Frozen') out['Secondary Weapon'].add(it.label); });
+      return out;
+    })(),
+    effects: SET_EFFECTS.Frozen,
+  },
   CRA: {
     name: 'Root Abyss Set',
     shortName: 'CRA',

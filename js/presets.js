@@ -3,6 +3,7 @@
 // Generic preset weapon labels → WEAPON_TIER_ITEMS tier key
 const PRESET_WEAPON_TO_TIER = {
   'Pensalir Weapon':    'Pensalir',
+  'Frozen Weapon':       'Frozen',
   'Absolab Weapon':    'Absolab',
   'Arcane Umbra Weapon': 'Arcane',
   'Genesis Weapon':    'Pitched',

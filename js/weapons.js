@@ -419,6 +419,15 @@ const WEAPON_TIER_ITEMS = {
   },
 };
 
+// Frozen set weapons: same icons as Pensalir/Utgard, distinct labels for tier/colour
+;(() => {
+  Object.entries(WEAPON_TIER_ITEMS).forEach(([wType, tiers]) => {
+    if (tiers.Pensalir) {
+      tiers.Frozen = { label: 'Frozen ' + wType.replace(/\s+/g, ' '), icon: tiers.Pensalir.icon };
+    }
+  });
+})();
+
 /* ────────────────────────────────────────────────────────────────
    WEAPON ICON MAP  (label → icon stem for Weapon slot icon lookup)
    Auto-populated from WEAPON_TIER_ITEMS at startup below.
@@ -436,7 +445,7 @@ const WEAPON_LABEL_ICON = (() => {
 
 // Register every class-specific weapon label in ITEM_TIER so tier colours and icon paths work
 ;(() => {
-  const tierKeyMap = { Pensalir:'Pensalir', Fafnir:'Fafnir', Sweetwater:'Sweetwater',
+  const tierKeyMap = { Pensalir:'Pensalir', Frozen:'Frozen', Fafnir:'Fafnir', Sweetwater:'Sweetwater',
                        Absolab:'Absolab', Arcane:'Arcane', Pitched:'Pitched', Eternal:'Eternal' };
   Object.values(WEAPON_TIER_ITEMS).forEach(tiers =>
     Object.entries(tiers).forEach(([k, { label }]) => {
@@ -448,18 +457,22 @@ const WEAPON_LABEL_ICON = (() => {
 // Fill weapon lists for GEAR_SETS so the Sets column counts set pieces correctly
 ;(() => {
   if (typeof GEAR_SETS === 'undefined') return;
-  const tierToSet = { Fafnir: 'CRA', Arcane: 'Arcane', Absolab: 'Absolab', Eternal: 'Eternal' };
   const fafnirLabels = ['CRA Weapon'];
   const arcaneLabels = [];
   const absolabLabels = [];
   const eternalLabels = [];
+  const frozenLabels = ['Frozen Weapon'];
   Object.values(WEAPON_TIER_ITEMS).forEach(tiers => {
     if (tiers.Fafnir) fafnirLabels.push(tiers.Fafnir.label);
+    if (tiers.Frozen) frozenLabels.push(tiers.Frozen.label);
     if (tiers.Arcane) arcaneLabels.push(tiers.Arcane.label);
     if (tiers.Absolab) absolabLabels.push(tiers.Absolab.label);
     if (tiers.Eternal) eternalLabels.push(tiers.Eternal.label);
   });
   if (GEAR_SETS.CRA?.items) GEAR_SETS.CRA.items.Weapon = new Set(fafnirLabels);
+  if (GEAR_SETS.Frozen?.items && Array.isArray(GEAR_SETS.Frozen.items.Weapon)) {
+    GEAR_SETS.Frozen.items.Weapon = new Set(frozenLabels);
+  }
   if (GEAR_SETS.Arcane?.items && Array.isArray(GEAR_SETS.Arcane.items.Weapon)) {
     GEAR_SETS.Arcane.items.Weapon = new Set(['Arcane Umbra Weapon', ...arcaneLabels]);
   }
@@ -479,8 +492,8 @@ function getWeaponItemsForClass(cls) {
   const weaponTypes = cls === 'Zero' ? ['Long Sword'] : data.weaponTypes;
   const seen   = new Set();
   const items  = [];
-  const TIER_ORDER = ['Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
-  const TIER_MAP   = { Pensalir: 'Pensalir', Fafnir: 'Fafnir', Sweetwater: 'Sweetwater',
+  const TIER_ORDER = ['Frozen', 'Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
+  const TIER_MAP   = { Frozen: 'Frozen', Pensalir: 'Pensalir', Fafnir: 'Fafnir', Sweetwater: 'Sweetwater',
                        Absolab: 'Absolab', Arcane: 'Arcane', Pitched: 'Pitched', Eternal: 'Eternal' };
   for (const tierKey of TIER_ORDER) {
     for (const wType of weaponTypes) {
