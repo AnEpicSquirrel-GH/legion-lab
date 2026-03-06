@@ -12,6 +12,7 @@
   --text-muted:  #9a9a9a;
   --accent:      #5b9bd5;
   --accent-h:    #4a87be;
+  --accent-soft: #7eb8e8;  /* softer blue for links on dark (e.g. sprite URL instruction) */
   --danger:      #c0392b;
   --success:     #27ae60;
 
@@ -1021,6 +1022,9 @@ body {
   font-family: inherit;
 }
 .form-input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+
+.sprite-instruction-link { color: var(--accent-soft); text-decoration: none; }
+.sprite-instruction-link:hover { color: var(--accent); text-decoration: underline; }
 
 /* Gear preset custom dropdown: same as Class picker (button + panel, ▼ chevron) */
 .gear-preset-dropdown-wrap {
