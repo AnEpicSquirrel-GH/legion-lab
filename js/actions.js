@@ -12,6 +12,7 @@ function toggleChar(idx) {
     const btn = section.querySelector('.toggle-btn');
     if (btn) btn.title = chars[idx].collapsed ? 'Expand' : 'Collapse';
   }
+  if (typeof updateToggleBtn === 'function') updateToggleBtn();
 }
 
 function toggleAll() {
@@ -25,6 +26,7 @@ function toggleAll() {
     const btn = section.querySelector('.toggle-btn');
     if (btn) btn.title = chars[idx].collapsed ? 'Expand' : 'Collapse';
   });
+  if (typeof updateToggleBtn === 'function') updateToggleBtn();
 }
 
 function deleteChar(idx) {

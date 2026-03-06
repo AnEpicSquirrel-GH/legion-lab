@@ -986,3 +986,4 @@ function updateToggleBtn() {
   const anyExpanded = chars.some(c => !c.collapsed);
   btn.textContent = anyExpanded ? 'Collapse All' : 'Expand All';
 }
+if (typeof window !== 'undefined') window.updateToggleBtn = updateToggleBtn;

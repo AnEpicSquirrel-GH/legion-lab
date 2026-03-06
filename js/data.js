@@ -184,18 +184,29 @@ const SLOT_ITEMS = {
     { label: 'Dreamy Belt',                  tier: 'Pitched'    },
   ],
   'Secondary Weapon': [
-    // ── All classes (except Dual Blade who use Kataras) ──
-    { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade'] },
-    // ── Explorer Warriors ──
-    { label: 'Deimos Warrior Shield',        tier: 'Pensalir',  cls: ['Hero', 'Paladin', 'Dawn Warrior'], hasStars: true },
-    // ── Explorer + Other Mages ──
-    { label: 'Deimos Sage Shield',           tier: 'Pensalir',  cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Blaze Wizard', 'Evan', 'Battle Mage'], hasStars: true },
-    // ── All Cygnus Knights ──
-    { label: 'Ereve Brilliance',             tier: 'Pensalir',  cls: ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker', 'Mihile'] },
+    // ── Generic Lv. 100 (Heroes, Resistance, etc.; Explorers & Cygnus use named secondaries) ──
+    { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade', 'Hero', 'Paladin', 'Dark Knight', 'Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Bowmaster', 'Marksman', 'Pathfinder', 'Night Lord', 'Shadower', 'Buccaneer', 'Corsair', 'Cannon Master', 'Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker', 'Mihile'] },
+    // ── Explorer Lv. 100 (named for uniformity) ──
+    { label: 'Virtues Medallion',           tier: 'Pensalir',  cls: ['Hero'] },
+    { label: 'Deimos Warrior Shield',        tier: 'Pensalir',  cls: ['Paladin'], hasStars: true },
+    { label: 'Berserk Chain',                tier: 'Pensalir',  cls: ['Dark Knight'] },
+    { label: 'Rusty Book (Epode)',           tier: 'Pensalir',  cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)'] },
+    { label: 'White Gold Book (Epode)',      tier: 'Pensalir',  cls: ['Bishop'] },
+    { label: 'Blasted Feather',              tier: 'Pensalir',  cls: ['Bowmaster'] },
+    { label: 'True Shot',                    tier: 'Pensalir',  cls: ['Marksman'] },
+    { label: 'Perfect Relic',                tier: 'Pensalir',  cls: ['Pathfinder'] },
+    { label: 'Death Sender Charm',           tier: 'Pensalir',  cls: ['Night Lord'] },
+    { label: 'Deimos Shadow Shield',         tier: 'Pensalir',  cls: ['Shadower'], hasStars: true },
+    { label: 'Wrist Armor',                  tier: 'Pensalir',  cls: ['Buccaneer'] },
+    { label: 'Falcon Eye',                   tier: 'Pensalir',  cls: ['Corsair'] },
+    { label: 'Center Fire Bomb',             tier: 'Pensalir',  cls: ['Cannon Master'] },
+    // ── Other Mages (non-Explorer) ──
+    { label: 'Deimos Sage Shield',           tier: 'Pensalir',  cls: ['Blaze Wizard', 'Evan', 'Battle Mage'], hasStars: true },
+    // ── Cygnus Knights: Jewel = Ereve Brilliance; Mihile only uses Soul Shield ──
+    { label: 'Ereve Brilliance',             tier: 'Pensalir',  cls: ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker'] },
+    { label: 'Soul Shield of Justice',       tier: 'Pensalir',  cls: ['Mihile'], hasStars: true },
     // ── Adele (Bladebinder) ──
     { label: 'Noble Bladebinder',            tier: 'Pensalir',  cls: ['Adele'] },
-    // ── Explorer Thieves ──
-    { label: 'Deimos Shadow Shield',         tier: 'Pensalir',  cls: ['Shadower'], hasStars: true },
     { label: 'Frozen Secondary',             tier: 'Frozen',    excl: ['Dual Blade'] },
     { label: 'Princess No Secondary',        tier: 'PrincessNo', excl: ['Dual Blade'] },
     // ── Demon Aegis: Princess No (Lv 140) vs Ruin Force (Damien, Lv 100) ──

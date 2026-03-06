@@ -31,6 +31,27 @@ const WEAPON_TYPE_PRIORITY = [
 /** Generic preset secondary labels that resolve to class-specific item when applying. */
 const PRESET_SECONDARY_GENERIC = new Set(['Lv. 100 Secondary', 'Frozen Secondary', 'Princess No Secondary']);
 
+/** Cygnus Knights (Jewel): Lv. 100 secondary is Ereve Brilliance. Mihile uses Soul Shield only. */
+const CYGNUS_KNIGHTS_JEWEL = ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker'];
+
+/** Explorer class → Lv. 100 secondary item label (named for uniformity). */
+const EXPLORER_LV100_SECONDARY = {
+  'Hero': 'Virtues Medallion',
+  'Paladin': 'Deimos Warrior Shield',
+  'Dark Knight': 'Berserk Chain',
+  'Arch Mage (Fire, Poison)': 'Rusty Book (Epode)',
+  'Arch Mage (Ice, Lightning)': 'Rusty Book (Epode)',
+  'Bishop': 'White Gold Book (Epode)',
+  'Bowmaster': 'Blasted Feather',
+  'Marksman': 'True Shot',
+  'Pathfinder': 'Perfect Relic',
+  'Night Lord': 'Death Sender Charm',
+  'Shadower': 'Deimos Shadow Shield',
+  'Buccaneer': 'Wrist Armor',
+  'Corsair': 'Falcon Eye',
+  'Cannon Master': 'Center Fire Bomb',
+};
+
 /**
  * Resolve a generic preset secondary (Lv. 100, Frozen, Princess No) to the class-specific item.
  * @param {string} charClass
@@ -39,7 +60,12 @@ const PRESET_SECONDARY_GENERIC = new Set(['Lv. 100 Secondary', 'Frozen Secondary
  */
 function resolvePresetSecondary(charClass, genericLabel) {
   if (!PRESET_SECONDARY_GENERIC.has(genericLabel)) return null;
-  if (genericLabel === 'Lv. 100 Secondary') return genericLabel;
+  if (genericLabel === 'Lv. 100 Secondary') {
+    if (charClass === 'Mihile') return 'Soul Shield of Justice';
+    if (CYGNUS_KNIGHTS_JEWEL.includes(charClass)) return 'Ereve Brilliance';
+    if (EXPLORER_LV100_SECONDARY[charClass]) return EXPLORER_LV100_SECONDARY[charClass];
+    return genericLabel;
+  }
   if (genericLabel === 'Frozen Secondary') {
     if (charClass === 'Dual Blade') return 'Frozen Katara';
     if (charClass === 'Phantom') return 'Carte Frozen';
@@ -159,10 +185,11 @@ function applyPreset(gear, presetName, charClass) {
   if (topLabel && ITEM_META[topLabel]?.isOverall) {
     gear['Bottom'] = { item: 'None', stars: 0 };
   }
-  // Zero: Secondary is always the Heavy Sword that pairs with the chosen Long
-  if (charClass === 'Zero' && typeof getHeavySwordForLong !== 'undefined' && gear['Weapon']?.item) {
-    const heavy = getHeavySwordForLong(gear['Weapon'].item);
-    if (heavy) gear['Secondary Weapon'] = { item: heavy, stars: 0 };
+  // Zero: Secondary is the Heavy that pairs with the Long, or Utgard Heavy when no weapon/default needed
+  if (charClass === 'Zero' && typeof getHeavySwordForLong !== 'undefined') {
+    const weaponItem = gear['Weapon']?.item;
+    const heavy = weaponItem && weaponItem !== 'None' ? getHeavySwordForLong(weaponItem) : null;
+    gear['Secondary Weapon'] = { item: heavy || 'Utgard Heavy Sword', stars: 0 };
   }
 }
 

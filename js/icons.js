@@ -48,7 +48,9 @@ const ITEM_ICON_OVERRIDE = {
   'Deimos Shadow Shield':    'Deimos_Shadow_Shield',
   'Ruin Force Shield':       'Ruin_Force_Shield',
   'Ereve Brilliance':        'Ereve_Brilliance',
+  'Soul Shield of Justice': 'Soul_Shield_of_Justice',
   'Noble Bladebinder':       'Noble_Bladebinder',
+  'White Gold Book (Epode)': 'Frozen_White_Gold_Book',  // Bishop Lv. 100; no non-Frozen asset
   // Emblems — Silver / Lesser tier
   'Silver Maple Leaf Emblem':          'Silver_Maple_Leaf_Emblem',
   'Silver Cygnus Emblem':              'Silver_Cygnus_Emblem',
@@ -137,7 +139,7 @@ const SECONDARY_ICON_MAP = {
   // Explorer Mages (each explicit so Bishop never falls back to Mage → Flaming Book)
   'Lv. 100 Secondary|Arch Mage (Fire, Poison)':   'Rusty_Book_(Epode)',  // F/P: Rusty Book (Epode)
   'Lv. 100 Secondary|Arch Mage (Ice, Lightning)': 'Rusty_Book_(Epode)',  // I/L: Metallic Blue in-game; same icon asset
-  'Lv. 100 Secondary|Bishop':                     'Rusty_Book_(Epode)',  // Bishop: Magic Book, not Rosary
+  'Lv. 100 Secondary|Bishop':                     'Frozen_White_Gold_Book', // Bishop: White Gold Book (Epode) Lv 100; no non-Frozen asset, use Frozen_White_Gold_Book
   // Heroes (each explicit: Aran/Evan/Shade ≠ Warrior/Mage/Pirate fallback)
   'Lv. 100 Secondary|Aran':     'Dragon_Mass',          // Mass (Polearm)
   'Lv. 100 Secondary|Evan':    "Dragon_Master's_Legacy", // Document (Staff/Wand)
@@ -153,7 +155,7 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Battle Mage': 'Maximizer_Ball',   // Magic Marble
   'Lv. 100 Secondary|Wild Hunter': 'Wild_Heron',       // Arrowhead
   'Lv. 100 Secondary|Blaster':    'Masterwork_Charges',
-  'Lv. 100 Secondary|Mechanic':   'Octa_Core_Controller',
+  'Lv. 100 Secondary|Mechanic':   'Eternal_Magnum',   // Magnum (not Controller)
   // Explorer Thieves (Night Lord = Charm; Shadower = Dagger Scabbard)
   'Lv. 100 Secondary|Night Lord': 'Death_Sender_Charm',   // Charm (Lv 100)
   'Lv. 100 Secondary|Shadower':   'Slashing_Shadow',       // Dagger Scabbard (Lv 100)
@@ -161,7 +163,7 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Demon Slayer':  'Force_Shield_of_Extremes',
   'Lv. 100 Secondary|Demon Avenger': 'Force_Shield_of_Extremes',
   // Nova / Flora / Anima
-  'Lv. 100 Secondary|Kaiser':        'Dragon_Mass',
+  'Lv. 100 Secondary|Kaiser':        'Frozen_Dragon_Essence', // Dragon Essence (not Mass); no Lv.100 Dragon Essence asset
   'Lv. 100 Secondary|Angelic Buster':'Eternal_Magnum',
   'Lv. 100 Secondary|Adele':         'Noble_Bladebinder',
   'Lv. 100 Secondary|Illium':        'Glory_Lucent_Wings',   // Lucent Wings
@@ -193,6 +195,23 @@ const SECONDARY_ICON_MAP = {
   "Princess No's Accursed Shield|Demon Slayer":  "Princess_No's_Accursed_Shield",
   "Princess No's Accursed Shield|Demon Avenger": "Princess_No's_Accursed_Shield",
 
+  // ── Named Lv. 100 secondaries (Explorer + Cygnus uniformity; Mihile = Soul Shield only) ─────────
+  'Soul Shield of Justice|Mihile': 'Soul_Shield_of_Justice',
+  'Virtues Medallion|Hero': 'Virtues_Medallion',
+  'Deimos Warrior Shield|Paladin': 'Deimos_Warrior_Shield',
+  'Berserk Chain|Dark Knight': 'Berserk_Chain',
+  'Rusty Book (Epode)|Arch Mage (Fire, Poison)': 'Rusty_Book_(Epode)',
+  'Rusty Book (Epode)|Arch Mage (Ice, Lightning)': 'Rusty_Book_(Epode)',
+  'White Gold Book (Epode)|Bishop': 'Frozen_White_Gold_Book',
+  'Blasted Feather|Bowmaster': 'Blasted_Feather',
+  'True Shot|Marksman': 'True_Shot',
+  'Perfect Relic|Pathfinder': 'Perfect_Relic',
+  'Death Sender Charm|Night Lord': 'Death_Sender_Charm',
+  'Deimos Shadow Shield|Shadower': 'Slashing_Shadow',
+  'Wrist Armor|Buccaneer': 'Wrist_Armor',
+  'Falcon Eye|Corsair': 'Falcon_Eye',
+  'Center Fire Bomb|Cannon Master': 'Center_Fire_Bomb',
+
   // ── Frozen Secondary (Event tab; Frozen naming, no Eqp_ prefix) ────
   'Frozen Secondary|Warrior':                    'Frozen_Force_Shield',
   'Frozen Secondary|Mage':                       'Frozen_Metallic_Book',
@@ -201,7 +220,7 @@ const SECONDARY_ICON_MAP = {
   'Frozen Secondary|Pirate':                     'Frozen_Maximizer_Ball',
   'Frozen Secondary|Xenon':                       'Frozen_Octo_Core_Controller',
   // Explorer Warriors
-  'Frozen Secondary|Hero':                       'Frozen_Medal',
+  'Frozen Secondary|Hero':                       'Frozen_Medal',    // Medallion (Frozen_ prefix; add Frozen_Medal.png if missing)
   'Frozen Secondary|Paladin':                    'Frozen_Rosary',
   'Frozen Secondary|Dark Knight':                'Frozen_Chain',
   // Explorer Mages — Magic Books class-specific (FP / IL / Bishop)
@@ -239,7 +258,7 @@ const SECONDARY_ICON_MAP = {
   'Frozen Secondary|Blaster':                     'Frozen_Charges',
   'Frozen Secondary|Battle Mage':                'Frozen_Maximizer_Ball',
   'Frozen Secondary|Wild Hunter':                'Frozen_Wild_Heron',
-  'Frozen Secondary|Mechanic':                   'Frozen_Octo_Core_Controller',
+  'Frozen Secondary|Mechanic':                   'Frozen_Magnum',   // Magnum (not Controller)
   'Frozen Secondary|Kinesis':                    'Frozen_Queen_Chess_Piece',
   // Nova
   'Frozen Secondary|Kaiser':                     'Frozen_Dragon_Essence',
@@ -258,7 +277,7 @@ const SECONDARY_ICON_MAP = {
   'Frozen Secondary|Hayato':                     'Frozen_Blade',
   'Frozen Secondary|Kanna':                      'Frozen_Talisman',
   'Frozen Secondary|Sia Astelle':                'Frozen_Compass',
-  'Frozen Secondary|Lynn':                       'Frozen_Leaf',
+  'Frozen Secondary|Lynn':                       'Frozen_Pearl_Leaf', // Leaf; no Frozen_Leaf.png asset, use Frozen_Pearl_Leaf
   'Frozen Secondary|Ren':                        'Frozen_Imugi_Gem',
 
   // ── Princess No Secondary (wiki-aligned per class) ──────────────────
@@ -307,7 +326,7 @@ const SECONDARY_ICON_MAP = {
   "Princess No Secondary|Blaster":                    "Princess_No's_Megaton_Charges",
   "Princess No Secondary|Battle Mage":               "Princess_No's_Accursed_Marble",
   "Princess No Secondary|Wild Hunter":                "Princess_No's_Arrowhead",
-  "Princess No Secondary|Mechanic":                  "Princess_No's_Controller",
+  "Princess No Secondary|Mechanic":                  "Princess_No's_Magnum",   // Magnum (not Controller)
   "Princess No Secondary|Kinesis":                   "Princess_No's_Oriental_King_Chess_Piece",
   // Nova
   "Princess No Secondary|Kaiser":                     "Princess_No's_Dragon_Essence",
@@ -329,17 +348,17 @@ const SECONDARY_ICON_MAP = {
   "Princess No Secondary|Lynn":                      "Princess_No's_Leaf",
   "Princess No Secondary|Ren":                       "Princess_No's_Imugi_Gem",
 
-  // ── Eternal Secondary ──────────────────────────────────────────────
-  'Eternal Secondary|Warrior':                    'Onyx_Maple_Force_Shield',
-  'Eternal Secondary|Mage':                       'Onyx_Maple_Talisman',
-  'Eternal Secondary|Luminous':                   'Onyx_Maple_Orb',
-  'Eternal Secondary|Evan':                       "Onyx_Maple_Dragon_Master's_Legacy",
-  'Eternal Secondary|Kanna':                      'Onyx_Maple_Talisman',
-  'Eternal Secondary|Blaze Wizard':               'Onyx_Maple_Ereve_Brilliance',
-  'Eternal Secondary|Archer':                     'Onyx_Maple_Falcon_Eye',
-  'Eternal Secondary|Thief':                      'Onyx_Maple_Death_Sender_Charm',
-  'Eternal Secondary|Pirate':                     'Onyx_Maple_Magnum',
-  'Eternal Secondary|Xenon':                      'Onyx_Maple_Octo_Core_Controller',   // Controller (wiki)
+  // ── Legacy "Eternal Secondary" label: same as Frozen Secondary (Frozen_ icons only) ──
+  'Eternal Secondary|Warrior':                    'Frozen_Force_Shield',
+  'Eternal Secondary|Mage':                       'Frozen_Talisman',
+  'Eternal Secondary|Luminous':                   'Frozen_Orb',
+  'Eternal Secondary|Evan':                       "Frozen_Dragon_Master's_Legacy",
+  'Eternal Secondary|Kanna':                      'Frozen_Talisman',
+  'Eternal Secondary|Blaze Wizard':               'Frozen_Ereve_Brilliance',
+  'Eternal Secondary|Archer':                     'Frozen_Falcon_Eye',
+  'Eternal Secondary|Thief':                      'Frozen_Death_Sender_Charm',
+  'Eternal Secondary|Pirate':                     'Frozen_Magnum',
+  'Eternal Secondary|Xenon':                      'Frozen_Octo_Core_Controller',
 };
 
 /** Converts an item label to a snake_case filename base (no extension). */

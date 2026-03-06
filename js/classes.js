@@ -245,7 +245,7 @@ const CLASS_WEAPON_DATA = {
   'Mechanic': {
     faction:     'Resistance',
     weaponTypes: ['Gun'],
-    secondary:   'Controller',
+    secondary:   'Magnum',   // Mechanic = Magnum; Xenon = Controller
   },
   'Xenon': {
     faction:     'Resistance',

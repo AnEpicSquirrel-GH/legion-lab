@@ -686,7 +686,8 @@ document.getElementById('toggleBgBtn').addEventListener('click', () => {
       if (!char) return;
       const itemLabel = char.gear[slotName]?.item ?? 'None';
       const setName   = ITEM_TIER[itemLabel] ?? 'None';
-      renderGearIcon(wrap, setName, slotName, itemLabel, char.cls);
+      const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[char.cls]) || char.cls;
+      renderGearIcon(wrap, setName, slotName, itemLabel, canonicalClass);
     }
   });
 });

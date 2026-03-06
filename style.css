@@ -131,6 +131,7 @@ body {
   line-height: 1;
 }
 .btn-icon:hover { color: var(--text); background: var(--bg-hover); }
+#toggleAllBtn { min-width: 9.5em; }
 
 /* ── Character list ───────────────────────────────────────── */
 #char-list {
@@ -262,9 +263,9 @@ body {
   flex-direction: column;
   justify-content: center;
   padding: 8px 10px;
-  min-width: 135px;
-  width: max-content;
-  max-width: 240px;
+  min-width: 155px;
+  width: 155px;
+  max-width: 155px;
   background: var(--bg-card);
   border-right: 1px solid var(--border);
   flex-shrink: 0;
@@ -592,6 +593,7 @@ body {
 }
 .gear-row {
   display: flex;
+  width: max-content;
   overflow-x: auto;
   align-items: stretch;
   border-top: 1px solid var(--border);
@@ -629,7 +631,7 @@ body {
 }
 .summary-row {
   display: flex;
-  flex: 1;
+  width: max-content;
   overflow-x: auto;
   align-items: stretch;
   border-top: 1px solid var(--border);
