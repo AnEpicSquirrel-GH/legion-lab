@@ -49,6 +49,10 @@ body {
   align-self: flex-start;
   display: block;
 }
+#siteHeaderIcon {
+  height: 129px !important;
+  width: 134px !important;
+}
 .site-header .site-title {
   margin: 0;
   align-self: flex-start;
@@ -165,7 +169,8 @@ body {
 
 /* collapsed: hide full gear rows, show compact summary */
 .char-section.collapsed .gear-rows      { display: none; }
-.char-section.collapsed .gear-summary   { display: flex; }
+.char-section.collapsed .gear-summary   { display: flex; flex: 1; min-height: 0; }
+.char-section.collapsed .gear-summary .summary-row { flex: 1; min-height: 0; }
 .char-section.collapsed .toggle-btn     { transform: rotate(-90deg); }
 /* collapsed: strip info cell to name + class (with block icon) only */
 .char-section.collapsed .char-level       { display: none; }
@@ -534,6 +539,8 @@ body {
   display: none;
   position: fixed;
   z-index: 10000;
+  flex-direction: row;
+  flex-wrap: nowrap;
   background: var(--bg-card);
   border: 1px solid var(--border-l);
   border-radius: 6px;
@@ -545,9 +552,8 @@ body {
   pointer-events: none;
 }
 .sets-tooltip .sets-tt-col {
-  display: inline-block;
-  vertical-align: top;
-  min-width: 160px;
+  flex: 0 1 auto;
+  min-width: 140px;
   max-width: 200px;
   padding: 0 10px 0 0;
 }
@@ -593,6 +599,8 @@ body {
 }
 .gear-row {
   display: flex;
+  flex: 1;
+  min-height: 0;
   width: max-content;
   overflow-x: auto;
   align-items: stretch;
@@ -684,34 +692,68 @@ body {
 
 .gear-select {
   width: 100%;
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 3px;
-  padding: 3px 4px;
+  padding: 3px 18px 3px 4px;
   font-size: 11px;
   font-family: inherit;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239a9a9a'/%3E%3C/svg%3E");
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b0b0b0'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 5px center;
-  padding-right: 18px;
 }
 .gear-select:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+
+/* Oz Ring level (1–6): wrapper + explicit chevron so arrow always visible */
+.oz-level-wrap {
+  position: relative;
+  display: inline-block;
+  width: 64px; /* match .gear-icon-wrap (rounded square above) */
+}
+.star-row select.oz-level-select {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  padding-right: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.star-row select.oz-level-select:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+.oz-level-chevron {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9px;
+  opacity: 0.9;
+  color: var(--text-muted);
+  pointer-events: none;
+}
 
 /* ── Custom gear item dropdown ───────────────────────────── */
 .gear-sel-wrap { position: relative; width: 100%; }
 .gear-sel-disp {
   width: 100%; box-sizing: border-box;
-  background: var(--bg); color: var(--text);
+  position: relative;
+  background-color: var(--bg);
+  color: var(--text);
   border: 1px solid var(--border); border-radius: 3px;
-  padding: 3px 18px 3px 4px; font-size: 11px; font-family: inherit;
+  padding: 3px 14px 3px 4px; font-size: 11px; font-family: inherit;
   cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239a9a9a'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 5px center;
+  min-height: 20px;
   user-select: none; line-height: 1.4;
+}
+.gear-sel-disp .gear-sel-disp-text { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.gear-sel-disp .gear-sel-disp-chevron {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  font-size: 9px; opacity: 0.9; color: var(--text-muted);
+  pointer-events: none;
 }
 .gear-sel-wrap.open .gear-sel-disp { outline: 1px solid var(--accent); border-color: var(--accent); }
 .gear-sel-wrap.disabled .gear-sel-disp { opacity: 0.45; cursor: default; pointer-events: none; }
@@ -1378,3 +1420,25 @@ body {
 
 /* ── Tooltip-like title override ──────────────────────────── */
 [title] { cursor: default; }
+
+/* Legion Backup: only Export + Import buttons visible; file input is programmatic only. */
+#backupOverlay .backup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+#backupOverlay .modal-actions {
+  margin-top: 12px;
+}
+.backup-file-input-hidden,
+#backupFileInput {
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+}

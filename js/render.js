@@ -43,19 +43,27 @@ function getSetCounts(char) {
       const item = char.gear[slot]?.item;
       if (!item || item === 'None') return;
       const slotItems = itemSet[slot];
-      if (slotItems && (slotItems.has && slotItems.has(item))) n++;
+      const inSet = slotItems && slotItems.has && slotItems.has(item);
+      const inSetByResolver = typeof getSetForItem !== 'undefined' && getSetForItem(item, slot) === set;
+      if (inSet || inSetByResolver) n++;
     });
     set.slots.forEach(slot => {
       const item = char.gear[slot]?.item;
       if (!item || item === 'None') return;
       const slotItems = itemSet[slot];
-      if (!slotItems || (slotItems.has && slotItems.has(item))) return;
+      const inSet = slotItems && slotItems.has && slotItems.has(item);
+      const inSetByResolver = typeof getSetForItem !== 'undefined' && getSetForItem(item, slot) === set;
+      if (!slotItems || inSet || inSetByResolver) return;
       if (!isLuckyForSlot(item, slot)) return;
       let otherCount = 0;
       set.slots.forEach(s => {
         if (s === slot) return;
         const o = char.gear[s]?.item;
-        if (o && o !== 'None' && itemSet[s] && (itemSet[s].has && itemSet[s].has(o))) otherCount++;
+        if (!o || o === 'None') return;
+        const oSlotItems = itemSet[s];
+        const oInSet = oSlotItems && oSlotItems.has && oSlotItems.has(o);
+        const oInSetByResolver = typeof getSetForItem !== 'undefined' && getSetForItem(o, s) === set;
+        if (oInSet || oInSetByResolver) otherCount++;
       });
       if (otherCount >= 3) n++;
     });
@@ -82,6 +90,7 @@ function getCumulativeEffectLinesForSet(setId, upToTier, charCategory) {
 /** Preferred display order for cumulative bonus stats. List each stat once; percent keys (e.g. "Boss Damage%") match the base name for ordering. */
 const CUMULATIVE_STAT_ORDER = [
   'Weapon Attack', 'Magic Attack', 'Boss Damage', 'Ignore Enemy DEF', 'Critical Damage', 'Damage',
+  'Damage Against Normal Monsters',
   'All Stats', 'STR', 'DEX', 'INT', 'LUK',
   'Max HP', 'Max HP%', 'Max MP', 'Max MP%',
   'Defense'
@@ -297,12 +306,12 @@ function showSetTooltip(e, data) {
   let rightHtml = '<div class="sets-tt-head">Cumulative (' + tierLabel + ' set)</div>';
   (cumulative || []).forEach(line => rightHtml += `<div class="sets-tt-line">${escHtml(line)}</div>`);
   setsTooltipEl.innerHTML = '<div class="sets-tt-col">' + leftHtml + '</div><div class="sets-tt-col">' + rightHtml + '</div>';
-  setsTooltipEl.style.display = 'block';
+  setsTooltipEl.style.display = 'flex';
   requestAnimationFrame(() => positionSetTooltip(e));
 }
 
 function positionSetTooltip(e) {
-  if (!setsTooltipEl || setsTooltipEl.style.display !== 'block') return;
+  if (!setsTooltipEl || setsTooltipEl.style.display !== 'flex') return;
   const rect = setsTooltipEl.getBoundingClientRect();
   const x = e.clientX;
   const y = e.clientY;
@@ -657,8 +666,8 @@ function buildSlot(char, charIdx, slot, section) {
   const body = document.createElement('div');
   body.className = 'slot-body';
 
-  const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[char.cls]) || char.cls;
-  const classWeapons = slot === 'Weapon' ? getWeaponItemsForClass(char.cls) : null;
+  const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[char.cls]) ? CLASS_NAME_ALIAS[char.cls] : char.cls;
+  const classWeapons = slot === 'Weapon' ? getWeaponItemsForClass(canonicalClass) : null;
   const allItems     = classWeapons ?? SLOT_ITEMS[slot] ?? [];
   const charCat      = CLASS_CATEGORY[canonicalClass] || '';
 
@@ -711,6 +720,18 @@ function buildSlot(char, charIdx, slot, section) {
       if (charCat && it.cls.includes(charCat)) return true;
       return it.label === currentItem;
     });
+    // Secondary Weapon (non-Zero): show class-specific names only, like Weapons/Emblems — resolve generic options to class-specific so no duplicate (e.g. "Princess No Secondary" → "Princess No's Soul Orb" for Luminous)
+    if (slot === 'Secondary Weapon' && char.cls !== 'Zero' && typeof resolvePresetSecondary === 'function') {
+      const genericLabels = ['Lv. 100 Secondary', 'Frozen Secondary', 'Princess No Secondary'];
+      items = items.map(it => {
+        if (genericLabels.includes(it.label)) {
+          const resolved = resolvePresetSecondary(canonicalClass, it.label);
+          return resolved ? { label: resolved, tier: it.tier } : it;
+        }
+        return it;
+      });
+      items = items.filter((it, i, arr) => arr.findIndex(x => x.label === it.label) === i);
+    }
   }
   // Ring slots: only one of each exclusive group (e.g. Guardian Angel / Dawn Guardian) across all four rings
   const RING_SLOTS_ARR = ['Ring 1', 'Ring 2', 'Ring 3', 'Ring 4'];
@@ -770,8 +791,10 @@ function buildSlot(char, charIdx, slot, section) {
   const ozRow = document.createElement('div');
   ozRow.className = 'star-row';
 
+  const ozWrap = document.createElement('div');
+  ozWrap.className = 'oz-level-wrap';
   const ozSel = document.createElement('select');
-  ozSel.className = 'gear-select';
+  ozSel.className = 'gear-select oz-level-select';
   const ozDefault = typeof OZ_RING_DEFAULT_LEVEL !== 'undefined' ? OZ_RING_DEFAULT_LEVEL : 4;
   [1, 2, 3, 4, 5, 6].forEach(n => {
     const o = document.createElement('option');
@@ -781,10 +804,12 @@ function buildSlot(char, charIdx, slot, section) {
     if (ozVal === n) o.selected = true;
     ozSel.appendChild(o);
   });
-  const ozLbl = document.createElement('span');
-  ozLbl.className = 'star-lbl';
-  ozLbl.textContent = 'Lv.';
-  ozRow.append(ozSel, ozLbl);
+  const ozChevron = document.createElement('span');
+  ozChevron.className = 'oz-level-chevron';
+  ozChevron.setAttribute('aria-hidden', 'true');
+  ozChevron.textContent = '▼';
+  ozWrap.append(ozSel, ozChevron);
+  ozRow.append(ozWrap);
 
   const noneTxt = document.createElement('div');
   noneTxt.className = 'none-text hidden';
@@ -797,7 +822,10 @@ function buildSlot(char, charIdx, slot, section) {
   }
   applyInputVisibility(effectiveItem || currentItem);
 
-  renderGearIcon(iconWrap, ITEM_TIER[currentItem] ?? 'None', slot, currentItem, canonicalClass);
+  const tierForIcon = (slot === 'Secondary Weapon' && char.cls !== 'Zero' && currentItem !== 'None' && (typeof ITEM_TIER === 'undefined' || !ITEM_TIER[currentItem]))
+    ? (currentItem.startsWith("Princess No's") ? 'PrincessNo' : currentItem.startsWith('Frozen ') ? 'Frozen' : 'Pensalir')
+    : (ITEM_TIER[currentItem] ?? 'None');
+  renderGearIcon(iconWrap, tierForIcon, slot, currentItem, canonicalClass);
 
   function applyStarValue() {
     const itemLabel = chars[charIdx].gear[slot]?.item ?? 'None';
@@ -851,7 +879,10 @@ function buildSlot(char, charIdx, slot, section) {
 
   sel.addEventListener('change', () => {
     const newItem   = sel.value;
-    const newTier   = ITEM_TIER[newItem] ?? 'None';
+    let newTier     = ITEM_TIER[newItem] ?? 'None';
+    if (slot === 'Secondary Weapon' && char.cls !== 'Zero' && newItem !== 'None' && newTier === 'None') {
+      newTier = newItem.startsWith("Princess No's") ? 'PrincessNo' : newItem.startsWith('Frozen ') ? 'Frozen' : 'Pensalir';
+    }
     const prevStars = chars[charIdx].gear[slot]?.stars ?? 0;
     const ozDefault = typeof OZ_RING_DEFAULT_LEVEL !== 'undefined' ? OZ_RING_DEFAULT_LEVEL : 4;
     let keepStars = newItem === 'None' ? 0
@@ -889,7 +920,13 @@ function buildSlot(char, charIdx, slot, section) {
     syncSetsCell(section);
 
     if (RING_SLOTS_ARR.includes(slot) && typeof getRingExclusiveGroup === 'function') {
-      updateSection(charIdx);
+      const newGroup = getRingExclusiveGroup(newItem);
+      const prevItem = chars[charIdx].gear[slot]?.item;
+      const prevGroup = prevItem ? getRingExclusiveGroup(prevItem) : null;
+      if (newGroup || prevGroup) updateSection(charIdx);
+      else {
+        renderGearIcon(iconWrap, newTier, slot, newItem, canonicalClass);
+      }
       return;
     }
 

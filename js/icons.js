@@ -532,8 +532,13 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
     const effectiveClass = typeof rawClass === 'string' ? rawClass.trim() : rawClass;
     const cat = CLASS_CATEGORY[effectiveClass] || 'Warrior';
     // Check class-specific entry first (Explorers must have explicit entries to avoid wrong category fallback, e.g. Bishop → Mage → Flaming Book)
-    const classFname = SECONDARY_ICON_MAP[`${itemLabel}|${effectiveClass}`]
-                    || SECONDARY_ICON_MAP[`${itemLabel}|${cat}`];
+    let classFname = SECONDARY_ICON_MAP[`${itemLabel}|${effectiveClass}`]
+                  || SECONDARY_ICON_MAP[`${itemLabel}|${cat}`];
+    // Class-specific resolved names (e.g. Princess No's Soul Orb) are keyed as "Princess No Secondary|Class" in the map
+    if (!classFname && (itemLabel.startsWith("Princess No's") || (itemLabel.startsWith('Frozen ') && itemLabel !== 'Frozen Secondary'))) {
+      const generic = itemLabel.startsWith("Princess No's") ? 'Princess No Secondary' : 'Frozen Secondary';
+      classFname = SECONDARY_ICON_MAP[`${generic}|${effectiveClass}`] || SECONDARY_ICON_MAP[`${generic}|${cat}`];
+    }
     if (classFname) candidates.push(`MapleIcons/Gear Icons/Secondary Weapons/${classFname}.png`);
     // Direct lookup for class-agnostic items (katara, standalone secondaries, etc.)
     const directFname = ITEM_ICON_OVERRIDE[itemLabel] || labelToFilename(itemLabel);

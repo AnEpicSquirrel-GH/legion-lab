@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- CSP: if you change inline scripts below, run "node scripts/csp-hashes.js" and update the sha256- values in script-src -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-NhzESIhfHe75kzVavLlD+mFF+7QU7Ji53h3zP+/FL3I=' 'sha256-uEwhF/KVjZK29kCqzRCDMS2bFmLTBQ/VAW3yJQ5sD8Y='; style-src 'self'; img-src 'self' https: http: blob:; connect-src 'self' https:; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'; frame-ancestors 'none';" />
   <title>Legion Lab – MapleStory Gear Tracker</title>
   <link rel="icon" href="MapleIcons/Legion%20Lab%20Icon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
@@ -51,7 +53,7 @@
 <header class="site-header">
   <img id="siteHeaderIcon" src="MapleIcons/Legion%20Lab%20Icon.png" alt="Legion Lab"
        style="height:129px; width:134px; image-rendering:auto; display:block;" title="Click to toggle title" />
-  <h1 class="site-title"><span id="siteTitleText">Legion Lab</span><span class="title-beta" id="siteTitleBeta">Beta</span></h1>
+  <h1 class="site-title"><span id="siteTitleText" data-default-title="Legion Lab">Legion Lab</span><span class="title-beta" id="siteTitleBeta">Beta</span></h1>
 </header>
 
 <!-- ══════════════════════════════════════════════════════════════
@@ -307,6 +309,7 @@
 
 <!-- ══════════════════════════════════════════════════════════════
      LEGION BACKUP MODAL (Export / Import)
+     No separate Browse: "Import from backup" opens the file picker directly.
 ═══════════════════════════════════════════════════════════════ -->
 <div class="overlay hidden" id="backupOverlay">
   <div class="modal" role="dialog" aria-modal="true" style="max-width:420px;width:95vw">
@@ -314,11 +317,11 @@
     <p class="modal-desc" style="margin-bottom:14px;color:var(--text-muted);font-size:13px">
       Export your characters and custom presets to a file, or import from a previous backup.
     </p>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+    <div class="backup-actions">
       <button type="button" class="btn btn-primary" id="backupExportBtn">Export backup</button>
       <button type="button" class="btn" id="backupImportBtn">Import from backup</button>
     </div>
-    <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none" />
+    <input type="file" id="backupFileInput" class="backup-file-input-hidden" accept=".json,application/json" aria-hidden="true" />
     <div class="modal-actions">
       <button type="button" class="btn" id="backupCloseBtn">Close</button>
     </div>

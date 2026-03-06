@@ -7,8 +7,8 @@ function trackCharactersAdded(n) {
   const count = Number(n || 0);
   if (!count || count <= 0) return;
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    // GA4: use `value` so you can view totals by summing value.
-    window.gtag('event', 'characters_added', { value: count });
+    // GA4: use character_count so you can create a custom metric to sum total characters added.
+    window.gtag('event', 'characters_added', { character_count: count });
   }
 }
 

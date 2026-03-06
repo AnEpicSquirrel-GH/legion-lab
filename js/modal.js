@@ -1093,6 +1093,7 @@ function handleConfirmAdd() {
       getNameInput().value = '';
       buildSlotDropdowns();
       getSlotsWrap().querySelectorAll('select').forEach((sel, i) => { sel.value = getSlots()[i] ? 'None' : ''; });
+      getListWrap().classList.add('hidden');
       getFormWrap().classList.remove('hidden');
     });
     listWrap.appendChild(addBtn);
@@ -1120,6 +1121,7 @@ function handleConfirmAdd() {
           const opts = options[slot] || ['None'];
           sel.value = opts.includes(saved) ? saved : 'None';
         });
+        getListWrap().classList.add('hidden');
         getFormWrap().classList.remove('hidden');
       });
       const delBtn = document.createElement('button');
@@ -1185,6 +1187,7 @@ function handleConfirmAdd() {
       saveCustomList(arr);
     }
     getFormWrap().classList.add('hidden');
+    getListWrap().classList.remove('hidden');
     editingId = null;
     renderList();
   }
@@ -1194,6 +1197,8 @@ function handleConfirmAdd() {
       switchToTab(btn.dataset.tab);
       document.getElementById('customPresetsFormWrapEquipment').classList.add('hidden');
       document.getElementById('customPresetsFormWrapAccessories').classList.add('hidden');
+      document.getElementById('customPresetsListWrapEquipment').classList.remove('hidden');
+      document.getElementById('customPresetsListWrapAccessories').classList.remove('hidden');
       editingId = null;
       renderList();
     });
@@ -1203,18 +1208,20 @@ function handleConfirmAdd() {
     switchToTab('equipment');
     document.getElementById('customPresetsFormWrapEquipment').classList.add('hidden');
     document.getElementById('customPresetsFormWrapAccessories').classList.add('hidden');
+    document.getElementById('customPresetsListWrapEquipment').classList.remove('hidden');
+    document.getElementById('customPresetsListWrapAccessories').classList.remove('hidden');
     editingId = null;
     renderList();
     overlay.classList.remove('hidden');
   });
 
   overlay.querySelectorAll('#customPresetSaveBtnEquipment, #customPresetSaveBtnAccessories').forEach(btn => btn.addEventListener('click', savePreset));
-  overlay.querySelectorAll('#customPresetCancelBtnEquipment, #customPresetCancelBtnAccessories').forEach(btn => btn.addEventListener('click', () => { getFormWrap().classList.add('hidden'); editingId = null; }));
+  overlay.querySelectorAll('#customPresetCancelBtnEquipment, #customPresetCancelBtnAccessories').forEach(btn => btn.addEventListener('click', () => { getFormWrap().classList.add('hidden'); getListWrap().classList.remove('hidden'); editingId = null; }));
   closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.add('hidden'); });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) {
-      if (!getFormWrap().classList.contains('hidden')) { getFormWrap().classList.add('hidden'); editingId = null; }
+      if (!getFormWrap().classList.contains('hidden')) { getFormWrap().classList.add('hidden'); getListWrap().classList.remove('hidden'); editingId = null; }
       else overlay.classList.add('hidden');
     }
   });

@@ -57,6 +57,7 @@ const CLASS_NAME_ALIAS = {
   'Arch Mage (Ice/Lightning)':  'Arch Mage (Ice, Lightning)',
   'Arch Mage (F/P)':            'Arch Mage (Fire, Poison)',
   'Arch Mage (Fire/Poison)':    'Arch Mage (Fire, Poison)',
+  'Blade Master':               'Dual Blade',
 };
 
 /* ────────────────────────────────────────────────────────────────

@@ -22,7 +22,7 @@ function applyDevModeUI() {
   if (screenshotsTab) screenshotsTab.style.display = devMode ? '' : 'none';
   const siteTitleText = document.getElementById('siteTitleText');
   const siteTitleBeta = document.getElementById('siteTitleBeta');
-  if (siteTitleText) siteTitleText.textContent = devMode ? 'Legion Labussy' : 'Legion Lab';
+  if (siteTitleText) siteTitleText.textContent = devMode ? 'Legion Labussy' : (siteTitleText.getAttribute('data-default-title') || 'Legion Lab');
   if (siteTitleBeta) siteTitleBeta.style.display = devMode ? 'none' : '';
   document.querySelectorAll('.import-debug-dev-only, .lookup-debug-dev-only').forEach(function (el) {
     el.style.display = devMode ? '' : 'none';

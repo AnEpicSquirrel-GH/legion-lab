@@ -1,6 +1,7 @@
 'use strict';
 
-// Generic preset weapon labels → WEAPON_TIER_ITEMS tier key
+// Generic preset weapon labels → WEAPON_TIER_ITEMS tier key.
+// Pensalir weapons are the Utgard ones (Utgard Staff, Utgard Wand, etc.); we store generic "Pensalir Weapon" in presets and resolve to class-specific when applying.
 const PRESET_WEAPON_TO_TIER = {
   'Pensalir Weapon':    'Pensalir',
   'Frozen Weapon':       'Frozen',
@@ -10,7 +11,7 @@ const PRESET_WEAPON_TO_TIER = {
   'Destiny Weapon':    'Eternal',
 };
 
-// When a class can use multiple weapon types, prefer in this order: 2H Sword > 2H Blunt > 2H Axe > Staff > Wand > 1H options
+// When a class can use multiple weapon types, prefer in this order: 2H Sword > 2H Blunt > 2H Axe > Staff > Wand > 1H options (mages with Staff and Wand get Staff).
 const WEAPON_TYPE_PRIORITY = [
   'Two-handed Sword', 'Two-handed Blunt', 'Two-handed Axe',
   'Staff', 'Wand',
@@ -258,9 +259,10 @@ function resolvePresetSecondary(charClass, genericLabel) {
 function resolvePresetWeapon(charClass, genericWeaponLabel) {
   const tierKey = PRESET_WEAPON_TO_TIER[genericWeaponLabel];
   if (!tierKey || typeof CLASS_WEAPON_DATA === 'undefined' || typeof WEAPON_TIER_ITEMS === 'undefined') return null;
+  const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && charClass && CLASS_NAME_ALIAS[charClass]) ? CLASS_NAME_ALIAS[charClass] : charClass;
   // Zero omits Frozen (no Frozen weapon or secondary)
-  if (charClass === 'Zero' && tierKey === 'Frozen') return null;
-  const data = CLASS_WEAPON_DATA[charClass];
+  if (canonicalClass === 'Zero' && tierKey === 'Frozen') return null;
+  const data = CLASS_WEAPON_DATA[canonicalClass];
   if (!data || !data.weaponTypes || !data.weaponTypes.length) return null;
   const typesWithTier = data.weaponTypes.filter(wType => WEAPON_TIER_ITEMS[wType]?.[tierKey]);
   if (!typesWithTier.length) return null;
@@ -334,28 +336,29 @@ function applyPreset(gear, presetName, charClass) {
   const all = getFullGearPresetList();
   const preset = all.find(p => p.name === presetName);
   if (!preset || !preset.gear || typeof preset.gear !== 'object') return;
+  const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && charClass && CLASS_NAME_ALIAS[charClass]) ? CLASS_NAME_ALIAS[charClass] : charClass;
   Object.entries(preset.gear).forEach(([slot, itemLabel]) => {
     let label = itemLabel;
     if (label === '__SILVER_EMBLEM__') {
-      label = (charClass && typeof CLASS_SILVER_EMBLEM !== 'undefined' && CLASS_SILVER_EMBLEM[charClass]) || null;
+      label = (canonicalClass && typeof CLASS_SILVER_EMBLEM !== 'undefined' && CLASS_SILVER_EMBLEM[canonicalClass]) || null;
       if (!label) return;
     }
     if (label === '__GOLD_EMBLEM__') {
-      label = (charClass && CLASS_GOLD_EMBLEM[charClass]) || null;
+      label = (canonicalClass && CLASS_GOLD_EMBLEM[canonicalClass]) || null;
       if (!label) return;
     }
-    if (slot === 'Weapon' && PRESET_WEAPON_TO_TIER[label] && charClass) {
-      const resolved = resolvePresetWeapon(charClass, label);
+    if (slot === 'Weapon' && PRESET_WEAPON_TO_TIER[label] && canonicalClass) {
+      const resolved = resolvePresetWeapon(canonicalClass, label);
       if (resolved) label = resolved;
       else if (label === 'Frozen Weapon') return; // Zero omits Frozen
     }
-    if (slot === 'Secondary Weapon' && charClass && typeof resolvePresetSecondary === 'function') {
-      const resolved = resolvePresetSecondary(charClass, label);
+    if (slot === 'Secondary Weapon' && canonicalClass && typeof resolvePresetSecondary === 'function') {
+      const resolved = resolvePresetSecondary(canonicalClass, label);
       if (resolved) label = resolved;
       else if (label === 'Princess No Secondary' || label === 'Frozen Secondary') return; // Zero: no generic, skip slot; Zero block sets heavy
     }
-    if (charClass && typeof resolvePresetGearSlot === 'function') {
-      const resolved = resolvePresetGearSlot(slot, label, charClass);
+    if (canonicalClass && typeof resolvePresetGearSlot === 'function') {
+      const resolved = resolvePresetGearSlot(slot, label, canonicalClass);
       if (resolved) label = resolved;
     }
     gear[slot] = { item: label, stars: 0 };
@@ -366,7 +369,7 @@ function applyPreset(gear, presetName, charClass) {
     gear['Bottom'] = { item: 'None', stars: 0 };
   }
   // Zero: Secondary is the Heavy that pairs with the Long, or Utgard Heavy when no weapon/default needed
-  if (charClass === 'Zero' && typeof getHeavySwordForLong !== 'undefined') {
+  if (canonicalClass === 'Zero' && typeof getHeavySwordForLong !== 'undefined') {
     const weaponItem = gear['Weapon']?.item;
     const heavy = weaponItem && weaponItem !== 'None' ? getHeavySwordForLong(weaponItem) : null;
     gear['Secondary Weapon'] = { item: heavy || 'Utgard Heavy Sword', stars: 0 };
@@ -550,13 +553,28 @@ function makeGearSelect(items, currentValue, standalone = false, slot = null) {
     o.value = it.label; o.textContent = it.label;
     sel.appendChild(o);
   });
+  // Ensure current value exists as an option so the display shows the weapon name (e.g. when list was generic but saved item is class-specific)
+  if (initVal !== 'None' && !items.some(it => it.label === initVal)) {
+    const opt = document.createElement('option');
+    opt.value = initVal;
+    opt.textContent = initVal;
+    sel.insertBefore(opt, sel.options[1] || null);
+  }
   sel.value = initVal;
 
-  // ── visible wrapper ──
+  // ── visible wrapper (text + chevron so arrow is always visible) ──
   const wrap = document.createElement('div');
   wrap.className = 'gear-sel-wrap';
   const disp = document.createElement('div');
   disp.className = 'gear-sel-disp';
+  const dispText = document.createElement('span');
+  dispText.className = 'gear-sel-disp-text';
+  const dispChevron = document.createElement('span');
+  dispChevron.className = 'gear-sel-disp-chevron';
+  dispChevron.textContent = '▼';
+  dispChevron.setAttribute('aria-hidden', 'true');
+  disp.appendChild(dispText);
+  disp.appendChild(dispChevron);
 
   // ── floating panel: appended to body to escape overflow:hidden ──
   const panel = document.createElement('div');
@@ -566,8 +584,10 @@ function makeGearSelect(items, currentValue, standalone = false, slot = null) {
   let isOpen = false;
 
   function syncDisplay() {
-    disp.textContent = sel.value;
-    disp.style.color = itemColorForLabel(sel.value);
+    dispText.textContent = sel.value;
+    const c = itemColorForLabel(sel.value);
+    disp.style.color = c || '';
+    if (c) dispText.style.color = c; else dispText.style.color = '';
   }
   sel._syncDisplay = syncDisplay;
 

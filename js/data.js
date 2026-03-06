@@ -66,9 +66,10 @@ const SETS = {
   Sweetwater: { name: 'Sweetwater',  color: '#3B9FCF', level: 160,  abbr: 'SWT' },  // Commerci Sweetwater
   Absolab:    { name: 'Absolab',     color: '#C84848', level: 160,  abbr: 'ABS' },
   Arcane:     { name: 'Arcane',      color: '#9B59B6', level: 200,  abbr: 'ARC' },
-  Pitched:    { name: 'Pitched',     color: '#22C55E', level: 200,  abbr: 'PCH' },  // Pitched Boss set (incl. Genesis Weapon)
+  Pitched:    { name: 'Pitched',     color: '#22C55E', level: 200,  abbr: 'PCH' },  // Pitched Boss set (accessories)
+  Genesis:    { name: 'Genesis',     color: '#22C55E', level: 200,  abbr: 'GEN' },  // Genesis weapons only; same color as Pitched, separate label
   Brilliant:  { name: 'Brilliant',   color: '#84CC16', level: 200,  abbr: 'BRL' },  // Brilliant Boss set
-  Frozen:     { name: 'Frozen',      color: '#6B9EBE', level: 130,  abbr: 'FRZ' },  // Frozen set (same tier color as Pensalir)
+  Frozen:     { name: 'Frozen',      color: '#bed1e9', level: 130,  abbr: 'FRZ' },  // Frozen set
   Eternal:    { name: 'Eternal',     color: '#FFD700', level: 250,  abbr: 'ETN' },
   Gollux:     { name: 'Gollux',      color: '#C2622D', level: 140,  abbr: 'GOL' },  // Superior Gollux only
   OzRing:     { name: 'Oz Ring',     color: '#3B82F6', level: 140,  abbr: 'OZR' },  // Oz Tower rings (level 1–6)
@@ -678,12 +679,11 @@ const SET_EFFECTS = {
     4: ['Boss Damage +30%'],
   },
   Pensalir: {
-    2: ['STR/DEX/INT/LUK +10', 'Max HP/MP +500'],
-    3: ['Max HP/MP +5%', 'Attack/Magic Attack +30'],
-    4: ['Defense +500'],
-    5: ['All stats +5'],
-    6: ['Damage +10%'],
-    7: ['Boss Damage +10%'],
+    2: ['Defense: +140'],
+    3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+    4: ['STR: +9', 'Weapon Attack: +9', 'Damage Against Normal Monsters: +4%'],
+    5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+    6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
   },
   Absolab: {
     2: ['STR/DEX/INT/LUK +30', 'Max HP/MP +1,500'],
@@ -751,6 +751,90 @@ const LUCKY_ITEMS = { 'Genesis Weapon': 'Weapon', 'Destiny Weapon': 'Weapon', 'C
 // ── Predefined named sets (Sets column uses these; CRA is class-specific) ──
 // Items: slot → Set of item labels that count. Weapon set filled by weapons.js after load.
 const GEAR_SETS = {
+  Pensalir: {
+    name: 'Pensalir Set',
+    shortName: 'Pensalir',
+    color: SETS.Pensalir.color,
+    slots: ['Weapon', 'Hat', 'Top/Overall', 'Gloves', 'Shoes', 'Shoulder', 'Cape'],
+    items: (() => {
+      const slotList = ['Hat', 'Top/Overall', 'Gloves', 'Shoes', 'Shoulder', 'Cape'];
+      const out = {};
+      slotList.forEach(slot => { out[slot] = new Set(); });
+      Object.entries(SLOT_ITEMS).forEach(([slot, list]) => {
+        if (!out[slot]) return;
+        list.forEach(it => { if (it.tier === 'Pensalir') out[slot].add(it.label); });
+      });
+      out['Weapon'] = []; // filled by weapons.js
+      return out;
+    })(),
+    // Pensalir (8th set) bonuses vary by base class; 2/3/5/6 shared, 4-set is class stat + attack
+    effectsByCategory: {
+      Warrior: {
+        2: ['Defense: +140'],
+        3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+        4: ['STR: +9', 'Weapon Attack: +9', 'Damage Against Normal Monsters: +4%'],
+        5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+        6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
+      },
+      Mage: {
+        2: ['Defense: +140'],
+        3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+        4: ['INT: +9', 'Magic Attack: +9', 'Damage Against Normal Monsters: +4%'],
+        5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+        6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
+      },
+      Archer: {
+        2: ['Defense: +140'],
+        3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+        4: ['DEX: +9', 'Weapon Attack: +9', 'Damage Against Normal Monsters: +4%'],
+        5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+        6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
+      },
+      Thief: {
+        2: ['Defense: +140'],
+        3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+        4: ['LUK: +9', 'Weapon Attack: +9', 'Damage Against Normal Monsters: +4%'],
+        5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+        6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
+      },
+      Pirate: {
+        2: ['Defense: +140'],
+        3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+        4: ['STR: +9', 'DEX: +9', 'Weapon Attack: +9', 'Damage Against Normal Monsters: +4%'],
+        5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+        6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
+      },
+      Xenon: {
+        2: ['Defense: +140'],
+        3: ['Max HP: +9%', 'Max MP: +9%', 'Damage Against Normal Monsters: +2%'],
+        4: ['STR: +9', 'DEX: +9', 'Weapon Attack: +9', 'Damage Against Normal Monsters: +4%'],
+        5: ['All Stats: +15', 'Defense: +250', 'Damage Against Normal Monsters: +6%', 'Ignore Enemy DEF: +10%'],
+        6: ['Weapon Attack: +10', 'Magic Attack: +10', 'Damage Against Normal Monsters: +8%', 'Ignore Enemy DEF: +10%'],
+      },
+    },
+  },
+  Frozen: {
+    name: 'Frozen Set',
+    shortName: 'Frozen',
+    color: SETS.Frozen.color,
+    slots: ['Hat', 'Top/Overall', 'Cape', 'Weapon', 'Secondary Weapon'],
+    items: (() => {
+      const slotList = ['Hat', 'Top/Overall', 'Cape', 'Secondary Weapon'];
+      const out = {};
+      slotList.forEach(slot => { out[slot] = new Set(); });
+      Object.entries(SLOT_ITEMS).forEach(([slot, list]) => {
+        if (!out[slot]) return;
+        list.forEach(it => { if (it.tier === 'Frozen') out[slot].add(it.label); });
+      });
+      out['Weapon'] = []; // filled by weapons.js
+      return out;
+    })(),
+    effects: {
+      2: ['STR/DEX/INT/LUK: +15', 'Max HP/MP: +800'],
+      3: ['Max HP/MP: +8%', 'Attack/Magic Attack: +40'],
+      4: ['Boss Damage: +15%'],
+    },
+  },
   CRA: {
     name: 'Root Abyss Set',
     shortName: 'CRA',
@@ -999,6 +1083,14 @@ const GEAR_SETS = {
       2: ['Ignore Enemy DEF: +10%'],
     },
   },
+  // Genesis: display-only set for Genesis weapons (chip/badge label "Genesis", Pitched color); not a countable set; weapons count toward Eternal
+  Genesis: {
+    name: 'Genesis',
+    shortName: 'Genesis',
+    color: SETS.Genesis?.color ?? '#22C55E',
+    slots: [],
+    items: {},
+  },
   Pitched: {
     name: 'Pitched Boss Set',
     shortName: 'Pitched',
@@ -1037,13 +1129,17 @@ const GEAR_SETS = {
 /** Returns the GEAR_SETS set object if this item is in that set for this slot; otherwise null. Used for set-only coloring. */
 function getSetForItem(itemLabel, slot) {
   if (!itemLabel || itemLabel === 'None' || typeof GEAR_SETS === 'undefined') return null;
+  // Genesis weapons: own label "Genesis" with Pitched color; they are not in the Pitched set (they count toward Eternal)
+  if (slot === 'Weapon' && typeof ITEM_TIER !== 'undefined' && ITEM_TIER[itemLabel] === 'Pitched' && GEAR_SETS.Genesis) {
+    return GEAR_SETS.Genesis;
+  }
   for (const setId of Object.keys(GEAR_SETS)) {
     const set = GEAR_SETS[setId];
     if (set?.items?.[slot]?.has?.(itemLabel)) return set;
   }
-  // Genesis / Pitched-tier weapons: color as Pitched Boss set even though Weapon is not a Pitched slot
-  if (slot === 'Weapon' && typeof ITEM_TIER !== 'undefined' && ITEM_TIER[itemLabel] === 'Pitched' && GEAR_SETS.Pitched) {
-    return GEAR_SETS.Pitched;
+  // Class-specific Frozen secondaries (e.g. "Frozen Orb", "Frozen White Gold Book (Epode)") resolve from generic "Frozen Secondary"; count toward Frozen set
+  if (slot === 'Secondary Weapon' && GEAR_SETS.Frozen?.items?.[slot] && (itemLabel === 'Carte Frozen' || itemLabel.startsWith('Frozen '))) {
+    return GEAR_SETS.Frozen;
   }
   return null;
 }
@@ -1069,6 +1165,7 @@ const SET_PREFIX = {
   Absolab:    'Abso',
   Arcane:     'Arcane',
   Pitched:    'Pitched',
+  Genesis:    'Genesis',   // weapon icons use Genesis_ prefix
   Eternal:    'Eternal',
   Gollux:     'Gollux',
   OzRing:     'Oz',

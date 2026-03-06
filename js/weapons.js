@@ -419,11 +419,52 @@ const WEAPON_TIER_ITEMS = {
   },
 };
 
-// Frozen set weapons: same icons as Pensalir/Utgard, distinct labels for tier/colour
+// Frozen set weapons: icons use Frozen_ prefix (renamed from Onyx_Maple_*); label = "Frozen {weapon type}"
 ;(() => {
+  const FROZEN_WEAPON_ICON = {
+    'Staff': 'Frozen_Staff',
+    'Wand': 'Frozen_Wand',
+    'Shining Rod': 'Frozen_Shining_Rod',
+    'Memorial Staff': 'Frozen_Memorial_Staff',
+    'Lucent Gauntlet': 'Frozen_Lucent_Gauntlet',
+    'Psy-limiter': 'Frozen_Psy-limiter',
+    'Celestial Light': 'Frozen_Celestial_Light',
+    'One-handed Sword': 'Frozen_Sword_(One-handed_Sword)',
+    'Two-handed Sword': 'Frozen_Two-handed_Sword',
+    'One-handed Blunt': 'Frozen_Mace',
+    'Two-handed Blunt': 'Frozen_Maul',
+    'Spear': 'Frozen_Spear',
+    'Polearm': 'Frozen_Polearm',
+    'One-handed Axe': 'Frozen_Axe',
+    'Two-handed Axe': 'Frozen_Two-handed_Axe',
+    'Desperado': 'Frozen_Devil_Sword',
+    'Bladecaster': 'Frozen_Bladecaster',
+    'Arm Cannon': 'Frozen_Arm_Cannon',
+    'Katana': 'Frozen_Katana',
+    'Sword': 'Frozen_Sword_(Sword)',
+    'Bow': 'Frozen_Longbow',
+    'Crossbow': 'Frozen_Crossbow',
+    'Ancient Bow': 'Frozen_Ancient_Bow',
+    'Dual Bowguns': 'Frozen_Twin_Angels',
+    'Whispershot': 'Frozen_Whispershot',
+    'Claw': 'Frozen_Cutter',
+    'Dagger': 'Frozen_Devil_Sword',
+    'Cane': 'Frozen_Cane',
+    'Whip Blade': 'Frozen_Chain_Sword',
+    'Chain': 'Frozen_Nova_Chain',
+    'Ritual Fan': 'Frozen_Black_Ritual_Fan',
+    'Chakram': 'Frozen_Kshama',
+    'Knuckle': 'Frozen_Grip',
+    'Gun': 'Frozen_Shooter',
+    'Hand Cannon': 'Frozen_Cannon',
+    'Soul Shooter': 'Frozen_Soul_Shooter',
+    'Martial Brace': 'Frozen_Martial_Brace',
+    'Fan': 'Frozen_Spirit_Walker_Fan',
+  };
   Object.entries(WEAPON_TIER_ITEMS).forEach(([wType, tiers]) => {
     if (tiers.Pensalir) {
-      tiers.Frozen = { label: 'Frozen ' + wType.replace(/\s+/g, ' '), icon: tiers.Pensalir.icon };
+      const icon = FROZEN_WEAPON_ICON[wType] || ('Frozen_' + wType.replace(/\s+/g, '_'));
+      tiers.Frozen = { label: 'Frozen ' + wType.replace(/\s+/g, ' '), icon };
     }
   });
 })();
@@ -462,15 +503,22 @@ const WEAPON_LABEL_ICON = (() => {
   const arcaneLabels = [];
   const absolabLabels = [];
   const eternalLabels = [];
+  const pitchedLabels = ['Genesis Weapon'];
   const frozenLabels = ['Frozen Weapon'];
+  const pensalirLabels = ['Pensalir Weapon'];
   Object.values(WEAPON_TIER_ITEMS).forEach(tiers => {
     if (tiers.Fafnir) fafnirLabels.push(tiers.Fafnir.label);
     if (tiers.Frozen) frozenLabels.push(tiers.Frozen.label);
+    if (tiers.Pensalir) pensalirLabels.push(tiers.Pensalir.label);
     if (tiers.Arcane) arcaneLabels.push(tiers.Arcane.label);
     if (tiers.Absolab) absolabLabels.push(tiers.Absolab.label);
     if (tiers.Eternal) eternalLabels.push(tiers.Eternal.label);
+    if (tiers.Pitched) pitchedLabels.push(tiers.Pitched.label);
   });
   if (GEAR_SETS.CRA?.items) GEAR_SETS.CRA.items.Weapon = new Set(fafnirLabels);
+  if (GEAR_SETS.Pensalir?.items && Array.isArray(GEAR_SETS.Pensalir.items.Weapon)) {
+    GEAR_SETS.Pensalir.items.Weapon = new Set(pensalirLabels);
+  }
   if (GEAR_SETS.Frozen?.items && Array.isArray(GEAR_SETS.Frozen.items.Weapon)) {
     GEAR_SETS.Frozen.items.Weapon = new Set(frozenLabels);
   }
@@ -480,17 +528,19 @@ const WEAPON_LABEL_ICON = (() => {
   if (GEAR_SETS.Absolab?.items && Array.isArray(GEAR_SETS.Absolab.items.Weapon)) {
     GEAR_SETS.Absolab.items.Weapon = new Set(['Absolab Weapon', ...absolabLabels]);
   }
-  if (GEAR_SETS.Eternal?.items && Array.isArray(GEAR_SETS.Eternal.items.Weapon)) {
-    GEAR_SETS.Eternal.items.Weapon = new Set(['Destiny Weapon', ...eternalLabels]);
+  // Eternal set: Genesis and Destiny weapons count as set pieces (no Lucky double-dip); chip color stays Pitched for Genesis via getSetForItem
+  if (GEAR_SETS.Eternal?.items && GEAR_SETS.Eternal.items.Weapon != null) {
+    GEAR_SETS.Eternal.items.Weapon = new Set(['Destiny Weapon', 'Genesis Weapon', ...eternalLabels, ...pitchedLabels]);
   }
 })();
 
 /* ── Helper: build SLOT_ITEMS-compatible weapon list for a class ───── */
 function getWeaponItemsForClass(cls) {
-  const data = CLASS_WEAPON_DATA[cls];
+  const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && cls && CLASS_NAME_ALIAS[cls]) ? CLASS_NAME_ALIAS[cls] : cls;
+  const data = CLASS_WEAPON_DATA[canonicalClass];
   if (!data) return null;    // fall back to generic SLOT_ITEMS['Weapon']
   // Zero: only Long Sword in weapon dropdown; Heavy is forced in Secondary; Zero omits Frozen
-  const weaponTypes = cls === 'Zero' ? ['Long Sword'] : data.weaponTypes;
+  const weaponTypes = canonicalClass === 'Zero' ? ['Long Sword'] : data.weaponTypes;
   const seen   = new Set();
   const items  = [];
   const TIER_ORDER = cls === 'Zero' ? ['Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'] : ['Pensalir', 'Frozen', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
@@ -506,7 +556,7 @@ function getWeaponItemsForClass(cls) {
     }
   }
   // Kaiser only: Liberated Kaiserium before first Absolab
-  if (cls === 'Kaiser') {
+  if (canonicalClass === 'Kaiser') {
     const absIdx = items.findIndex(it => it.tier === 'Absolab');
     if (absIdx >= 0) items.splice(absIdx, 0, { label: 'Liberated Kaiserium', tier: 'Fafnir' });
     else items.push({ label: 'Liberated Kaiserium', tier: 'Fafnir' });

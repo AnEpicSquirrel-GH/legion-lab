@@ -318,7 +318,11 @@ function serveFile(res, filePath) {
       res.end('Not found');
       return;
     }
-    res.writeHead(200, { 'Content-Type': contentType });
+    const headers = { 'Content-Type': contentType };
+    if (['.html', '.css', '.js'].includes(ext)) {
+      headers['Cache-Control'] = 'no-store';
+    }
+    res.writeHead(200, headers);
     res.end(data);
   });
 }
@@ -328,6 +332,13 @@ function proxyRequest(res, targetUrl) {
   if (!parsed.protocol || !parsed.host || !/^https?:$/.test(parsed.protocol)) {
     res.writeHead(400, { 'Content-Type': 'text/plain' });
     res.end('Invalid url');
+    return;
+  }
+  // Security: only allow proxying to the Nexon ranking API (avoid open proxy / SSRF).
+  const allowedPrefix = 'https://www.nexon.com/api/maplestory/';
+  if (targetUrl.trim().toLowerCase().indexOf(allowedPrefix.toLowerCase()) !== 0) {
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.end('Proxy only allows Nexon ranking API');
     return;
   }
   const lib = parsed.protocol === 'https:' ? require('https') : require('http');
