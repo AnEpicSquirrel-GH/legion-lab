@@ -138,7 +138,7 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Thunder Breaker': 'Ereve_Brilliance',   // Jewel
   // Explorer Mages (each explicit so Bishop never falls back to Mage → Flaming Book)
   'Lv. 100 Secondary|Arch Mage (Fire, Poison)':   'Rusty_Book_(Epode)',  // F/P: Rusty Book (Epode)
-  'Lv. 100 Secondary|Arch Mage (Ice, Lightning)': 'Rusty_Book_(Epode)',  // I/L: Metallic Blue in-game; same icon asset
+  'Lv. 100 Secondary|Arch Mage (Ice, Lightning)': 'Metallic_Blue_Book_(Epode)',  // I/L: Metallic Blue (distinct from F/P Rusty)
   'Lv. 100 Secondary|Bishop':                     'Frozen_White_Gold_Book', // Bishop: White Gold Book (Epode) Lv 100; no non-Frozen asset, use Frozen_White_Gold_Book
   // Heroes (each explicit: Aran/Evan/Shade ≠ Warrior/Mage/Pirate fallback)
   'Lv. 100 Secondary|Aran':     'Dragon_Mass',          // Mass (Polearm)
@@ -201,7 +201,7 @@ const SECONDARY_ICON_MAP = {
   'Deimos Warrior Shield|Paladin': 'Deimos_Warrior_Shield',
   'Berserk Chain|Dark Knight': 'Berserk_Chain',
   'Rusty Book (Epode)|Arch Mage (Fire, Poison)': 'Rusty_Book_(Epode)',
-  'Rusty Book (Epode)|Arch Mage (Ice, Lightning)': 'Rusty_Book_(Epode)',
+  'Rusty Book (Epode)|Arch Mage (Ice, Lightning)': 'Metallic_Blue_Book_(Epode)',  // I/L uses Metallic Blue book icon
   'White Gold Book (Epode)|Bishop': 'Frozen_White_Gold_Book',
   'Blasted Feather|Bowmaster': 'Blasted_Feather',
   'True Shot|Marksman': 'True_Shot',
@@ -281,7 +281,7 @@ const SECONDARY_ICON_MAP = {
   'Frozen Secondary|Ren':                        'Frozen_Imugi_Gem',
 
   // ── Princess No Secondary (wiki-aligned per class) ──────────────────
-  "Princess No Secondary|Warrior":                    "Princess_No's_Skull_Armor",
+  // No Warrior fallback for Skull Armor; only Buccaneer has explicit Princess_No's_Skull_Armor
   "Princess No Secondary|Mage":                       "Princess_No's_Flaming_Book",
   "Princess No Secondary|Archer":                     "Princess_No's_Accursed_Arrow",
   "Princess No Secondary|Thief":                      "Princess_No's_Compass",
