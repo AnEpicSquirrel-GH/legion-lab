@@ -493,7 +493,7 @@ function getWeaponItemsForClass(cls) {
   const weaponTypes = cls === 'Zero' ? ['Long Sword'] : data.weaponTypes;
   const seen   = new Set();
   const items  = [];
-  const TIER_ORDER = cls === 'Zero' ? ['Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'] : ['Frozen', 'Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
+  const TIER_ORDER = cls === 'Zero' ? ['Pensalir', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'] : ['Pensalir', 'Frozen', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Eternal'];
   const TIER_MAP   = { Frozen: 'Frozen', Pensalir: 'Pensalir', Fafnir: 'Fafnir', Sweetwater: 'Sweetwater',
                        Absolab: 'Absolab', Arcane: 'Arcane', Pitched: 'Pitched', Eternal: 'Eternal' };
   for (const tierKey of TIER_ORDER) {
