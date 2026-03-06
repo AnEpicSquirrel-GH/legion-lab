@@ -47,7 +47,7 @@ function resolvePresetSecondary(charClass, genericLabel) {
     return 'Frozen Secondary';
   }
   if (genericLabel === 'Princess No Secondary') {
-    if (charClass === 'Demon Slayer' || charClass === 'Demon Avenger') return 'Ruin Force Shield';
+    if (charClass === 'Demon Slayer' || charClass === 'Demon Avenger') return "Princess No's Accursed Shield";
     return 'Princess No Secondary';
   }
   return null;

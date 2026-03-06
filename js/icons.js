@@ -134,24 +134,29 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Night Walker':    'Ereve_Brilliance',   // Jewel
   'Lv. 100 Secondary|Dawn Warrior':   'Ereve_Brilliance',   // Jewel
   'Lv. 100 Secondary|Thunder Breaker': 'Ereve_Brilliance',   // Jewel
-  // Explorer Mages
-  'Lv. 100 Secondary|Bishop':                     'Rusty_Book_(Epode)',  // Bishop uses Magic Book, not Rosary
-  'Lv. 100 Secondary|Arch Mage (Ice, Lightning)': 'Rusty_Book_(Epode)',
-  // Heroes
+  // Explorer Mages (each explicit so Bishop never falls back to Mage → Flaming Book)
+  'Lv. 100 Secondary|Arch Mage (Fire, Poison)':   'Rusty_Book_(Epode)',  // F/P: Rusty Book (Epode)
+  'Lv. 100 Secondary|Arch Mage (Ice, Lightning)': 'Rusty_Book_(Epode)',  // I/L: Metallic Blue in-game; same icon asset
+  'Lv. 100 Secondary|Bishop':                     'Rusty_Book_(Epode)',  // Bishop: Magic Book, not Rosary
+  // Heroes (each explicit: Aran/Evan/Shade ≠ Warrior/Mage/Pirate fallback)
+  'Lv. 100 Secondary|Aran':     'Dragon_Mass',          // Mass (Polearm)
+  'Lv. 100 Secondary|Evan':    "Dragon_Master's_Legacy", // Document (Staff/Wand)
   'Lv. 100 Secondary|Luminous': 'Karma_Orb',
   'Lv. 100 Secondary|Mercedes': 'Golden_Pearl_Leaf',   // Magic Arrow (Leaf icon used for Mercedes secondary)
   'Lv. 100 Secondary|Phantom':  'Carte_Finale',
+  'Lv. 100 Secondary|Shade (Eunwol)': 'Golden_Fox_Marble', // Fox Marble
   // Explorer Archers (Arrow Fletching / Bow Thimble / Relic)
   'Lv. 100 Secondary|Bowmaster':  'Blasted_Feather',   // Arrow Fletching
   'Lv. 100 Secondary|Marksman':   'True_Shot',         // Bow Thimble
   'Lv. 100 Secondary|Pathfinder': 'Perfect_Relic',
-  // Resistance
+  // Resistance (Battle Mage = Magic Marble, not Mage book)
+  'Lv. 100 Secondary|Battle Mage': 'Maximizer_Ball',   // Magic Marble
   'Lv. 100 Secondary|Wild Hunter': 'Wild_Heron',       // Arrowhead
   'Lv. 100 Secondary|Blaster':    'Masterwork_Charges',
   'Lv. 100 Secondary|Mechanic':   'Octa_Core_Controller',
-  // Explorer Thieves
-  'Lv. 100 Secondary|Night Lord': 'Slashing_Shadow',
-  'Lv. 100 Secondary|Shadower':   'Slashing_Shadow',
+  // Explorer Thieves (Night Lord = Charm; Shadower = Dagger Scabbard)
+  'Lv. 100 Secondary|Night Lord': 'Death_Sender_Charm',   // Charm (Lv 100)
+  'Lv. 100 Secondary|Shadower':   'Slashing_Shadow',       // Dagger Scabbard (Lv 100)
   // Demon — both use Force Shield (Demon Aegis) type
   'Lv. 100 Secondary|Demon Slayer':  'Force_Shield_of_Extremes',
   'Lv. 100 Secondary|Demon Avenger': 'Force_Shield_of_Extremes',
@@ -163,21 +168,30 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Ark':           'Ultimate_Path',       // Abyssal Path
   'Lv. 100 Secondary|Khali':         'Infinite_Hex_Seeker', // Hex Seeker exclusive to Khali (wiki)
   'Lv. 100 Secondary|Kain':          'D100_Custom_Weapon_Belt', // Weapon Belt (wiki)
-  // Sengoku / Other
+  // Sengoku / Anima / Jianghu / Shine (each explicit: Lara/Lynn ≠ Mage, Mo Xuan ≠ Pirate, Sia ≠ Thief)
   'Lv. 100 Secondary|Hayato':        'Fire_Phoenix_Blade',   // Kodachi
   'Lv. 100 Secondary|Kanna':         'Pandemonium_Talisman',
   'Lv. 100 Secondary|Hoyoung':       'Moonstone_Fan_Tassel', // Fan Tassel (wiki)
+  'Lv. 100 Secondary|Lara':          'Radiant_Four-Jade_Ornament', // Ornament (Anima)
+  'Lv. 100 Secondary|Mo Xuan':       'Boundless_Brace_Band', // Brace Band (Jianghu)
+  'Lv. 100 Secondary|Lynn':          'Golden_Pearl_Leaf',    // Leaf (Jianghu; shared leaf asset)
   'Lv. 100 Secondary|Ren':           'Violet_Imugi_Gem',      // Imugi Gem (Anima)
-  // Kinesis: Chess Piece (not Hex Seeker)
+  'Lv. 100 Secondary|Sia Astelle':   'Evolving_Compass',      // Compass (Shine)
+  // Kinesis: Chess Piece (Friends World; not Hex Seeker)
   'Lv. 100 Secondary|Kinesis':       'Queen_Chess_Piece',
-  'Lv. 100 Secondary|Zero':          "Dragon_Master's_Legacy",
+  'Lv. 100 Secondary|Zero':          "Dragon_Master's_Legacy", // Transcendent: no traditional secondary (Heavy Sword in slot)
   'Lv. 100 Secondary|Xenon':         'Octa_Core_Controller',  // Controller (wiki; was Transmitter = Cadena)
+  // Explorer Pirates (each explicit: Buccaneer/Corsair ≠ Cannon Master)
+  'Lv. 100 Secondary|Buccaneer':     'Wrist_Armor',        // Wrist Band
+  'Lv. 100 Secondary|Corsair':      'Falcon_Eye',          // Far Sight
   'Lv. 100 Secondary|Cannon Master': 'Center_Fire_Bomb',   // Powder Keg (wiki)
   'Lv. 100 Secondary|Cannoneer':     'Center_Fire_Bomb',   // alias for Cannon Master
 
-  // ── Ruin Force Shield (Demon Slayer / Demon Avenger exclusive) ──────
+  // ── Demon Aegis (Demon Slayer / Demon Avenger) ────────────────────────
   'Ruin Force Shield|Demon Slayer':  'Ruin_Force_Shield',
   'Ruin Force Shield|Demon Avenger': 'Ruin_Force_Shield',
+  "Princess No's Accursed Shield|Demon Slayer":  "Princess_No's_Accursed_Shield",
+  "Princess No's Accursed Shield|Demon Avenger": "Princess_No's_Accursed_Shield",
 
   // ── Frozen Secondary (Event tab; Frozen naming, no Eqp_ prefix) ────
   'Frozen Secondary|Warrior':                    'Frozen_Force_Shield',
@@ -347,9 +361,11 @@ function gearIconPath(setName, slot, charClass) {
   if (!suffix) return null;
 
   if (CLASS_SPECIFIC_SLOTS.has(slot)) {
-    let cat = CLASS_CATEGORY[charClass] || 'Warrior';
+    const effectiveClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[charClass]) || charClass;
+    let cat = CLASS_CATEGORY[effectiveClass] || 'Warrior';
     // Xenon: MapleIcons has no Xenon armor; wiki treats Xenon as Thief for class-dependent content (Hat/Top/Bottom)
-    if (charClass === 'Xenon' && (slot === 'Hat' || slot === 'Top/Overall' || slot === 'Bottom')) {
+    const isXenon = (charClass && String(charClass).trim() === 'Xenon') || cat === 'Xenon';
+    if (isXenon && (slot === 'Hat' || slot === 'Top/Overall' || slot === 'Bottom')) {
       cat = 'Thief';
     }
     return `MapleIcons/Gear Icons/${prefix}${suffix}${cat}.png`;
@@ -438,9 +454,11 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
     // Zero: Heavy Sword in Secondary uses the same weapon icon (Weapons folder)
     const wIcon = WEAPON_LABEL_ICON[itemLabel];
     if (wIcon) candidates.push(`MapleIcons/Gear Icons/Weapons/${wIcon}.png`);
-    const cat = CLASS_CATEGORY[charClass] || 'Warrior';
-    // Check class-specific entry first, then fall back to category
-    const classFname = SECONDARY_ICON_MAP[`${itemLabel}|${charClass}`]
+    const rawClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[charClass]) || charClass;
+    const effectiveClass = typeof rawClass === 'string' ? rawClass.trim() : rawClass;
+    const cat = CLASS_CATEGORY[effectiveClass] || 'Warrior';
+    // Check class-specific entry first (Explorers must have explicit entries to avoid wrong category fallback, e.g. Bishop → Mage → Flaming Book)
+    const classFname = SECONDARY_ICON_MAP[`${itemLabel}|${effectiveClass}`]
                     || SECONDARY_ICON_MAP[`${itemLabel}|${cat}`];
     if (classFname) candidates.push(`MapleIcons/Gear Icons/Secondary Weapons/${classFname}.png`);
     // Direct lookup for class-agnostic items (katara, standalone secondaries, etc.)
@@ -452,7 +470,13 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
 
   // ── Weapon slot — prefer class-specific icon from WEAPON_TIER_ITEMS ──
   if (slot === 'Weapon' && itemLabel !== 'None') {
-    const wIcon = WEAPON_LABEL_ICON[itemLabel];
+    const effectiveClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[charClass]) || charClass;
+    let iconLabel = itemLabel;
+    if (!WEAPON_LABEL_ICON[itemLabel] && typeof resolvePresetWeapon === 'function') {
+      const resolved = resolvePresetWeapon(effectiveClass, itemLabel);
+      if (resolved) iconLabel = resolved;
+    }
+    const wIcon = WEAPON_LABEL_ICON[iconLabel];
     if (wIcon) candidates.push(`MapleIcons/Gear Icons/Weapons/${wIcon}.png`);
   }
 

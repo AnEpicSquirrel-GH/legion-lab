@@ -637,7 +637,7 @@ function updateBottomForOverall(section, isOverall, skipSave = false) {
 
 function buildSlot(char, charIdx, slot, section) {
   const gearData    = char.gear[slot] || { item: 'None', stars: 0 };
-  const currentItem = gearData.item ?? 'None';
+  let currentItem   = gearData.item ?? 'None';
   const slotEl      = document.createElement('div');
   slotEl.className  = 'gear-slot';
   slotEl.dataset.slot = slot;
@@ -649,9 +649,22 @@ function buildSlot(char, charIdx, slot, section) {
   const body = document.createElement('div');
   body.className = 'slot-body';
 
+  const canonicalClass = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[char.cls]) || char.cls;
   const classWeapons = slot === 'Weapon' ? getWeaponItemsForClass(char.cls) : null;
   const allItems     = classWeapons ?? SLOT_ITEMS[slot] ?? [];
-  const charCat      = CLASS_CATEGORY[char.cls] || '';
+  const charCat      = CLASS_CATEGORY[canonicalClass] || '';
+
+  // Resolve generic CRA Hat/Top/Bottom to class-specific name (e.g. CRA Hat → Royal Dunwitch Hat for Mages)
+  if (typeof GENERIC_CRA_ARMOR_LABELS !== 'undefined' && GENERIC_CRA_ARMOR_LABELS.has(currentItem) &&
+      (slot === 'Hat' || slot === 'Top/Overall' || slot === 'Bottom') && typeof resolvePresetGearSlot === 'function') {
+    const resolved = resolvePresetGearSlot(slot, currentItem, canonicalClass);
+    if (resolved && resolved !== currentItem) {
+      currentItem = resolved;
+      chars[charIdx].gear[slot] = { ...chars[charIdx].gear[slot], item: resolved };
+      if (typeof save === 'function') save();
+    }
+  }
+
   let items;
   let effectiveItem  = currentItem;
   if (slot === 'Secondary Weapon' && char.cls === 'Zero') {
@@ -669,9 +682,11 @@ function buildSlot(char, charIdx, slot, section) {
       : [{ label: currentItem, tier: ITEM_TIER[currentItem] ?? 'None' }, ...classWeapons];
   } else {
     items = allItems.filter(it => {
-      if (it.excl && it.excl.includes(char.cls)) return it.label === currentItem;
+      if (it.excl && it.excl.includes(canonicalClass)) return it.label === currentItem;
+      // Hide generic CRA Hat/Top/Bottom from dropdown; we list the named variants (e.g. Royal Assassin Hood) per class
+      if (typeof GENERIC_CRA_ARMOR_LABELS !== 'undefined' && GENERIC_CRA_ARMOR_LABELS.has(it.label) && it.label !== currentItem) return false;
       if (!it.cls || it.cls.length === 0) return true;
-      if (it.cls.includes(char.cls)) return true;
+      if (it.cls.includes(canonicalClass)) return true;
       if (charCat && it.cls.includes(charCat)) return true;
       return it.label === currentItem;
     });
@@ -761,7 +776,7 @@ function buildSlot(char, charIdx, slot, section) {
   }
   applyInputVisibility(effectiveItem || currentItem);
 
-  renderGearIcon(iconWrap, ITEM_TIER[currentItem] ?? 'None', slot, currentItem, char.cls);
+  renderGearIcon(iconWrap, ITEM_TIER[currentItem] ?? 'None', slot, currentItem, canonicalClass);
 
   function applyStarValue() {
     const itemLabel = chars[charIdx].gear[slot]?.item ?? 'None';
@@ -857,7 +872,7 @@ function buildSlot(char, charIdx, slot, section) {
       return;
     }
 
-    renderGearIcon(iconWrap, newTier, slot, newItem, char.cls);
+    renderGearIcon(iconWrap, newTier, slot, newItem, canonicalClass);
 
     if (slot === 'Top/Overall') {
       updateBottomForOverall(section, !!(ITEM_META[newItem]?.isOverall));
@@ -883,7 +898,7 @@ function buildSlot(char, charIdx, slot, section) {
             secSel.appendChild(opt);
             if (secSel._syncDisplay) secSel._syncDisplay();
           }
-          if (secIconWrap) renderGearIcon(secIconWrap, ITEM_TIER[heavy] ?? 'None', 'Secondary Weapon', heavy, char.cls);
+          if (secIconWrap) renderGearIcon(secIconWrap, ITEM_TIER[heavy] ?? 'None', 'Secondary Weapon', heavy, canonicalClass);
           if (secChip) syncChip(section, 'Secondary Weapon', heavy, 0);
           syncSetsCell(section);
         }

@@ -51,6 +51,14 @@ const CLASS_CATEGORY = {
   Xenon: 'Xenon',
 };
 
+/** API/display class name variants → canonical name (for icon lookups and preset resolution). */
+const CLASS_NAME_ALIAS = {
+  'Arch Mage (I/L)':            'Arch Mage (Ice, Lightning)',
+  'Arch Mage (Ice/Lightning)':  'Arch Mage (Ice, Lightning)',
+  'Arch Mage (F/P)':            'Arch Mage (Fire, Poison)',
+  'Arch Mage (Fire/Poison)':    'Arch Mage (Fire, Poison)',
+};
+
 /* ────────────────────────────────────────────────────────────────
    CLASS WEAPON & SECONDARY DATASET
    Provides per-class: faction, weapon types, secondary type.
@@ -291,7 +299,7 @@ const CLASS_WEAPON_DATA = {
 
   // ── Anima ──────────────────────────────────────────────────────
   'Ark': {
-    faction:     'Anima',
+    faction:     'Flora',
     weaponTypes: ['Martial Brace'],
     secondary:   'Abyssal Path',   // wiki: Abyssal Path exclusive to Ark
   },
@@ -385,6 +393,7 @@ const CLASS_SILVER_EMBLEM = {
   'Mechanic':                   'Silver Resistance Emblem',
   'Blaster':                    'Silver Resistance Emblem',
   'Kinesis':                    'Silver Kinesis Emblem',
+  'Xenon':                      'Silver Resistance Emblem',
   'Kaiser':                     'Lesser Dragon Emblem',
   'Angelic Buster':             'Lesser Angel Emblem',
   'Cadena':                     'Silver Agent Emblem',
@@ -445,6 +454,7 @@ const CLASS_GOLD_EMBLEM = {
   'Mechanic':                   'Gold Resistance Emblem',
   'Blaster':                    'Gold Resistance Emblem',
   'Kinesis':                    'Gold Kinesis Emblem',
+  'Xenon':                      'Gold Resistance Emblem',
   // ── Nova ────────────────────────────────────────────────────
   'Kaiser':                     'Dragon Emblem',
   'Angelic Buster':             'Angel Emblem',

@@ -198,7 +198,8 @@ const SLOT_ITEMS = {
     { label: 'Deimos Shadow Shield',         tier: 'Pensalir',  cls: ['Shadower'], hasStars: true },
     { label: 'Frozen Secondary',             tier: 'Frozen',    excl: ['Dual Blade'] },
     { label: 'Princess No Secondary',        tier: 'PrincessNo', excl: ['Dual Blade'] },
-    // ── Princess No: Demon Slayer / Demon Avenger (Demon Aegis) ──
+    // ── Demon Aegis: Princess No (Lv 140) vs Ruin Force (Damien, Lv 100) ──
+    { label: "Princess No's Accursed Shield", tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
     { label: 'Ruin Force Shield',            tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
     // ── Dual Blade Kataras ──
     { label: 'Utgard Katara',                tier: 'Pensalir',  cls: ['Dual Blade'] },
@@ -222,7 +223,7 @@ const SLOT_ITEMS = {
     { label: 'Silver Heroes Emblem (Luminous)',        tier: 'Pensalir', cls: ['Luminous'] },
     { label: 'Silver Heroes Emblem (Shade)',           tier: 'Pensalir', cls: ['Shade (Eunwol)'] },
     { label: 'Silver Demon Emblem',                   tier: 'Pensalir', cls: ['Demon Slayer','Demon Avenger'] },
-    { label: 'Silver Resistance Emblem',              tier: 'Pensalir', cls: ['Battle Mage','Wild Hunter','Mechanic','Blaster'] },
+    { label: 'Silver Resistance Emblem',              tier: 'Pensalir', cls: ['Battle Mage','Wild Hunter','Mechanic','Blaster','Xenon'] },
     { label: 'Silver Kinesis Emblem',                 tier: 'Pensalir', cls: ['Kinesis'] },
     { label: 'Lesser Dragon Emblem',                  tier: 'Pensalir', cls: ['Kaiser'] },
     { label: 'Lesser Angel Emblem',                   tier: 'Pensalir', cls: ['Angelic Buster'] },
@@ -250,7 +251,7 @@ const SLOT_ITEMS = {
     { label: 'Gold Heroes Emblem (Luminous)',          tier: 'Fafnir', cls: ['Luminous'] },
     { label: 'Gold Heroes Emblem (Shade)',             tier: 'Fafnir', cls: ['Shade (Eunwol)'] },
     { label: 'Gold Demon Emblem',                     tier: 'Fafnir', cls: ['Demon Slayer','Demon Avenger'] },
-    { label: 'Gold Resistance Emblem',                tier: 'Fafnir', cls: ['Battle Mage','Wild Hunter','Mechanic','Blaster'] },
+    { label: 'Gold Resistance Emblem',                tier: 'Fafnir', cls: ['Battle Mage','Wild Hunter','Mechanic','Blaster','Xenon'] },
     { label: 'Gold Kinesis Emblem',                   tier: 'Fafnir', cls: ['Kinesis'] },
     { label: 'Dragon Emblem',                         tier: 'Fafnir', cls: ['Kaiser'] },
     { label: 'Angel Emblem',                          tier: 'Fafnir', cls: ['Angelic Buster'] },
@@ -513,6 +514,9 @@ const GEAR_PRESETS = [
 
 /** Slots that have class-specific variants; preset dropdown shows only canonical (no cls) so we apply the right one per class. */
 const GEAR_PRESET_CANONICAL_SLOTS = new Set(['Hat', 'Top/Overall', 'Bottom']);
+
+/** Generic CRA armor labels to hide from per-slot dropdowns (we list the named variants instead, e.g. Royal Assassin Hood). */
+const GENERIC_CRA_ARMOR_LABELS = new Set(['CRA Hat', 'CRA Top', 'CRA Bottom']);
 
 /** Tier order for preset dropdowns: lowest tier first (Pensalir, then Absolab, Arcane, Eternal, etc.). */
 const PRESET_TIER_ORDER = ['Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'Gollux', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
