@@ -40,7 +40,7 @@ const CYGNUS_KNIGHTS_JEWEL = ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Ni
 const LV100_SECONDARY_BY_CLASS = {
   // Explorers
   'Hero': 'Virtues Medallion',
-  'Paladin': 'Deimos Warrior Shield',
+  'Paladin': 'Sacred Rosary',
   'Dark Knight': 'Berserk Chain',
   'Arch Mage (Fire, Poison)': 'Rusty Book (Epode)',
   'Arch Mage (Ice, Lightning)': 'Rusty Book (Epode)',
@@ -64,21 +64,21 @@ const LV100_SECONDARY_BY_CLASS = {
   'Aran': 'Dragon Mass',
   'Evan': 'Deimos Sage Shield',
   'Luminous': 'Karma Orb',
-  'Mercedes': 'Golden Pearl Leaf',
+  'Mercedes': 'Infinite Magic Arrows',
   'Phantom': 'Carte Finale',
-  'Shade (Eunwol)': 'Golden Fox Marble',
+  'Shade': 'Golden Fox Marble',
   // Resistance
   'Battle Mage': 'Deimos Sage Shield',
   'Blaster': 'Masterwork Charges',
-  'Demon Slayer': 'Ruin Force Shield',
-  'Demon Avenger': 'Ruin Force Shield',
+  'Demon Slayer': 'Force Shield of Extremes',
+  'Demon Avenger': 'Force Shield of Extremes',
   'Mechanic': 'Eternal Magnum',
   'Wild Hunter': 'Wild Heron',
   'Xenon': 'Octa Core Controller',
   // Nova
   'Kaiser': 'Nova Truth Essence',
-  'Angelic Buster': 'Eternal Magnum',
-  'Cadena': 'Warp Forge',
+  'Angelic Buster': 'Green Soul Ring',
+  'Cadena': 'Transmitter Type-A',
   'Kain': 'D100 Custom Weapon Belt',
   // Flora
   'Adele': 'Noble Bladebinder',
@@ -130,9 +130,9 @@ const FROZEN_SECONDARY_BY_CLASS = {
   'Aran': 'Frozen Dragon Mass',
   'Evan': "Frozen Dragon Master's Legacy",
   'Luminous': 'Frozen Orb',
-  'Mercedes': 'Frozen Pearl Leaf',
+  'Mercedes': 'Frozen Magic Arrows',
   'Phantom': 'Carte Frozen',
-  'Shade (Eunwol)': 'Frozen Fox Marble',
+  'Shade': 'Frozen Fox Marble',
   // Resistance
   'Battle Mage': 'Frozen Maximizer Ball',
   'Blaster': 'Frozen Charges',
@@ -198,7 +198,7 @@ const PRINCESS_NO_SECONDARY_BY_CLASS = {
   'Luminous': "Princess No's Soul Orb",
   'Mercedes': "Princess No's Accursed Arrow",
   'Phantom': "Princess No's Carte",
-  'Shade (Eunwol)': "Princess No's Fox Marble",
+  'Shade': "Princess No's Fox Marble",
   // Resistance
   'Battle Mage': "Princess No's Accursed Marble",
   'Blaster': "Princess No's Megaton Charges",
@@ -447,6 +447,12 @@ function applyAccessoryPresets(gear, selectedPresetNames) {
             assignItem = useHighTierGuardian ? RING_EXCLUSIVE_GROUPS[groupKey].highTier : item;
             ringExclusivePlaced[groupKey] = true;
           }
+        }
+        // Don't assign the same item to another slot (avoids duplicates when applying same preset again)
+        const alreadyIn = family.find(s => slotState[s].item === assignItem);
+        if (alreadyIn) {
+          slotState[alreadyIn] = { presetIndex, item: assignItem };
+          return;
         }
         let target = family.find(s => slotState[s].item === 'None');
         if (!target) {

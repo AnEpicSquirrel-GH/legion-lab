@@ -81,6 +81,22 @@ const SETS = {
 //   ozRing: true  → use a level 1–6 dropdown instead of star input
 //   hasStars: false → hide star input (default true for non-oz items)
 const _RING_ITEMS = [
+  // ── Event Rings (no set, no stars; only rings with icons in Accessories/EventRings/) ──
+  { label: 'Abyss Hunter Ring',            tier: 'None', hasStars: false, dividerAbove: true },
+  { label: 'Adventure Deep Dark Critical Ring', tier: 'None', hasStars: false },
+  { label: 'Awake Ring',                   tier: 'None', hasStars: false },
+  { label: 'Chaos Ring',                   tier: 'None', hasStars: false },
+  { label: 'Cosmos Ring',                   tier: 'None', hasStars: false },
+  { label: 'Eternal Flame Ring',            tier: 'None', hasStars: false },
+  { label: 'Glory Guard Ring Guardian',     tier: 'None', hasStars: false },
+  { label: 'Glory Guard Ring Justicar',     tier: 'None', hasStars: false },
+  { label: 'Grand Adventure Ring',          tier: 'None', hasStars: false },
+  { label: 'Master Ring SS',                tier: 'None', hasStars: false },
+  { label: 'Sylph Ring',                    tier: 'None', hasStars: false },
+  { label: 'Synergy Ring',                 tier: 'None', hasStars: false },
+  { label: 'Tenebris Expedition Ring',     tier: 'None', hasStars: false },
+  { label: 'Vengeful Ring',                tier: 'None', hasStars: false },
+  // ── Crafted / progression rings ──
   { label: 'Meister Ring',                 tier: 'Pensalir'   },
   { label: 'Silver Blossom Ring',          tier: 'Pensalir'   },
   { label: 'Noble Ifia\'s Ring',           tier: 'Pensalir'   },
@@ -93,6 +109,7 @@ const _RING_ITEMS = [
   { label: 'Ring of Restraint',            tier: 'OzRing',    ozRing: true },
   { label: 'Continuous Ring',              tier: 'OzRing',    ozRing: true },
   { label: 'Level Jump Ring',              tier: 'OzRing',    ozRing: true },
+  { label: 'Weapon Jump Ring',             tier: 'OzRing',    ozRing: true },
   { label: 'Risk Taker Ring',              tier: 'OzRing',    ozRing: true },
   { label: 'Critical Damage Ring',         tier: 'OzRing',    ozRing: true },
   { label: 'Totalling Ring',               tier: 'OzRing',    ozRing: true },
@@ -124,7 +141,7 @@ const SLOT_ITEMS = {
     { label: 'Royal Warrior Helm',           tier: 'Fafnir',   cls: ['Hero', 'Paladin', 'Dark Knight', 'Aran', 'Mihile', 'Kaiser', 'Adele', 'Zero', 'Hayato', 'Dawn Warrior', 'Blaster', 'Demon Slayer', 'Demon Avenger', 'Ren'] },
     { label: 'Royal Ranger Beret',           tier: 'Fafnir',   cls: ['Bowmaster', 'Marksman', 'Pathfinder', 'Wild Hunter', 'Wind Archer', 'Kain', 'Mercedes'] },
     { label: 'Royal Assassin Hood',          tier: 'Fafnir',   cls: ['Night Lord', 'Shadower', 'Dual Blade', 'Phantom', 'Cadena', 'Hoyoung', 'Khali', 'Night Walker', 'Xenon'] },
-    { label: 'Royal Wanderer Hat',            tier: 'Fafnir',   cls: ['Buccaneer', 'Corsair', 'Cannon Master', 'Mechanic', 'Angelic Buster', 'Ark', 'Mo Xuan', 'Thunder Breaker', 'Shade (Eunwol)'] },
+    { label: 'Royal Wanderer Hat',            tier: 'Fafnir',   cls: ['Buccaneer', 'Corsair', 'Cannon Master', 'Mechanic', 'Angelic Buster', 'Ark', 'Mo Xuan', 'Thunder Breaker', 'Shade'] },
     { label: 'Absolab Hat',                  tier: 'Absolab'  },
     { label: 'Arcane Umbra Hat',             tier: 'Arcane'   },
     { label: 'Eternal Hat',                  tier: 'Eternal'  },
@@ -137,7 +154,7 @@ const SLOT_ITEMS = {
     { label: 'Eagle Eye Warrior Armor',       tier: 'Fafnir',   cls: ['Hero', 'Paladin', 'Dark Knight', 'Aran', 'Mihile', 'Kaiser', 'Adele', 'Zero', 'Hayato', 'Dawn Warrior', 'Blaster', 'Demon Slayer', 'Demon Avenger', 'Ren'] },
     { label: 'Eagle Eye Ranger Cowl',        tier: 'Fafnir',   cls: ['Bowmaster', 'Marksman', 'Pathfinder', 'Wild Hunter', 'Wind Archer', 'Kain', 'Mercedes'] },
     { label: 'Eagle Eye Assassin Shirt',     tier: 'Fafnir',   cls: ['Night Lord', 'Shadower', 'Dual Blade', 'Phantom', 'Cadena', 'Hoyoung', 'Khali', 'Night Walker', 'Xenon'] },
-    { label: 'Eagle Eye Wanderer Coat',       tier: 'Fafnir',   cls: ['Buccaneer', 'Corsair', 'Cannon Master', 'Mechanic', 'Angelic Buster', 'Ark', 'Mo Xuan', 'Thunder Breaker', 'Shade (Eunwol)'] },
+    { label: 'Eagle Eye Wanderer Coat',       tier: 'Fafnir',   cls: ['Buccaneer', 'Corsair', 'Cannon Master', 'Mechanic', 'Angelic Buster', 'Ark', 'Mo Xuan', 'Thunder Breaker', 'Shade'] },
     { label: 'Absolab Overall',              tier: 'Absolab',  isOverall: true },
     { label: 'Arcane Umbra Overall',         tier: 'Arcane',   isOverall: true },
     { label: 'Eternal Top',                  tier: 'Eternal'  },
@@ -148,7 +165,7 @@ const SLOT_ITEMS = {
     { label: 'Trixter Warrior Pants',        tier: 'Fafnir',   cls: ['Hero', 'Paladin', 'Dark Knight', 'Aran', 'Mihile', 'Kaiser', 'Adele', 'Zero', 'Hayato', 'Dawn Warrior', 'Blaster', 'Demon Slayer', 'Demon Avenger', 'Ren'] },
     { label: 'Trixter Ranger Pants',         tier: 'Fafnir',   cls: ['Bowmaster', 'Marksman', 'Pathfinder', 'Wild Hunter', 'Wind Archer', 'Kain', 'Mercedes'] },
     { label: 'Trixter Assassin Pants',       tier: 'Fafnir',   cls: ['Night Lord', 'Shadower', 'Dual Blade', 'Phantom', 'Cadena', 'Hoyoung', 'Khali', 'Night Walker', 'Xenon'] },
-    { label: 'Trixter Wanderer Pants',       tier: 'Fafnir',   cls: ['Buccaneer', 'Corsair', 'Cannon Master', 'Mechanic', 'Angelic Buster', 'Ark', 'Mo Xuan', 'Thunder Breaker', 'Shade (Eunwol)'] },
+    { label: 'Trixter Wanderer Pants',       tier: 'Fafnir',   cls: ['Buccaneer', 'Corsair', 'Cannon Master', 'Mechanic', 'Angelic Buster', 'Ark', 'Mo Xuan', 'Thunder Breaker', 'Shade'] },
     { label: 'Eternal Bottom',               tier: 'Eternal'  },
   ],
   'Gloves': [
@@ -187,7 +204,8 @@ const SLOT_ITEMS = {
   'Secondary Weapon': [
     // ── All classes (except Dual Blade who use Kataras) ──
     { label: 'Lv. 100 Secondary',            tier: 'Pensalir',  excl: ['Dual Blade'] },
-    // ── Explorer Warriors ──
+    // ── Explorer Warriors (Paladin: Lv 100 Rosary then Shield) ──
+    { label: 'Sacred Rosary',                tier: 'Pensalir',  cls: ['Paladin'] },
     { label: 'Deimos Warrior Shield',        tier: 'Pensalir',  cls: ['Hero', 'Paladin', 'Dawn Warrior'], hasStars: true },
     // ── Explorer + Other Mages ──
     { label: 'Deimos Sage Shield',           tier: 'Pensalir',  cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Blaze Wizard', 'Evan', 'Battle Mage'], hasStars: true },
@@ -199,7 +217,8 @@ const SLOT_ITEMS = {
     { label: 'Deimos Shadow Shield',         tier: 'Pensalir',  cls: ['Shadower'], hasStars: true },
     { label: 'Frozen Secondary',             tier: 'Frozen',    excl: ['Dual Blade'] },
     { label: 'Princess No Secondary',        tier: 'PrincessNo', excl: ['Dual Blade'] },
-    // ── Demon Aegis: Princess No (Lv 140) vs Ruin Force (Damien, Lv 100) ──
+    // ── Demon Aegis: Lv 100, then Princess No (Lv 140), then Ruin Force (Damien) below ──
+    { label: 'Force Shield of Extremes',      tier: 'Pensalir',  cls: ['Demon Slayer', 'Demon Avenger'] },
     { label: "Princess No's Accursed Shield", tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
     { label: 'Ruin Force Shield',            tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
     // ── Dual Blade Kataras ──
@@ -212,6 +231,13 @@ const SLOT_ITEMS = {
     { label: 'Frozen Katara',                tier: 'Frozen',    cls: ['Dual Blade'] },
     // ── Kaiser only ──
     { label: 'Frozen Dragon Essence',        tier: 'Frozen',    cls: ['Kaiser'] },
+    // ── Angelic Buster (Soul Ring) ──
+    { label: 'Green Soul Ring',              tier: 'Pensalir', cls: ['Angelic Buster'] },
+    // ── Cadena (Transmitter) ──
+    { label: 'Transmitter Type-A',           tier: 'Pensalir', cls: ['Cadena'] },
+    // ── Mercedes (Magic Arrows) ──
+    { label: 'Infinite Magic Arrows',       tier: 'Pensalir', cls: ['Mercedes'] },
+    { label: 'Frozen Magic Arrows',         tier: 'Frozen',   cls: ['Mercedes'] },
   ],
   'Emblem': [
     // ── Silver tier ─────────────────────────────────────────────
@@ -222,7 +248,7 @@ const SLOT_ITEMS = {
     { label: 'Silver Heroes Emblem (Mercedes)',        tier: 'Pensalir', cls: ['Mercedes'] },
     { label: 'Silver Heroes Emblem (Phantom)',         tier: 'Pensalir', cls: ['Phantom'] },
     { label: 'Silver Heroes Emblem (Luminous)',        tier: 'Pensalir', cls: ['Luminous'] },
-    { label: 'Silver Heroes Emblem (Shade)',           tier: 'Pensalir', cls: ['Shade (Eunwol)'] },
+    { label: 'Silver Heroes Emblem (Shade)',           tier: 'Pensalir', cls: ['Shade'] },
     { label: 'Silver Demon Emblem',                   tier: 'Pensalir', cls: ['Demon Slayer','Demon Avenger'] },
     { label: 'Silver Resistance Emblem',              tier: 'Pensalir', cls: ['Battle Mage','Wild Hunter','Mechanic','Blaster','Xenon'] },
     { label: 'Silver Kinesis Emblem',                 tier: 'Pensalir', cls: ['Kinesis'] },
@@ -250,7 +276,7 @@ const SLOT_ITEMS = {
     { label: 'Gold Heroes Emblem (Mercedes)',          tier: 'Fafnir', cls: ['Mercedes'] },
     { label: 'Gold Heroes Emblem (Phantom)',           tier: 'Fafnir', cls: ['Phantom'] },
     { label: 'Gold Heroes Emblem (Luminous)',          tier: 'Fafnir', cls: ['Luminous'] },
-    { label: 'Gold Heroes Emblem (Shade)',             tier: 'Fafnir', cls: ['Shade (Eunwol)'] },
+    { label: 'Gold Heroes Emblem (Shade)',             tier: 'Fafnir', cls: ['Shade'] },
     { label: 'Gold Demon Emblem',                     tier: 'Fafnir', cls: ['Demon Slayer','Demon Avenger'] },
     { label: 'Gold Resistance Emblem',                tier: 'Fafnir', cls: ['Battle Mage','Wild Hunter','Mechanic','Blaster','Xenon'] },
     { label: 'Gold Kinesis Emblem',                   tier: 'Fafnir', cls: ['Kinesis'] },
@@ -325,6 +351,7 @@ const SLOT_ITEMS = {
   'Medal': [
     { label: 'Generic Medal',                tier: 'Pensalir', hasStars: false },
     { label: 'Hyper Burning',                tier: 'Pensalir', hasStars: false },
+    { label: 'Hyper Burning Max',            tier: 'Pensalir', hasStars: false },
     { label: 'Victoria Cup (20)',            tier: 'Pensalir', hasStars: false },
     { label: 'One Who Has Godly Control',    tier: 'Pensalir', hasStars: false },
     { label: "Pollo's Friend",               tier: 'Pensalir', hasStars: false },
@@ -612,6 +639,7 @@ const ACCESSORY_PRESETS = [
     gear: {
       'Face Accessory': 'Berserked',
       'Eye Accessory':  'Magic Eyepatch',
+      'Earring':        'Commanding Force Earring',
       'Pendant 1':      'Source of Suffering',
       'Belt':           'Dreamy Belt',
       'Ring 1':         'Endless Terror',
@@ -1210,10 +1238,17 @@ const ACCESSORY_SLOTS = new Set([
   'Pocket','Badge','Shoulder','Emblem','Belt','Totem','Offset Totem',
 ]);
 
-// Oz ring items live one level deeper: Accessories/Oz Rings/
+// Oz ring items: icons in Accessories/OzRings/ (labels must match _RING_ITEMS)
 const OZ_RING_LABELS = new Set([
-  'Weapon Jump Ring','Ring of Restraint','Risk Taker Ring',
-  'Critical Damage Ring','Total Damage Ring',
+  'Ring of Restraint','Continuous Ring','Level Jump Ring','Weapon Jump Ring','Risk Taker Ring',
+  'Critical Damage Ring','Totalling Ring',
+]);
+
+// Event rings: only those with icons in Accessories/EventRings/, no set, no stars
+const EVENT_RING_LABELS = new Set([
+  'Abyss Hunter Ring','Adventure Deep Dark Critical Ring','Awake Ring','Chaos Ring','Cosmos Ring',
+  'Eternal Flame Ring','Glory Guard Ring Guardian','Glory Guard Ring Justicar','Grand Adventure Ring',
+  'Master Ring SS','Sylph Ring','Synergy Ring','Tenebris Expedition Ring','Vengeful Ring',
 ]);
 
 /** Ring items that share one logical slot: only one can be equipped across Ring 1–4. highTier is used when applying presets. */
@@ -1250,6 +1285,7 @@ function isOzRing(label) { return !!(ITEM_META[label]?.ozRing); }
 // Helper: does this item show a star/SF input? (defaults true; badges/secondary opt-in via hasStars, medals/pocket/emblem never)
 function itemHasStars(slot, label) {
   if (label === 'None') return false;
+  if (ITEM_META[label]?.hasStars === false) return false;  // event rings, medals, etc.
   if (isOzRing(label))  return false;
   if (slot === 'Medal') return false;
   if (slot === 'Pocket') return false;

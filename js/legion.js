@@ -108,7 +108,7 @@ const LINK_SKILL = {
   'Luminous':                     ['Light Wash',           null, ['Ignore DEF +10%', 'Ignore DEF +15%', 'Ignore DEF +20%']],
   'Mercedes':                     ['Elven Blessing',       null, ['EXP +10%', 'EXP +15%', 'EXP +20%']],
   'Phantom':                      ['Phantom Instinct',     null, ['Critical Rate +10%', 'Critical Rate +15%', 'Critical Rate +20%']],
-  'Shade (Eunwol)':               ['Close Call',           null, ['Survive fatal attack 5% chance', 'Survive fatal attack 10% chance', 'Survive fatal attack 15% chance']],
+  'Shade':               ['Close Call',           null, ['Survive fatal attack 5% chance', 'Survive fatal attack 10% chance', 'Survive fatal attack 15% chance']],
   // Resistance
   'Battle Mage':                  _L.resist,
   'Wild Hunter':                  _L.resist,
@@ -173,7 +173,7 @@ const LEGION_EFFECT = {
   'Luminous':                    ['INT',                      ['+10','+20','+40','+80','+100']],
   'Mercedes':                    ['Skill Cooldown',           ['-2%', '-3%', '-4%', '-5%', '-6%']],
   'Phantom':                     ['Mesos Obtained',           ['+1%','+2%','+3%','+4%','+5%']],
-  'Shade (Eunwol)':              ['Critical Damage',          ['+1%','+2%','+3%','+5%','+6%']],
+  'Shade':              ['Critical Damage',          ['+1%','+2%','+3%','+5%','+6%']],
   'Battle Mage':                 ['INT',                      ['+10','+20','+40','+80','+100']],
   'Wild Hunter':                 ['Extra Damage (20% chance)',['4%',  '8%',  '12%', '16%', '20%']],
   'Mechanic':                    ['Buff Duration',            ['+5%','+10%','+15%','+20%','+25%']],

@@ -453,7 +453,8 @@ function buildSection(char, idx) {
 
   const text = document.createElement('div');
   text.className = 'char-text';
-  const clsCategory = CLASS_CATEGORY[char.cls] ?? null;
+  const canonicalClassForCat = (typeof CLASS_NAME_ALIAS !== 'undefined' && CLASS_NAME_ALIAS[char.cls]) ? CLASS_NAME_ALIAS[char.cls] : char.cls;
+  const clsCategory = CLASS_CATEGORY[canonicalClassForCat] ?? null;
   const blockIcon = clsCategory ? LEGION_BLOCK_ICON[clsCategory] : null;
   const tileIcon  = getLegionTileIcon(char.cls, char.level);
   const rank      = getLegionRank(char.level, char.cls);
@@ -992,24 +993,31 @@ function renderGearIcon(wrap, setName, slot, itemLabel, charClass) {
   wrap.innerHTML = '';
   const set = SETS[setName];
   const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(itemLabel || '', slot) : null;
-  if (!set || setName === 'None') {
+  const candidates = itemIconCandidates(setName, slot, itemLabel || '', charClass);
+  const badgeSet = gearSet ? { color: gearSet.color, abbr: gearSet.shortName || gearSet.name } : null;
+
+  if (candidates.length === 0) {
     wrap.style.background   = '';
     wrap.style.borderRadius = '';
-    wrap.appendChild(makeNaBadge());
+    wrap.appendChild(badgeSet ? makeBadge(badgeSet) : makeNaBadge());
     return;
   }
 
-  if (gearBgEnabled) {
+  if (!set || setName === 'None') {
+    if (gearBgEnabled) {
+      wrap.style.background   = 'rgba(255,255,255,0.06)';
+      wrap.style.borderRadius = '6px';
+    } else {
+      wrap.style.background   = '';
+      wrap.style.borderRadius = '';
+    }
+  } else if (gearBgEnabled) {
     wrap.style.background   = gearSet?.color ? hexToRgba(gearSet.color, 0.25) : 'rgba(255,255,255,0.06)';
     wrap.style.borderRadius = '6px';
   } else {
     wrap.style.background   = '';
     wrap.style.borderRadius = '';
   }
-
-  const candidates = itemIconCandidates(setName, slot, itemLabel || '', charClass);
-  const badgeSet = gearSet ? { color: gearSet.color, abbr: gearSet.shortName || gearSet.name } : null;
-  if (candidates.length === 0) { wrap.appendChild(badgeSet ? makeBadge(badgeSet) : makeNaBadge()); return; }
 
   const img = document.createElement('img');
   img.className = 'gear-img';

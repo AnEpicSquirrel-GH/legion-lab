@@ -7,7 +7,7 @@ const CLASS_SPECIFIC_SLOTS = new Set(['Hat', 'Top/Overall', 'Bottom', 'Weapon', 
 const CLASS_FACTIONS = [
   { faction: 'Explorers',      classes: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Bowmaster', 'Buccaneer', 'Cannon Master', 'Corsair', 'Dark Knight', 'Dual Blade', 'Hero', 'Marksman', 'Night Lord', 'Paladin', 'Pathfinder', 'Shadower'] },
   { faction: 'Cygnus Knights', classes: ['Blaze Wizard', 'Dawn Warrior', 'Mihile', 'Night Walker', 'Thunder Breaker', 'Wind Archer'] },
-  { faction: 'Heroes',         classes: ['Aran', 'Evan', 'Luminous', 'Mercedes', 'Phantom', 'Shade (Eunwol)'] },
+  { faction: 'Heroes',         classes: ['Aran', 'Evan', 'Luminous', 'Mercedes', 'Phantom', 'Shade'] },
   { faction: 'Resistance',     classes: ['Battle Mage', 'Blaster', 'Demon Avenger', 'Demon Slayer', 'Mechanic', 'Wild Hunter', 'Xenon'] },
   { faction: 'Nova',           classes: ['Angelic Buster', 'Cadena', 'Kain', 'Kaiser'] },
   { faction: 'Flora',          classes: ['Adele', 'Ark', 'Illium', 'Khali'] },
@@ -46,7 +46,7 @@ const CLASS_CATEGORY = {
   Buccaneer: 'Pirate', Corsair: 'Pirate', 'Cannon Master': 'Pirate',
   Mechanic: 'Pirate', 'Angelic Buster': 'Pirate',
   Ark: 'Pirate', 'Mo Xuan': 'Pirate', 'Thunder Breaker': 'Pirate',
-  'Shade (Eunwol)': 'Pirate',
+  'Shade': 'Pirate',
   // Xenon — hybrid Thief/Pirate, treated as its own unique category
   Xenon: 'Xenon',
 };
@@ -58,6 +58,9 @@ const CLASS_NAME_ALIAS = {
   'Arch Mage (F/P)':            'Arch Mage (Fire, Poison)',
   'Arch Mage (Fire/Poison)':    'Arch Mage (Fire, Poison)',
   'Blade Master':               'Dual Blade',
+  'Bow Master':                 'Bowmaster',
+  'Shade (Eunwol)':             'Shade',
+  'Eunwol':                     'Shade',
 };
 
 /* ────────────────────────────────────────────────────────────────
@@ -211,7 +214,7 @@ const CLASS_WEAPON_DATA = {
     weaponTypes: ['Shining Rod'],
     secondary:   'Orb',
   },
-  'Shade (Eunwol)': {
+  'Shade': {
     faction:     'Hero',
     weaponTypes: ['Knuckle'],
     secondary:   'Fox Marble',
@@ -273,7 +276,7 @@ const CLASS_WEAPON_DATA = {
   'Cadena': {
     faction:     'Nova',
     weaponTypes: ['Chain'],
-    secondary:   'Warp Forge',
+    secondary:   'Transmitter Type-A',
   },
   'Kain': {
     faction:     'Nova',
@@ -301,7 +304,7 @@ const CLASS_WEAPON_DATA = {
   // ── Anima ──────────────────────────────────────────────────────
   'Ark': {
     faction:     'Flora',
-    weaponTypes: ['Martial Brace'],
+    weaponTypes: ['Knuckle'],
     secondary:   'Abyssal Path',   // wiki: Abyssal Path exclusive to Ark
   },
   'Hoyoung': {
@@ -386,7 +389,7 @@ const CLASS_SILVER_EMBLEM = {
   'Mercedes':                   'Silver Heroes Emblem (Mercedes)',
   'Phantom':                    'Silver Heroes Emblem (Phantom)',
   'Luminous':                   'Silver Heroes Emblem (Luminous)',
-  'Shade (Eunwol)':             'Silver Heroes Emblem (Shade)',
+  'Shade':                      'Silver Heroes Emblem (Shade)',
   'Demon Slayer':               'Silver Demon Emblem',
   'Demon Avenger':              'Silver Demon Emblem',
   'Battle Mage':                'Silver Resistance Emblem',
@@ -446,7 +449,7 @@ const CLASS_GOLD_EMBLEM = {
   'Mercedes':                   'Gold Heroes Emblem (Mercedes)',
   'Phantom':                    'Gold Heroes Emblem (Phantom)',
   'Luminous':                   'Gold Heroes Emblem (Luminous)',
-  'Shade (Eunwol)':             'Gold Heroes Emblem (Shade)',
+  'Shade':                      'Gold Heroes Emblem (Shade)',
   // ── Resistance ──────────────────────────────────────────────
   'Demon Slayer':               'Gold Demon Emblem',
   'Demon Avenger':              'Gold Demon Emblem',

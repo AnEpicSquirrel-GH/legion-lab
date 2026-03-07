@@ -125,7 +125,7 @@
      IMPORT MODAL
 ═══════════════════════════════════════════════════════════════ -->
 <div class="overlay hidden" id="importOverlay">
-  <div class="modal import-modal" role="dialog" style="max-width:min(1080px,98vw);width:98vw">
+  <div class="modal import-modal" role="dialog">
     <h2 class="modal-title" style="margin-bottom:10px">Add Multiple Characters</h2>
 
     <div class="import-tabs" id="importTabs">
@@ -155,13 +155,13 @@
     </div>
 
     <!-- Name list pane -->
-    <div class="import-pane" id="import-pane-names">
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">
+    <div class="import-pane import-name-list-pane" id="import-pane-names">
+      <p class="import-name-list-instruction">
         Enter one character name per line (if character is not found, you can manually add Level Class World on the same line).
       </p>
-      <textarea id="importNameArea" class="form-input" rows="6"
+      <textarea id="importNameArea" class="form-input import-name-list-textarea" rows="6"
         placeholder="CharacterName1&#10;CharacterName2&#10;CharacterName3 275 Night Lord Kronos"></textarea>
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px">
+      <div class="import-name-list-search-row">
         <button class="btn btn-primary" id="importLookupBtn">Search</button>
         <label class="import-debug-dev-only" style="font-size:12px;display:flex;align-items:center;gap:6px">
           <span style="color:var(--text-muted)">Region:</span>
@@ -175,32 +175,32 @@
     </div>
 
     <!-- Review table -->
-    <div id="importReviewWrap" class="hidden" style="margin-top:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <span id="importReviewTitle" style="font-weight:700;font-size:13px"></span>
-        <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px">
+    <div id="importReviewWrap" class="hidden import-review-section">
+      <div class="import-review-header">
+        <span id="importReviewTitle" class="import-review-title"></span>
+        <label class="import-review-select-all">
           <input type="checkbox" id="importSelectAll" checked> Select all new
         </label>
       </div>
-      <div class="import-review-scroll" style="max-height:320px;overflow-y:auto;overflow-x:auto;border:1px solid var(--border);border-radius:4px">
+      <div class="import-review-scroll">
         <table class="import-review-table">
           <thead>
             <tr>
-              <th style="width:28px"></th>
-              <th style="min-width:90px">Name</th>
-              <th style="width:55px">Level</th>
-              <th style="min-width:140px">Class</th>
-              <th style="min-width:80px">World</th>
-              <th style="min-width:100px">Gear Preset</th>
-              <th style="min-width:110px">Accessory Preset</th>
-              <th style="min-width:220px">Stars</th>
-              <th style="width:90px">Status</th>
+              <th></th>
+              <th>Name</th>
+              <th>Level</th>
+              <th>Class</th>
+              <th>World</th>
+              <th>Gear Preset</th>
+              <th>Accessory Preset</th>
+              <th>Stars</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody id="importReviewBody"></tbody>
         </table>
       </div>
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px">
+      <div class="import-review-actions">
         <button class="btn btn-primary" id="importConfirmBtn">Import Selected</button>
         <button class="btn" id="importCancelBtn">Cancel</button>
         <span class="import-debug-dev-only" style="display:inline-flex;gap:8px">
@@ -391,26 +391,30 @@
       <input type="number" class="form-input" id="inputLevel"
              placeholder="" min="1" max="300" />
     </div>
-    <div class="form-row" style="position:relative">
+    <div class="form-row">
       <label class="form-label">Class <span style="color:var(--danger)">*</span></label>
-      <button type="button" class="class-picker-btn" id="classPickerBtn">
-        <span id="classPickerDisplay" class="picker-placeholder">Select a class…</span>
-        <span style="opacity:.5; font-size:10px">▼</span>
-      </button>
-      <div class="class-picker-panel hidden" id="classPickerPanel">
-        <input type="text" class="cp-search" id="cpSearch" placeholder="Search classes…" autocomplete="off" />
-        <div id="cpFactions"></div>
+      <div class="picker-dropdown-wrap">
+        <button type="button" class="class-picker-btn" id="classPickerBtn">
+          <span id="classPickerDisplay" class="picker-placeholder">Select a class…</span>
+          <span style="opacity:.5; font-size:10px">▼</span>
+        </button>
+        <div class="class-picker-panel hidden" id="classPickerPanel">
+          <input type="text" class="cp-search" id="cpSearch" placeholder="Search classes…" autocomplete="off" />
+          <div id="cpFactions"></div>
+        </div>
       </div>
       <input type="hidden" id="inputClass" />
     </div>
-    <div class="form-row" style="position:relative">
+    <div class="form-row">
       <label class="form-label">World</label>
-      <button type="button" class="class-picker-btn" id="worldPickerBtn">
-        <span id="worldPickerDisplay" class="picker-placeholder">Select a world…</span>
-        <span style="opacity:.5; font-size:10px">▼</span>
-      </button>
-      <div class="class-picker-panel hidden" id="worldPickerPanel">
-        <div id="wpGroups"></div>
+      <div class="picker-dropdown-wrap">
+        <button type="button" class="class-picker-btn" id="worldPickerBtn">
+          <span id="worldPickerDisplay" class="picker-placeholder">Select a world…</span>
+          <span style="opacity:.5; font-size:10px">▼</span>
+        </button>
+        <div class="class-picker-panel hidden" id="worldPickerPanel">
+          <div id="wpGroups"></div>
+        </div>
       </div>
       <input type="hidden" id="inputWorld" />
     </div>

@@ -812,14 +812,21 @@
       const clsBtn = document.createElement('button');
       clsBtn.type = 'button';
       clsBtn.className = 'inline-picker-trigger' + (row.cls ? '' : ' picker-placeholder');
-      clsBtn.textContent = row.cls || 'Select class…';
       clsBtn.setAttribute('data-open-floating-class', '1');
+      const clsBtnText = document.createElement('span');
+      clsBtnText.className = 'inline-picker-trigger-text';
+      clsBtnText.textContent = row.cls || 'Select class…';
+      const clsBtnChevron = document.createElement('span');
+      clsBtnChevron.className = 'inline-picker-chevron';
+      clsBtnChevron.textContent = '▼';
+      clsBtn.appendChild(clsBtnText);
+      clsBtn.appendChild(clsBtnChevron);
       clsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (typeof window.openFloatingClassPicker === 'function') {
           window.openFloatingClassPicker(clsBtn, row.cls || '', (val) => {
             row.cls = val || '';
-            clsBtn.textContent = val || 'Select class…';
+            clsBtnText.textContent = val || 'Select class…';
             clsBtn.classList.toggle('picker-placeholder', !val);
           });
         }
@@ -830,14 +837,21 @@
       const worldBtn = document.createElement('button');
       worldBtn.type = 'button';
       worldBtn.className = 'inline-picker-trigger' + (row.world ? '' : ' picker-placeholder');
-      worldBtn.textContent = row.world || 'Select world…';
       worldBtn.setAttribute('data-open-floating-world', '1');
+      const worldBtnText = document.createElement('span');
+      worldBtnText.className = 'inline-picker-trigger-text';
+      worldBtnText.textContent = row.world || 'Select world…';
+      const worldBtnChevron = document.createElement('span');
+      worldBtnChevron.className = 'inline-picker-chevron';
+      worldBtnChevron.textContent = '▼';
+      worldBtn.appendChild(worldBtnText);
+      worldBtn.appendChild(worldBtnChevron);
       worldBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (typeof window.openFloatingWorldPicker === 'function') {
           window.openFloatingWorldPicker(worldBtn, row.world || '', (val) => {
             row.world = val || '';
-            worldBtn.textContent = val || 'Select world…';
+            worldBtnText.textContent = val || 'Select world…';
             worldBtn.classList.toggle('picker-placeholder', !val);
           });
         }
@@ -845,6 +859,8 @@
       worldTd.appendChild(worldBtn);
 
       const presetTd = document.createElement('td');
+      const gearPresetWrap = document.createElement('div');
+      gearPresetWrap.className = 'import-gear-preset-wrap';
       const presetSel = document.createElement('select');
       presetSel.disabled = row.exists;
       const pNone = document.createElement('option');
@@ -871,7 +887,12 @@
         presetSel.appendChild(opt);
       });
       presetSel.addEventListener('change', () => { row.preset = presetSel.value || null; });
-      presetTd.appendChild(presetSel);
+      const gearPresetChevron = document.createElement('span');
+      gearPresetChevron.className = 'import-gear-preset-chevron';
+      gearPresetChevron.textContent = '▼';
+      gearPresetWrap.appendChild(presetSel);
+      gearPresetWrap.appendChild(gearPresetChevron);
+      presetTd.appendChild(gearPresetWrap);
 
       const accPresetTd = document.createElement('td');
       accPresetTd.className = 'import-acc-presets-cell';
@@ -885,8 +906,15 @@
       const accTrigger = document.createElement('button');
       accTrigger.type = 'button';
       accTrigger.className = 'inline-picker-trigger acc-preset-multi-trigger' + (row.exists ? ' picker-placeholder' : '');
-      accTrigger.textContent = accSummary(row.accPresets || []);
       accTrigger.disabled = row.exists;
+      const accTriggerText = document.createElement('span');
+      accTriggerText.className = 'acc-preset-trigger-text';
+      accTriggerText.textContent = accSummary(row.accPresets || []);
+      const accTriggerChevron = document.createElement('span');
+      accTriggerChevron.className = 'acc-preset-trigger-chevron';
+      accTriggerChevron.textContent = '▼';
+      accTrigger.appendChild(accTriggerText);
+      accTrigger.appendChild(accTriggerChevron);
       const accPanel = document.createElement('div');
       accPanel.className = 'acc-preset-multi-panel hidden';
       accPanel.setAttribute('role', 'listbox');
@@ -913,7 +941,7 @@
         cb.checked = (row.accPresets || []).includes(name);
         cb.addEventListener('change', () => {
           row.accPresets = Array.from(accPanel.querySelectorAll('.import-acc-cb:checked')).map(el => el.value);
-          accTrigger.textContent = accSummary(row.accPresets);
+          accTriggerText.textContent = accSummary(row.accPresets);
           accTrigger.classList.toggle('picker-placeholder', !row.accPresets || row.accPresets.length === 0);
         });
         label.appendChild(cb);

@@ -18,16 +18,40 @@ const ITEM_ICON_OVERRIDE = {
   'Generic Medal':               'The_Legend_of_Mitra',
   'Antellion Guardian':           'Antellion_Guardian',
   'Chaos Vellum Crusher':         'Chaos_Vellum_Crusher',
+  'Chaos Vellum Helmet':          'Chaos_Vellum_Helmet',
   'Chaos Von Bon Crusher':        'Chaos_Von_Bon_Crusher',
   "Fritto's Friend":              "Fritto's_Friend",
   'Hyper Burning':                'HYPER_BURNING',
+  'Hyper Burning Max':            'Hyper_Burning_Max',
   'One Who Has Godly Control':    'One_Who_Has_Godly_Control',
   "Pollo's Friend":               "Pollo's_Friend",
   'Seven Day Monster Parker':     'Seven_Day_Monster_Parker',
   'Victoria Cup (20)':            'Victoria_Cup_(20)',
-  'Weapon Jump Ring':        'Level_Jump_Ring',
-  'Total Damage Ring':       'Totalling_Ring',
-  'Dawn Guardian Angel Ring': 'Guardian_Angel_Ring',  // shares the same art
+  // Event Rings (Accessories/EventRings/)
+  'Abyss Hunter Ring':               'Abyss_Hunter_Ring',
+  'Adventure Deep Dark Critical Ring': 'Adventure_Deep_Dark_Critical_Ring',
+  'Awake Ring':                      'Awake_Ring',
+  'Chaos Ring':                      'Chaos_Ring',
+  'Cosmos Ring':                     'Cosmos_Ring',
+  'Eternal Flame Ring':              'Eternal_Flame_Ring',
+  'Glory Guard Ring Guardian':       'Glory_Guard_Ring_Guardian',
+  'Glory Guard Ring Justicar':       'Glory_Guard_Ring_Justicar',
+  'Grand Adventure Ring':           'Grand_Adventure_Ring',
+  'Master Ring SS':                  'Master_Ring_SS',
+  'Sylph Ring':                     'Sylph_Ring',
+  'Synergy Ring':                   'Synergy_Ring',
+  'Tenebris Expedition Ring':       'Tenebris_Expedition_Ring',
+  'Vengeful Ring':                  'Vengeful_Ring',
+  // Oz Rings (Accessories/OzRings/)
+  'Ring of Restraint':               'Ring_of_Restraint',
+  'Continuous Ring':                 'Continuous_Ring',
+  'Level Jump Ring':                 'Level_Jump_Ring',   // Oz ring
+  'Weapon Jump Ring':                'Weapon_Jump_Ring',  // Oz ring (different from Level Jump Ring)
+  'Risk Taker Ring':                 'Risk_Taker_Ring',
+  'Critical Damage Ring':            'Critical_Damage_Ring',
+  'Totalling Ring':                  'Totalling_Ring',
+  'Total Damage Ring':               'Totalling_Ring',    // alternate name for Totalling Ring
+  'Dawn Guardian Angel Ring':        'Guardian_Angel_Ring',  // shares the same art
   // Totems (icons in Gear Icons/Totems/, named by group)
   'Dark Doom Totems':        'DarkTotem',
   'Afterlands Souviner':     'AfterlandsTotem',
@@ -62,6 +86,8 @@ const ITEM_ICON_OVERRIDE = {
   "Frozen Dragon Master's Legacy": "Frozen_Dragon_Master's_Legacy",
   'Frozen Orb':              'Frozen_Orb',
   'Frozen Pearl Leaf':       'Frozen_Pearl_Leaf',
+  'Frozen Magic Arrows':     'Frozen_Magic_Arrows',
+  'Infinite Magic Arrows':   'Infinite_Magic_Arrows',
   'Frozen Fox Marble':       'Frozen_Fox_Marble',
   'Frozen Maximizer Ball':   'Frozen_Maximizer_Ball',
   'Frozen Charges':          'Frozen_Charges',
@@ -71,7 +97,9 @@ const ITEM_ICON_OVERRIDE = {
   'Frozen Octa Core Controller': 'Frozen_Octo_Core_Controller',
   'Frozen Queen Chess Piece': 'Frozen_Queen_Chess_Piece',
   'Frozen Soul Ring':        'Frozen_Soul_Ring',
+  'Green Soul Ring':         'Green_Soul_Ring',
   'Frozen Transmitter':      'Frozen_Transmitter',
+  'Transmitter Type-A':      'Transmitter_Type-A',
   'Frozen D100 Weapon Belt': 'Frozen_D100_Weapon_Belt',
   'Frozen Shiny Bladebinder': 'Frozen_Shiny_Bladebinder',
   'Frozen Lucent Wings':     'Frozen_Lucent_Wings',
@@ -84,9 +112,11 @@ const ITEM_ICON_OVERRIDE = {
   'Frozen Talisman':         'Frozen_Talisman',
   'Frozen Brace Band':       'Frozen_Brace_Band',
   'Frozen Compass':          'Frozen_Compass',
+  'Sacred Rosary':           'Sacred_Rosary',
   'Deimos Warrior Shield':   'Deimos_Warrior_Shield',
   'Deimos Sage Shield':      'Deimos_Sage_Shield',
   'Deimos Shadow Shield':    'Deimos_Shadow_Shield',
+  'Force Shield of Extremes': 'Force_Shield_of_Extremes',
   'Ruin Force Shield':       'Ruin_Force_Shield',
   "Princess No's Poisoned Sword": "Princess_No's_Poisoned_Sword",
   "Princess No's Medal": "Princess_No's_Medal",
@@ -214,7 +244,7 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Pirate':  'Center_Fire_Bomb',
   // Explorer Warriors
   'Lv. 100 Secondary|Hero':        'Virtues_Medallion',
-  'Lv. 100 Secondary|Paladin':     'Deimos_Warrior_Shield',
+  'Lv. 100 Secondary|Paladin':     'Sacred_Rosary',
   'Lv. 100 Secondary|Dark Knight': 'Berserk_Chain',        // Iron Chain type; old 3rd job was Berserker
   // Cygnus Knights (Jewel except Mihile = Soul Shield)
   'Lv. 100 Secondary|Mihile':          'Soul_Shield_of_Justice',
@@ -231,9 +261,9 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Aran':     'Dragon_Mass',          // Mass (Polearm)
   'Lv. 100 Secondary|Evan':    "Dragon_Master's_Legacy", // Document (Staff/Wand)
   'Lv. 100 Secondary|Luminous': 'Karma_Orb',
-  'Lv. 100 Secondary|Mercedes': 'Golden_Pearl_Leaf',   // Magic Arrow (Leaf icon used for Mercedes secondary)
+  'Lv. 100 Secondary|Mercedes': 'Infinite_Magic_Arrows',
   'Lv. 100 Secondary|Phantom':  'Carte_Finale',
-  'Lv. 100 Secondary|Shade (Eunwol)': 'Golden_Fox_Marble', // Fox Marble
+  'Lv. 100 Secondary|Shade': 'Golden_Fox_Marble', // Fox Marble
   // Explorer Archers (Arrow Fletching / Bow Thimble / Relic)
   'Lv. 100 Secondary|Bowmaster':  'Blasted_Feather',   // Arrow Fletching
   'Lv. 100 Secondary|Marksman':   'True_Shot',         // Bow Thimble
@@ -251,7 +281,7 @@ const SECONDARY_ICON_MAP = {
   'Lv. 100 Secondary|Demon Avenger': 'Force_Shield_of_Extremes',
   // Nova / Flora / Anima
   'Lv. 100 Secondary|Kaiser':        'Nova_Truth_Essence',  // Kaiser Lv. 100
-  'Lv. 100 Secondary|Angelic Buster':'Eternal_Magnum',
+  'Lv. 100 Secondary|Angelic Buster': 'Green_Soul_Ring',
   'Lv. 100 Secondary|Adele':         'Noble_Bladebinder',
   'Lv. 100 Secondary|Illium':        'Glory_Lucent_Wings',   // Lucent Wings
   'Lv. 100 Secondary|Ark':           'Ultimate_Path',       // Abyssal Path
@@ -287,6 +317,7 @@ const SECONDARY_ICON_MAP = {
   // ── Named Lv. 100 secondaries (Explorer + Cygnus uniformity; Mihile = Soul Shield only) ─────────
   'Soul Shield of Justice|Mihile': 'Soul_Shield_of_Justice',
   'Virtues Medallion|Hero': 'Virtues_Medallion',
+  'Sacred Rosary|Paladin':         'Sacred_Rosary',
   'Deimos Warrior Shield|Paladin': 'Deimos_Warrior_Shield',
   'Berserk Chain|Dark Knight': 'Berserk_Chain',
   'Rusty Book (Epode)|Arch Mage (Fire, Poison)': 'Rusty_Book_(Epode)',
@@ -303,20 +334,22 @@ const SECONDARY_ICON_MAP = {
   // Heroes
   'Dragon Mass|Aran': 'Dragon_Mass',
   'Karma Orb|Luminous': 'Karma_Orb',
-  'Golden Pearl Leaf|Mercedes': 'Golden_Pearl_Leaf',
+  'Infinite Magic Arrows|Mercedes': 'Infinite_Magic_Arrows',
+  'Frozen Magic Arrows|Mercedes': 'Frozen_Magic_Arrows',
   'Golden Pearl Leaf|Lynn': 'Golden_Pearl_Leaf',
   'Carte Finale|Phantom': 'Carte_Finale',
-  'Golden Fox Marble|Shade (Eunwol)': 'Golden_Fox_Marble',
+  'Golden Fox Marble|Shade': 'Golden_Fox_Marble',
   // Resistance
   'Masterwork Charges|Blaster': 'Masterwork_Charges',
   'Eternal Magnum|Mechanic': 'Eternal_Magnum',
-  'Eternal Magnum|Angelic Buster': 'Eternal_Magnum',
+  'Green Soul Ring|Angelic Buster': 'Green_Soul_Ring',
   'Wild Heron|Wild Hunter': 'Wild_Heron',
   'Octa Core Controller|Xenon': 'Octa_Core_Controller',
   'Queen Chess Piece|Kinesis': 'Queen_Chess_Piece',
   // Nova
   'Nova Truth Essence|Kaiser': 'Nova_Truth_Essence',
-  'Warp Forge|Cadena': 'Warp_Forge',
+  'Transmitter Type-A|Cadena': 'Transmitter_Type-A',
+  'Lv. 100 Secondary|Cadena': 'Transmitter_Type-A',
   'D100 Custom Weapon Belt|Kain': 'D100_Custom_Weapon_Belt',
   // Flora
   'Glory Lucent Wings|Illium': 'Glory_Lucent_Wings',
@@ -374,7 +407,7 @@ const SECONDARY_ICON_MAP = {
   "Princess No Secondary|Mercedes":                   "Princess_No's_Accursed_Arrow",
   "Princess No Secondary|Phantom":                    "Princess_No's_Carte",
   "Princess No Secondary|Luminous":                   "Princess_No's_Soul_Orb",
-  "Princess No Secondary|Shade (Eunwol)":             "Princess_No's_Fox_Marble",
+  "Princess No Secondary|Shade":                      "Princess_No's_Fox_Marble",
   // Resistance
   "Princess No Secondary|Demon Slayer":               "Princess_No's_Accursed_Shield",
   "Princess No Secondary|Demon Avenger":              "Princess_No's_Accursed_Shield",
@@ -463,6 +496,17 @@ function gearIconPathGeneric(setName, slot) {
  */
 function itemIconCandidates(setName, slot, itemLabel, charClass) {
   const candidates = [];
+  const RING_SLOTS = ['Ring 1', 'Ring 2', 'Ring 3', 'Ring 4'];
+
+  // ── Ring slots: EventRings and OzRings (explicit so icons always resolve) ──
+  if (RING_SLOTS.indexOf(slot) >= 0 && itemLabel && itemLabel !== 'None') {
+    const fname = ITEM_ICON_OVERRIDE[itemLabel] || labelToFilename(itemLabel);
+    if (typeof EVENT_RING_LABELS !== 'undefined' && EVENT_RING_LABELS.has(itemLabel)) {
+      candidates.push('MapleIcons/Gear Icons/Accessories/EventRings/' + fname + '.png');
+    } else if (typeof OZ_RING_LABELS !== 'undefined' && OZ_RING_LABELS.has(itemLabel)) {
+      candidates.push('MapleIcons/Gear Icons/Accessories/OzRings/' + fname + '.png');
+    }
+  }
 
   // ── Android Heart ──────────────────────────────────────────────
   if (slot === 'Android Heart') {
@@ -512,8 +556,12 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
   // ── Accessories ────────────────────────────────────────────────
   if (ACCESSORY_SLOTS.has(slot) && itemLabel !== 'None') {
     const fname = ITEM_ICON_OVERRIDE[itemLabel] || labelToFilename(itemLabel);
-    if (OZ_RING_LABELS.has(itemLabel)) {
-      candidates.push(`MapleIcons/Gear Icons/Accessories/Oz Rings/${fname}.png`);
+    if (typeof EVENT_RING_LABELS !== 'undefined' && EVENT_RING_LABELS.has(itemLabel)) {
+      candidates.push('MapleIcons/Gear Icons/Accessories/EventRings/' + fname + '.png');
+      candidates.push('MapleIcons/Gear Icons/Accessories/' + fname + '.png');
+    } else if (typeof OZ_RING_LABELS !== 'undefined' && OZ_RING_LABELS.has(itemLabel)) {
+      candidates.push('MapleIcons/Gear Icons/Accessories/OzRings/' + fname + '.png');
+      candidates.push('MapleIcons/Gear Icons/Accessories/' + fname + '.png');
     } else if (itemLabel === "Mitra's Rage") {
       const cat = CLASS_CATEGORY[charClass] || 'Warrior';
       const suffix = EMBLEM_ICON_CLASS[cat] || cat;
@@ -557,6 +605,12 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
     }
     const wIcon = WEAPON_LABEL_ICON[iconLabel];
     if (wIcon) candidates.push(`MapleIcons/Gear Icons/Weapons/${wIcon}.png`);
+  }
+
+  // ── Named Hat (item-specific icon, e.g. Chaos Vellum Helmet) ──
+  if (slot === 'Hat' && itemLabel === 'Chaos Vellum Helmet') {
+    const fname = ITEM_ICON_OVERRIDE[itemLabel] || labelToFilename(itemLabel);
+    candidates.push(`MapleIcons/Gear Icons/${fname}.png`);
   }
 
   // ── Tier-based fallbacks (armor slots etc.) ────────────────────
