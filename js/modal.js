@@ -829,6 +829,7 @@ function handleConfirmAdd() {
     imageUrl,
     collapsed: false,
     gear: {},
+    symbols: {},
   };
   SLOTS.forEach(s => { newChar.gear[s] = { item: 'None', stars: 0 }; });
   if (accPresets.length) applyAccessoryPresets(newChar.gear, accPresets);

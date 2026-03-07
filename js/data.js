@@ -75,6 +75,30 @@ const SETS = {
   OzRing:     { name: 'Oz Ring',     color: '#3B82F6', level: 140,  abbr: 'OZR' },  // Oz Tower rings (level 1–6)
 };
 
+// ── Arcane / Sacred Symbols (Character Name Column) ──────────────
+/** Arcane Symbols: order, unlock level, max symbol level, icon filename (no .png). */
+const ARCANE_SYMBOLS = [
+  { id: 'Vanishing Journey',   unlockLevel: 200, maxLevel: 20, icon: 'Arcane_Symbol_Vanishing_Journey' },
+  { id: 'Chu Chu Island',     unlockLevel: 210, maxLevel: 20, icon: 'Arcane_Symbol_Chu_Chu_Island' },
+  { id: 'Lachelein',          unlockLevel: 220, maxLevel: 20, icon: 'Arcane_Symbol_Lachelein' },
+  { id: 'Arcana',             unlockLevel: 225, maxLevel: 20, icon: 'Arcane_Symbol_Arcana' },
+  { id: 'Morass',             unlockLevel: 230, maxLevel: 20, icon: 'Arcane_Symbol_Morass' },
+  { id: 'Esfera',             unlockLevel: 235, maxLevel: 20, icon: 'Arcane_Symbol_Esfera' },
+];
+/** Sacred Symbols: order, unlock level, max symbol level, icon filename (no .png). */
+const SACRED_SYMBOLS = [
+  { id: 'Cernium',    unlockLevel: 260, maxLevel: 11, icon: 'Sacred_Symbol_Cernium' },
+  { id: 'Arcus',      unlockLevel: 265, maxLevel: 11, icon: 'Sacred_Symbol_Arcus' },
+  { id: 'Odium',      unlockLevel: 270, maxLevel: 11, icon: 'Sacred_Symbol_Odium' },
+  { id: 'Shangri-La', unlockLevel: 275, maxLevel: 11, icon: 'Sacred_Symbol_Shangri-La' },
+  { id: 'Arteria',    unlockLevel: 280, maxLevel: 11, icon: 'Sacred_Symbol_Arteria' },
+  { id: 'Carcion',    unlockLevel: 285, maxLevel: 11, icon: 'Sacred_Symbol_Carcion' },
+];
+/** Grand Sacred Symbol (single): same rules as Sacred, Lv 1–11, shown below Sacred in character column. */
+const GRAND_SACRED_SYMBOLS = [
+  { id: 'Tallahart', unlockLevel: 290, maxLevel: 11, icon: 'Grand_Sacred_Symbol_Tallahart' },
+];
+
 // ── Per-slot item lists ─────────────────────────────────────────
 // Each entry: { label, tier }  — tier drives color only.
 // Special flags:

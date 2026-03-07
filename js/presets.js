@@ -547,9 +547,10 @@ function makeGearSelect(items, currentValue, standalone = false, slot = null) {
     return getSetForItem(label, slot)?.color ?? '';
   }
 
-  // ── hidden native select: event backbone ──
+  // ── hidden native select: event backbone (tabindex -1 so tab goes to star/level inputs) ──
   const sel = document.createElement('select');
   sel.className = 'gear-select';
+  sel.tabIndex = -1;
   sel.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;';
   const noneOpt = document.createElement('option');
   noneOpt.value = 'None'; noneOpt.textContent = 'None';

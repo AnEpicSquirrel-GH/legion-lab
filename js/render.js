@@ -1,6 +1,10 @@
 'use strict';
 
-let gearBgEnabled = true;
+try {
+  window.gearBgEnabled = localStorage.getItem('ll_gear_bg') !== '0';
+} catch (e) {
+  window.gearBgEnabled = true;
+}
 
 /** True if this item counts as Lucky for the given slot (e.g. Genesis/Destiny weapons by tier, or exact LUCKY_ITEMS match). */
 function isLuckyForSlot(item, slot) {
@@ -363,6 +367,84 @@ function updateSection(idx) {
   oldSection.replaceWith(newSection);
 }
 
+/**
+ * Build a row of symbol cells (Arcane or Sacred): icon + level input with up/down buttons.
+ * Locked (unavailable) symbols show no level (empty), not 1.
+ */
+function buildSymbolRow(symbolsList, char, charIdx, charLevel) {
+  const row = document.createElement('div');
+  if (!symbolsList || symbolsList.length === 0) return row;
+  const symbols = char.symbols && typeof char.symbols === 'object' ? char.symbols : {};
+  symbolsList.forEach(sym => {
+    const cell = document.createElement('div');
+    cell.className = 'symbol-cell';
+    const locked = charLevel < sym.unlockLevel;
+    if (locked) cell.classList.add('symbol-locked');
+    const img = document.createElement('img');
+    img.className = 'symbol-icon';
+    img.src = 'MapleIcons/Symbols/' + sym.icon + '.png';
+    img.alt = sym.id;
+    img.title = locked ? sym.id + ' - Requires Lv. ' + sym.unlockLevel : sym.id;
+    const lvWrap = document.createElement('div');
+    lvWrap.className = 'symbol-lv-wrap';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'symbol-lv';
+    input.min = 1;
+    input.max = sym.maxLevel;
+    if (locked) {
+      input.value = '';
+      input.placeholder = '';
+      input.disabled = true;
+    } else {
+      input.value = Math.min(sym.maxLevel, Math.max(1, parseInt(symbols[sym.id], 10) || 1));
+    }
+    input.title = 'Lv. 1–' + sym.maxLevel;
+    input.addEventListener('focus', () => input.select());
+    input.addEventListener('change', () => {
+      if (locked || !chars[charIdx] || !chars[charIdx].symbols) return;
+      let v = parseInt(input.value, 10);
+      if (isNaN(v) || v < 1) v = 1;
+      if (v > sym.maxLevel) v = sym.maxLevel;
+      input.value = v;
+      chars[charIdx].symbols[sym.id] = v;
+      if (typeof save === 'function') save();
+    });
+    function applyDelta(delta) {
+      if (locked || !chars[charIdx] || !chars[charIdx].symbols) return;
+      let v = parseInt(input.value, 10);
+      if (isNaN(v)) v = 1;
+      v = Math.min(sym.maxLevel, Math.max(1, v + delta));
+      input.value = v;
+      chars[charIdx].symbols[sym.id] = v;
+      if (typeof save === 'function') save();
+    }
+    const spinner = document.createElement('div');
+    spinner.className = 'symbol-spinner';
+    const btnUp = document.createElement('button');
+    btnUp.type = 'button';
+    btnUp.className = 'symbol-btn symbol-btn-up';
+    btnUp.tabIndex = -1;
+    btnUp.textContent = '▲';
+    btnUp.title = 'Increase level';
+    if (locked) btnUp.disabled = true;
+    btnUp.addEventListener('click', () => applyDelta(1));
+    const btnDown = document.createElement('button');
+    btnDown.type = 'button';
+    btnDown.className = 'symbol-btn symbol-btn-down';
+    btnDown.tabIndex = -1;
+    btnDown.textContent = '▼';
+    btnDown.title = 'Decrease level';
+    if (locked) btnDown.disabled = true;
+    btnDown.addEventListener('click', () => applyDelta(-1));
+    spinner.append(btnUp, btnDown);
+    lvWrap.append(input, spinner);
+    cell.append(img, lvWrap);
+    row.appendChild(cell);
+  });
+  return row;
+}
+
 function buildSection(char, idx) {
   const section = document.createElement('div');
   section.className = 'char-section' + (char.collapsed ? ' collapsed' : '') + (idx % 2 === 1 ? ' zebra-odd' : '');
@@ -434,22 +516,51 @@ function buildSection(char, idx) {
   const infoCell = document.createElement('div');
   infoCell.className = 'char-info-cell';
 
+  const charLevel = char.level != null ? Number(char.level) : 0;
+  const arcaneRow = buildSymbolRow(typeof ARCANE_SYMBOLS !== 'undefined' ? ARCANE_SYMBOLS : [], char, idx, charLevel);
+  arcaneRow.className = 'arcane-symbols-row symbols-row';
+
   const spriteWrap = document.createElement('div');
   spriteWrap.className = 'char-sprite-wrap';
+  const spriteInner = document.createElement('div');
+  spriteInner.className = 'char-sprite-inner';
   if (char.imageUrl && isSafeImageUrl(char.imageUrl)) {
     const img = document.createElement('img');
     img.className = 'char-sprite';
     img.loading = 'lazy';
     img.src = char.imageUrl.trim();
     img.alt = char.name;
-    img.onerror = () => { spriteWrap.innerHTML = '<div class="char-sprite-placeholder">🧙</div>'; };
-    spriteWrap.appendChild(img);
+    img.onerror = () => {
+      spriteInner.innerHTML = '';
+      const fallback = document.createElement('img');
+      fallback.className = 'char-sprite';
+      fallback.src = 'MapleIcons/Character_Self.png';
+      fallback.alt = char.name || 'Character';
+      fallback.onerror = () => {
+        spriteInner.innerHTML = '';
+        const ph = document.createElement('div');
+        ph.className = 'char-sprite-placeholder';
+        ph.textContent = '🧙';
+        spriteInner.appendChild(ph);
+      };
+      spriteInner.appendChild(fallback);
+    };
+    spriteInner.appendChild(img);
   } else {
-    const ph = document.createElement('div');
-    ph.className = 'char-sprite-placeholder';
-    ph.textContent = '🧙';
-    spriteWrap.appendChild(ph);
+    const img = document.createElement('img');
+    img.className = 'char-sprite';
+    img.src = 'MapleIcons/Character_Self.png';
+    img.alt = char.name || 'Character';
+    img.onerror = () => {
+      spriteInner.innerHTML = '';
+      const ph = document.createElement('div');
+      ph.className = 'char-sprite-placeholder';
+      ph.textContent = '🧙';
+      spriteInner.appendChild(ph);
+    };
+    spriteInner.appendChild(img);
   }
+  spriteWrap.appendChild(spriteInner);
 
   const text = document.createElement('div');
   text.className = 'char-text';
@@ -480,7 +591,19 @@ function buildSection(char, idx) {
     }
   }
 
-  infoCell.append(text);
+  const sacredRow = buildSymbolRow(typeof SACRED_SYMBOLS !== 'undefined' ? SACRED_SYMBOLS : [], char, idx, charLevel);
+  sacredRow.className = 'sacred-symbols-row symbols-row';
+
+  const grandSacredRow = buildSymbolRow(typeof GRAND_SACRED_SYMBOLS !== 'undefined' ? GRAND_SACRED_SYMBOLS : [], char, idx, charLevel);
+  grandSacredRow.className = 'grand-sacred-symbols-row symbols-row';
+
+  const middleWrap = document.createElement('div');
+  middleWrap.className = 'char-info-middle';
+  middleWrap.appendChild(text);
+
+  infoCell.append(middleWrap, arcaneRow, sacredRow);
+
+  spriteWrap.appendChild(grandSacredRow);
 
   /* ── gear content ── */
   const gearContent = document.createElement('div');
@@ -796,6 +919,7 @@ function buildSlot(char, charIdx, slot, section) {
   ozWrap.className = 'oz-level-wrap';
   const ozSel = document.createElement('select');
   ozSel.className = 'gear-select oz-level-select';
+  ozSel.tabIndex = -1;
   const ozDefault = typeof OZ_RING_DEFAULT_LEVEL !== 'undefined' ? OZ_RING_DEFAULT_LEVEL : 4;
   [1, 2, 3, 4, 5, 6].forEach(n => {
     const o = document.createElement('option');
@@ -1004,14 +1128,14 @@ function renderGearIcon(wrap, setName, slot, itemLabel, charClass) {
   }
 
   if (!set || setName === 'None') {
-    if (gearBgEnabled) {
+    if (window.gearBgEnabled) {
       wrap.style.background   = 'rgba(255,255,255,0.06)';
       wrap.style.borderRadius = '6px';
     } else {
       wrap.style.background   = '';
       wrap.style.borderRadius = '';
     }
-  } else if (gearBgEnabled) {
+  } else if (window.gearBgEnabled) {
     wrap.style.background   = gearSet?.color ? hexToRgba(gearSet.color, 0.25) : 'rgba(255,255,255,0.06)';
     wrap.style.borderRadius = '6px';
   } else {

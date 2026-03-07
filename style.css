@@ -32,8 +32,8 @@ body {
   color: var(--text);
   font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
   font-size: 13px;
-  min-height: 100vh;
   overflow: auto;
+  /* No min-height: 100vh so document height = content height; avoids scrollable grey space at bottom */
 }
 
 /* ── Header ───────────────────────────────────────────────── */
@@ -177,11 +177,26 @@ body {
 .char-section.collapsed .char-level       { display: none; }
 .char-section.collapsed .world-part       { display: none; }
 .char-section.collapsed .legion-icons-row { display: none; }
+.char-section.collapsed .symbols-row      { display: none; }
 .char-section.collapsed .char-row       { min-height: 0; }
 /* collapsed: fixed row height so only the sets column scrolls internally */
 .char-section.collapsed .char-row        { min-height: 52px; height: 52px; }
-.char-section.collapsed .char-sprite-wrap { overflow: hidden; align-items: flex-start; }
-.char-section.collapsed .char-sprite      { max-height: none; height: auto; margin-top: -2px; }
+/* Collapsed: sprite at top of column (no absolute centering; Tallahart row is hidden) */
+.char-section.collapsed .char-sprite-wrap {
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.char-section.collapsed .char-sprite-inner {
+  position: static;
+}
+.char-section.collapsed .char-sprite { max-height: none; height: auto; margin-top: -10px; }
+.char-section.collapsed .char-sprite-wrap .char-sprite[src*="Character_Self"] { margin-top: 0; } /* 10px lower when collapsed */
+/* Collapsed: info middle fills cell so no lighter band at bottom; section clips to row height */
+.char-section.collapsed .char-info-cell { min-height: 0; }
+.char-section.collapsed .char-info-middle { flex: 1; min-height: 0; border-bottom: none; }
+.char-section.collapsed { overflow: hidden; height: fit-content; max-height: none; }
 
 /* ── Character row (top bar) ──────────────────────────────── */
 .char-row {
@@ -263,12 +278,12 @@ body {
 }
 .toggle-btn:hover { color: var(--text); }
 
-/* ── Character info cell (text only) ─────────────────────── */
+/* ── Character info cell: top = Arcane symbols, middle = char info, bottom = Sacred symbols ── */
 .char-info-cell {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 8px 10px;
+  justify-content: flex-start;
+  padding: 0;
   min-width: 155px;
   width: 155px;
   max-width: 155px;
@@ -276,6 +291,19 @@ body {
   border-right: 1px solid var(--border);
   flex-shrink: 0;
   position: relative;
+}
+
+.char-info-cell .arcane-symbols-row {
+  padding: 6px 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.char-info-middle {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.char-info-cell .sacred-symbols-row {
+  padding: 8px 10px 6px;
 }
 
 .char-text { min-width: 0; }
@@ -299,6 +327,93 @@ body {
 .legion-icons-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .legion-block-icon { width: 18px; height: 18px; object-fit: contain; image-rendering: pixelated; flex-shrink: 0; }
 .legion-tile-icon  { width: 75px; height: 75px; object-fit: contain; image-rendering: pixelated; }
+
+/* Arcane / Sacred symbol rows (above and below character name), 3 per row */
+.symbols-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+.symbol-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.symbol-cell.symbol-locked {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.symbol-cell.symbol-locked .symbol-icon {
+  pointer-events: auto;
+}
+.symbol-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.symbol-lv-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+.symbol-lv {
+  width: 2.2em;
+  min-width: 24px;
+  padding: 1px 2px;
+  font-size: 12px;
+  text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  -moz-appearance: textfield;
+}
+/* When symbol spinners are enabled (dev toggle), input joins spinner on the right */
+body.symbol-spinners-enabled .symbol-lv-wrap .symbol-lv { border-right: none; border-radius: 3px 0 0 3px; }
+.symbol-lv::-webkit-outer-spin-button,
+.symbol-lv::-webkit-inner-spin-button { margin: 0; -webkit-appearance: none; appearance: none; }
+.symbol-lv:disabled { cursor: not-allowed; }
+.symbol-lv::placeholder { color: var(--text-muted); }
+.symbol-spinner {
+  display: none;
+  flex-direction: column;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 0 3px 3px 0;
+  background: var(--bg-input, rgba(255,255,255,0.06));
+  overflow: hidden;
+}
+body.symbol-spinners-enabled .symbol-spinner { display: flex; }
+.symbol-spinner .symbol-btn {
+  width: 16px;
+  height: 11px;
+  padding: 0;
+  font-size: 8px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.symbol-spinner .symbol-btn:last-child { border-bottom: none; }
+.symbol-spinner .symbol-btn:hover:not(:disabled) { background: var(--bg-hover, rgba(255,255,255,0.1)); color: var(--text); }
+.symbol-spinner .symbol-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.symbol-btn:hover:not(:disabled) { background: var(--bg-hover, rgba(255,255,255,0.08)); }
+.symbol-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.arcane-symbols-row { margin: 0; }
+.sacred-symbols-row { margin: 0; }
 
 /* ── Multi-select ──────────────────────────────────────────── */
 .row-select-cb {
@@ -372,17 +487,36 @@ body {
 }
 .multiselect-bar .ms-spacer { flex: 1; }
 
-/* ── Character sprite column (separate column, right of text) ── */
+/* ── Character sprite column: sprite at absolute center (ignoring Tallahart), Tallahart at bottom ── */
 .char-sprite-wrap {
   width: 96px;
   flex-shrink: 0;
   align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   overflow: hidden;
   border-right: 1px solid var(--border);
   background: var(--bg-card);
+}
+.char-sprite-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.char-sprite-wrap .grand-sacred-symbols-row {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 6px 0;
+  padding-bottom: 2px; /* manually lowered: less space above column bottom */
+  grid-template-columns: 1fr;
+  justify-items: center;
+  width: 100%;
 }
 .char-sprite {
   max-width: 96px;

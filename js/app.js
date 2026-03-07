@@ -15,9 +15,33 @@ document.getElementById('openAddBtn2').addEventListener('click', openModal);
 let devMode = false;
 window.isDevMode = function() { return devMode; };
 
+/* Symbol spinners (dev): persisted in localStorage */
+const SYMBOL_SPINNERS_KEY = 'll_symbol_spinners';
+function getSymbolSpinnersEnabled() {
+  try {
+    return localStorage.getItem(SYMBOL_SPINNERS_KEY) === '1';
+  } catch (e) { return false; }
+}
+function setSymbolSpinnersEnabled(on) {
+  try {
+    localStorage.setItem(SYMBOL_SPINNERS_KEY, on ? '1' : '0');
+  } catch (e) {}
+}
+function applySymbolSpinnersUI() {
+  const on = getSymbolSpinnersEnabled();
+  document.body.classList.toggle('symbol-spinners-enabled', on);
+  const btn = document.getElementById('toggleSymbolSpinnersBtn');
+  if (btn) {
+    btn.textContent = on ? 'Symbol Spinners: On' : 'Symbol Spinners: Off';
+    btn.classList.toggle('btn-primary', on);
+  }
+}
+
 function applyDevModeUI() {
   const toggleBgBtn = document.getElementById('toggleBgBtn');
   if (toggleBgBtn) toggleBgBtn.style.display = devMode ? '' : 'none';
+  const toggleSpinnersBtn = document.getElementById('toggleSymbolSpinnersBtn');
+  if (toggleSpinnersBtn) toggleSpinnersBtn.style.display = devMode ? '' : 'none';
   const screenshotsTab = document.querySelector('.import-tab-btn[data-tab="screenshots"]');
   if (screenshotsTab) screenshotsTab.style.display = devMode ? '' : 'none';
   const siteTitleText = document.getElementById('siteTitleText');
@@ -44,6 +68,15 @@ function applyDevModeUI() {
   });
 })();
 applyDevModeUI();
+applySymbolSpinnersUI();
+
+const toggleSymbolSpinnersBtn = document.getElementById('toggleSymbolSpinnersBtn');
+if (toggleSymbolSpinnersBtn) {
+  toggleSymbolSpinnersBtn.addEventListener('click', function () {
+    setSymbolSpinnersEnabled(!getSymbolSpinnersEnabled());
+    applySymbolSpinnersUI();
+  });
+}
 
 // Populate gear preset dropdown and accessory preset checkboxes in the add/edit modal
 ;(function() {
@@ -664,15 +697,26 @@ massEditCancelBtn.addEventListener('click', () => massEditOverlay.classList.add(
 massEditOverlay.addEventListener('click', e => { if (e.target === massEditOverlay) massEditOverlay.classList.add('hidden'); });
 
 /* ────────────────────────────────────────────────────────────────
-   GEAR BACKGROUND TOGGLE
+   GEAR BACKGROUND TOGGLE (persisted in localStorage as ll_gear_bg)
 ──────────────────────────────────────────────────────────────── */
+(function initGearBgButton() {
+  const btn = document.getElementById('toggleBgBtn');
+  if (!btn) return;
+  const on = window.gearBgEnabled;
+  btn.textContent = `Gear Backgrounds: ${on ? 'On' : 'Off'}`;
+  btn.classList.toggle('btn-primary', on);
+})();
+
 document.getElementById('toggleBgBtn').addEventListener('click', () => {
-  gearBgEnabled = !gearBgEnabled;
+  window.gearBgEnabled = !window.gearBgEnabled;
+  try {
+    localStorage.setItem('ll_gear_bg', window.gearBgEnabled ? '1' : '0');
+  } catch (e) {}
   document.getElementById('toggleBgBtn').textContent =
-    `Gear Backgrounds: ${gearBgEnabled ? 'On' : 'Off'}`;
-  document.getElementById('toggleBgBtn').classList.toggle('btn-primary', gearBgEnabled);
+    `Gear Backgrounds: ${window.gearBgEnabled ? 'On' : 'Off'}`;
+  document.getElementById('toggleBgBtn').classList.toggle('btn-primary', window.gearBgEnabled);
   document.querySelectorAll('.gear-icon-wrap').forEach(wrap => {
-    if (!gearBgEnabled) {
+    if (!window.gearBgEnabled) {
       wrap.style.background   = '';
       wrap.style.borderRadius = '';
     } else {

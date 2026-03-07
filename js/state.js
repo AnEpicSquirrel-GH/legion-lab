@@ -59,6 +59,7 @@ function load() {
           imageUrl: c.imageUrl ?? c.magisk ?? null,
           collapsed: c.collapsed ?? false,
           gear: (c.gear && typeof c.gear === 'object' && !Array.isArray(c.gear)) ? c.gear : {},
+          symbols: (c.symbols && typeof c.symbols === 'object' && !Array.isArray(c.symbols)) ? c.symbols : {},
         }));
         save();
       }
@@ -92,6 +93,7 @@ function load() {
               imageUrl: c.imageUrl ?? c.imageUri ?? null,
               collapsed: false,
               gear: (c.gear && typeof c.gear === 'object' && !Array.isArray(c.gear)) ? c.gear : {},
+              symbols: (c.symbols && typeof c.symbols === 'object' && !Array.isArray(c.symbols)) ? c.symbols : {},
             });
           } catch (_) { /* skip bad entry */ }
         });
@@ -121,6 +123,7 @@ function load() {
             imageUrl: c.imageUrl ?? c.imageUri ?? null,
             collapsed: c.collapsed ?? false,
             gear: (c.gear && typeof c.gear === 'object' && !Array.isArray(c.gear)) ? c.gear : {},
+            symbols: (c.symbols && typeof c.symbols === 'object' && !Array.isArray(c.symbols)) ? c.symbols : {},
           };
         }).filter(Boolean);
         if (chars.length > 0) save();
@@ -144,6 +147,7 @@ function load() {
         c.gear[s] = { item: match ? match.label : 'None', stars: g.stars ?? 0 };
       }
     });
+    if (!c.symbols || typeof c.symbols !== 'object' || Array.isArray(c.symbols)) c.symbols = {};
   });
 }
 
