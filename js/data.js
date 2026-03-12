@@ -63,7 +63,7 @@ const SETS = {
   Dawn:       { name: 'Dawn',        color: '#F59E0B', level: 140,  abbr: 'DWN' },  // Dawn Set accessories
   PrincessNo: { name: 'Princess No', color: '#EC4899', level: 140,  abbr: 'PNO' },  // Princess No set
   Fafnir:     { name: 'CRA',         color: '#00FCCC', level: 150,  abbr: 'CRA' },  // Chaos Root Abyss
-  Sweetwater: { name: 'Sweetwater',  color: '#3B9FCF', level: 160,  abbr: 'SWT' },  // Commerci Sweetwater
+  Sweetwater: { name: 'Sweetwater',  color: '#20B2AA', level: 160,  abbr: 'SWT' },  // Commerci Sweetwater
   Absolab:    { name: 'Absolab',     color: '#C84848', level: 160,  abbr: 'ABS' },
   Arcane:     { name: 'Arcane',      color: '#9B59B6', level: 200,  abbr: 'ARC' },
   Pitched:    { name: 'Pitched',     color: '#22C55E', level: 200,  abbr: 'PCH' },  // Pitched Boss set (accessories)
@@ -72,6 +72,7 @@ const SETS = {
   Frozen:     { name: 'Frozen',      color: '#bed1e9', level: 130,  abbr: 'FRZ' },  // Frozen set
   Eternal:    { name: 'Eternal',     color: '#FFD700', level: 250,  abbr: 'ETN' },
   Gollux:     { name: 'Gollux',      color: '#C2622D', level: 140,  abbr: 'GOL' },  // Superior Gollux only
+  ReinforcedGollux: { name: 'Reinforced Gollux', color: '#D4956E', level: 140, abbr: 'RGL' },  // Reinforced Gollux
   OzRing:     { name: 'Oz Ring',     color: '#3B82F6', level: 140,  abbr: 'OZR' },  // Oz Tower rings (level 1–6)
 };
 
@@ -127,6 +128,7 @@ const _RING_ITEMS = [
   { label: 'Guardian Angel Ring',          tier: 'Pensalir'   },
   { label: 'Dawn Guardian Angel Ring',     tier: 'Dawn'       },
   { label: "Kanna's Treasure",             tier: 'PrincessNo' },
+  { label: 'Reinforced Gollux Ring',       tier: 'ReinforcedGollux' },
   { label: 'Superior Gollux Ring',         tier: 'Gollux'     },
   { label: 'Endless Terror',               tier: 'Pitched'    },
   { label: 'Whisper of the Source',        tier: 'Brilliant'  },
@@ -143,6 +145,7 @@ const _PENDANT_ITEMS = [
   { label: 'Mechanator Pendant',           tier: 'Pensalir'   },
   { label: 'Dominator Pendant',            tier: 'Pensalir'   },
   { label: 'Daybreak Pendant',             tier: 'Dawn'       },
+  { label: 'Reinforced Engraved Gollux Pendant', tier: 'ReinforcedGollux' },
   { label: 'Superior Gollux Pendant',      tier: 'Gollux'     },
   { label: 'Source of Suffering',          tier: 'Pitched'    },
   { label: 'Oath of Death',                tier: 'Brilliant'  },
@@ -150,6 +153,7 @@ const _PENDANT_ITEMS = [
 const SLOT_ITEMS = {
   'Weapon': [
     { label: 'Pensalir Weapon',              tier: 'Pensalir' },
+    { label: 'Sweetwater Weapon',            tier: 'Sweetwater' },
     { label: 'CRA Weapon',                   tier: 'Fafnir'   },
     { label: 'Absolab Weapon',               tier: 'Absolab'  },
     { label: 'Arcane Umbra Weapon',          tier: 'Arcane'   },
@@ -159,6 +163,7 @@ const SLOT_ITEMS = {
   'Hat': [
     { label: 'Pensalir Hat',                 tier: 'Pensalir' },
     { label: 'Frozen Hat',                   tier: 'Frozen'   },
+    { label: 'Sweetwater Hat',               tier: 'Sweetwater' },
     { label: 'CRA Hat',                      tier: 'Fafnir'   },
     { label: 'Chaos Vellum Helmet',          tier: 'Fafnir'   },  // Lucky: counts toward any set with Hat slot (if 3+ other set pieces)
     { label: 'Royal Dunwitch Hat',           tier: 'Fafnir',   cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Evan', 'Luminous', 'Kanna', 'Illium', 'Lara', 'Battle Mage', 'Kinesis', 'Blaze Wizard', 'Sia Astelle', 'Lynn'] },
@@ -173,6 +178,7 @@ const SLOT_ITEMS = {
   'Top/Overall': [
     { label: 'Pensalir Overall',             tier: 'Pensalir', isOverall: true },
     { label: 'Frozen Overall',               tier: 'Frozen',   isOverall: true },
+    { label: 'Sweetwater Suit',              tier: 'Sweetwater', isOverall: true },
     { label: 'CRA Top',                      tier: 'Fafnir'   },
     { label: 'Eagle Eye Dunwitch Robe',      tier: 'Fafnir',   cls: ['Arch Mage (Fire, Poison)', 'Arch Mage (Ice, Lightning)', 'Bishop', 'Evan', 'Luminous', 'Kanna', 'Illium', 'Lara', 'Battle Mage', 'Kinesis', 'Blaze Wizard', 'Sia Astelle', 'Lynn'] },
     { label: 'Eagle Eye Warrior Armor',       tier: 'Fafnir',   cls: ['Hero', 'Paladin', 'Dark Knight', 'Aran', 'Mihile', 'Kaiser', 'Adele', 'Zero', 'Hayato', 'Dawn Warrior', 'Blaster', 'Demon Slayer', 'Demon Avenger', 'Ren'] },
@@ -194,12 +200,15 @@ const SLOT_ITEMS = {
   ],
   'Gloves': [
     { label: 'Pensalir Gloves',              tier: 'Pensalir' },
+    { label: 'Sweetwater Gloves',            tier: 'Sweetwater' },
     { label: 'Absolab Gloves',               tier: 'Absolab'  },
     { label: 'Arcane Umbra Gloves',          tier: 'Arcane'   },
     { label: 'Eternal Gloves',               tier: 'Eternal'  },
   ],
   'Shoes': [
     { label: 'Pensalir Shoes',               tier: 'Pensalir' },
+    { label: 'Nova Boots',                   tier: 'None' },
+    { label: 'Sweetwater Shoes',             tier: 'Sweetwater' },
     { label: 'Absolab Shoes',                tier: 'Absolab'  },
     { label: 'Arcane Umbra Shoes',           tier: 'Arcane'   },
     { label: 'Eternal Shoes',                tier: 'Eternal'  },
@@ -214,6 +223,10 @@ const SLOT_ITEMS = {
   'Cape': [
     { label: 'Pensalir Cape',                tier: 'Pensalir' },
     { label: 'Frozen Cape',                  tier: 'Frozen'   },
+    { label: 'Enraged Zakum Cape',           tier: 'None'     },
+    { label: 'Nova Cloak',                   tier: 'None'     },
+    { label: 'Tyrant Cloak',                 tier: 'None'     },
+    { label: 'Sweetwater Cape',              tier: 'Sweetwater' },
     { label: 'Absolab Cape',                 tier: 'Absolab'  },
     { label: 'Arcane Umbra Cape',            tier: 'Arcane'   },
     { label: 'Eternal Cape',                 tier: 'Eternal'  },
@@ -222,6 +235,9 @@ const SLOT_ITEMS = {
     { label: 'Golden Clover Belt',           tier: 'Pensalir'   },
     { label: 'Enraged Zakum Belt',           tier: 'Pensalir'   },
     { label: "Ayame's Treasure",             tier: 'PrincessNo' },
+    { label: 'Elite Heliseum Belt',          tier: 'None'       },
+    { label: 'Nova Belt',                    tier: 'None'       },
+    { label: 'Reinforced Engraved Gollux Belt', tier: 'ReinforcedGollux' },
     { label: 'Superior Gollux Belt',         tier: 'Gollux'     },
     { label: 'Dreamy Belt',                  tier: 'Pitched'    },
   ],
@@ -339,6 +355,7 @@ const SLOT_ITEMS = {
     { label: 'Dea Sidus Earrings',           tier: 'Pensalir' },
     { label: "Will o' the Wisps",            tier: 'Pensalir' },
     { label: 'Estella Earrings',             tier: 'Dawn'     },
+    { label: 'Reinforced Gollux Earrings',   tier: 'ReinforcedGollux' },
     { label: 'Superior Gollux Earrings',     tier: 'Gollux'   },
     { label: 'Commanding Force Earring',     tier: 'Pitched'  },
   ],
@@ -347,15 +364,18 @@ const SLOT_ITEMS = {
   'Face Accessory': [
     { label: 'Condensed Power Crystal',      tier: 'Pensalir' },
     { label: 'Twilight Mark',                tier: 'Dawn'     },
+    { label: 'Sweetwater Tattoo',            tier: 'Sweetwater' },
     { label: 'Berserked',                    tier: 'Pitched'  },
   ],
   'Eye Accessory': [
     { label: 'Aquatic Letter Eye Accessory', tier: 'Pensalir' },
     { label: 'Black Bean Mark',              tier: 'Pensalir' },
     { label: 'Papulatus Mark',               tier: 'Pensalir' },
+    { label: 'Sweetwater Monocle',           tier: 'Sweetwater' },
     { label: 'Magic Eyepatch',               tier: 'Pitched'  },
   ],
   'Pocket': [
+    { label: 'Rose',                         tier: 'None'     },
     { label: 'Stone of Eternal Life',        tier: 'Pensalir' },
     { label: 'Pink Bean Cup',                tier: 'Pensalir' },
     { label: 'Cursed Blue Spellbook',        tier: 'Pitched'  },
@@ -368,6 +388,7 @@ const SLOT_ITEMS = {
     { label: 'Fairy Heart',                  tier: 'Absolab'  },
     { label: 'Wondroid Heart',               tier: 'Absolab'  },
     { label: 'Glimmering Wondroid Heart',    tier: 'Arcane'   },
+    { label: 'Outlaw Heart',                 tier: 'None'     },
     { label: 'Plasma Heart',                 tier: 'Arcane'   },
     { label: 'Black Heart',                  tier: 'Pitched'  },
     { label: 'Total Control',                tier: 'Pitched'  },
@@ -430,6 +451,7 @@ const ITEM_MAX_STARS_OVERRIDES = {
   'Lidium Heart': 5,
   'Wondroid Heart': 5,
   'Fairy Heart': 8,
+  'Outlaw Heart': 30,
   'Black Heart': 15,
   'Plasma Heart': 20,
   // Badges
@@ -503,6 +525,19 @@ const GEAR_PRESETS = [
     },
   },
   {
+    name: 'Sweetwater Set',
+    gear: {
+      'Hat':               'Sweetwater Hat',
+      'Top/Overall':       'Sweetwater Suit',
+      'Shoes':             'Sweetwater Shoes',
+      'Gloves':            'Sweetwater Gloves',
+      'Cape':              'Sweetwater Cape',
+      'Weapon':            'Sweetwater Weapon',
+      'Secondary Weapon':  'Lv. 100 Secondary',
+      'Emblem':            '__GOLD_EMBLEM__',
+    },
+  },
+  {
     name: 'CRA / Abso Set',
     gear: {
       'Hat':               'CRA Hat',
@@ -571,14 +606,14 @@ const GEAR_PRESET_CANONICAL_SLOTS = new Set(['Hat', 'Top/Overall', 'Bottom']);
 const GENERIC_CRA_ARMOR_LABELS = new Set(['CRA Hat', 'CRA Top', 'CRA Bottom']);
 
 /** Tier order for preset dropdowns: lowest tier first (Pensalir, then Absolab, Arcane, Eternal, etc.). */
-const PRESET_TIER_ORDER = ['Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'Gollux', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
+const PRESET_TIER_ORDER = ['Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'ReinforcedGollux', 'Gollux', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
 function presetTierRank(tier) {
   const i = PRESET_TIER_ORDER.indexOf(tier);
   return i >= 0 ? i : 999;
 }
 /** Weapon label → tier for sorting preset weapon list. */
 const PRESET_WEAPON_TIER = {
-  'Pensalir Weapon': 'Pensalir', 'CRA Weapon': 'Fafnir', 'Absolab Weapon': 'Absolab',
+  'Pensalir Weapon': 'Pensalir', 'Sweetwater Weapon': 'Sweetwater', 'CRA Weapon': 'Fafnir', 'Absolab Weapon': 'Absolab',
   'Arcane Umbra Weapon': 'Arcane', 'Genesis Weapon': 'Pitched', 'Destiny Weapon': 'Eternal',
 };
 
@@ -647,6 +682,15 @@ const ACCESSORY_PRESETS = [
       'Ring 1':    'Dawn Guardian Angel Ring',
       'Pendant 1': 'Daybreak Pendant',
       'Earring':   'Estella Earrings',
+    },
+  },
+  {
+    name: 'Reinforced Gollux Set',
+    gear: {
+      'Ring 1':    'Reinforced Gollux Ring',
+      'Pendant 1': 'Reinforced Engraved Gollux Pendant',
+      'Earring':   'Reinforced Gollux Earrings',
+      'Belt':      'Reinforced Engraved Gollux Belt',
     },
   },
   {
@@ -887,6 +931,30 @@ const GEAR_SETS = {
       4: ['Boss Damage: +15%'],
     },
   },
+  Sweetwater: {
+    name: 'Sweetwater Set',
+    shortName: 'Sweetwater',
+    color: SETS.Sweetwater.color,
+    slots: ['Weapon', 'Hat', 'Top/Overall', 'Gloves', 'Shoes', 'Cape'],
+    items: (() => {
+      const slotList = ['Hat', 'Top/Overall', 'Gloves', 'Shoes', 'Cape'];
+      const out = {};
+      slotList.forEach(slot => { out[slot] = new Set(); });
+      Object.entries(SLOT_ITEMS).forEach(([slot, list]) => {
+        if (!out[slot]) return;
+        list.forEach(it => { if (it.tier === 'Sweetwater') out[slot].add(it.label); });
+      });
+      out['Weapon'] = []; // filled by weapons.js
+      return out;
+    })(),
+    effects: {
+      2: ['All Stats: +20', 'Weapon Attack: +20', 'Magic Attack: +20'],
+      3: ['All Stats: +75', 'Weapon Attack: +35', 'Magic Attack: +35'],
+      4: ['All Stats: +95', 'Weapon Attack: +48', 'Magic Attack: +48'],
+      5: ['Defense: +100'],
+      6: ['Max HP: +20%', 'Max MP: +20%', 'Defense: +200', 'Boss Damage: +30%'],
+    },
+  },
   CRA: {
     name: 'Root Abyss Set',
     shortName: 'CRA',
@@ -1064,6 +1132,27 @@ const GEAR_SETS = {
       4: ['All Stats: +10', 'Max HP: +250', 'Weapon Attack: +10', 'Magic Attack: +10', 'Defense: +100', 'Ignore Enemy DEF: +10%'],
     },
   },
+  ReinforcedGollux: {
+    name: 'Reinforced Gollux Set',
+    shortName: 'Reinforced Gollux',
+    color: SETS.ReinforcedGollux.color,
+    slots: ['Earring', 'Ring 1', 'Ring 2', 'Ring 3', 'Ring 4', 'Pendant 1', 'Pendant 2', 'Belt'],
+    items: {
+      'Earring': new Set(['Reinforced Gollux Earrings']),
+      'Ring 1': new Set(['Reinforced Gollux Ring']),
+      'Ring 2': new Set(['Reinforced Gollux Ring']),
+      'Ring 3': new Set(['Reinforced Gollux Ring']),
+      'Ring 4': new Set(['Reinforced Gollux Ring']),
+      'Pendant 1': new Set(['Reinforced Engraved Gollux Pendant']),
+      'Pendant 2': new Set(['Reinforced Engraved Gollux Pendant']),
+      'Belt': new Set(['Reinforced Engraved Gollux Belt']),
+    },
+    effects: {
+      2: ['All Stats: +15', 'Max HP: +1,200', 'Max MP: +1,200'],
+      3: ['Max HP: +10%', 'Max MP: +10%', 'Weapon Attack: +30', 'Magic Attack: +30'],
+      4: ['Boss Damage: +30%', 'Ignore Enemy DEF: +15%'],
+    },
+  },
   Gollux: {
     name: 'Superior Gollux Set',
     shortName: 'Gollux',
@@ -1213,7 +1302,7 @@ const SET_PREFIX = {
   PrincessNo: 'PrincessNo',
   Frozen:     'Frozen',
   Fafnir:     'CRA',
-  Sweetwater: null,           // weapon-only tier; no armour icon files
+  Sweetwater: 'Sweetwater',
   Absolab:    'Abso',
   Arcane:     'Arcane',
   Pitched:    'Pitched',
@@ -1253,7 +1342,7 @@ const SLOT_SUFFIX = {
 };
 
 // Sets whose Top/Overall icon uses "Overall" in the filename rather than "Top"
-const SET_USES_OVERALL = new Set(['Pensalir', 'Absolab', 'Arcane', 'Frozen']);
+const SET_USES_OVERALL = new Set(['Pensalir', 'Absolab', 'Arcane', 'Frozen', 'Sweetwater']);
 
 // Slots whose items live in the Accessories subfolder
 const ACCESSORY_SLOTS = new Set([

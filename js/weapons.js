@@ -506,10 +506,12 @@ const WEAPON_LABEL_ICON = (() => {
   const pitchedLabels = ['Genesis Weapon'];
   const frozenLabels = ['Frozen Weapon'];
   const pensalirLabels = ['Pensalir Weapon'];
+  const sweetwaterLabels = ['Sweetwater Weapon'];
   Object.values(WEAPON_TIER_ITEMS).forEach(tiers => {
     if (tiers.Fafnir) fafnirLabels.push(tiers.Fafnir.label);
     if (tiers.Frozen) frozenLabels.push(tiers.Frozen.label);
     if (tiers.Pensalir) pensalirLabels.push(tiers.Pensalir.label);
+    if (tiers.Sweetwater) sweetwaterLabels.push(tiers.Sweetwater.label);
     if (tiers.Arcane) arcaneLabels.push(tiers.Arcane.label);
     if (tiers.Absolab) absolabLabels.push(tiers.Absolab.label);
     if (tiers.Eternal) eternalLabels.push(tiers.Eternal.label);
@@ -521,6 +523,9 @@ const WEAPON_LABEL_ICON = (() => {
   }
   if (GEAR_SETS.Frozen?.items && Array.isArray(GEAR_SETS.Frozen.items.Weapon)) {
     GEAR_SETS.Frozen.items.Weapon = new Set(frozenLabels);
+  }
+  if (GEAR_SETS.Sweetwater?.items && Array.isArray(GEAR_SETS.Sweetwater.items.Weapon)) {
+    GEAR_SETS.Sweetwater.items.Weapon = new Set(['Sweetwater Weapon', ...sweetwaterLabels]);
   }
   if (GEAR_SETS.Arcane?.items && Array.isArray(GEAR_SETS.Arcane.items.Weapon)) {
     GEAR_SETS.Arcane.items.Weapon = new Set(['Arcane Umbra Weapon', ...arcaneLabels]);

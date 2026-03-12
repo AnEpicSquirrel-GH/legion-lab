@@ -7,13 +7,35 @@ const ITEM_ICON_OVERRIDE = {
   'Dea Sidus Earrings':      'Dea_Sidus_Earring',
   'Superior Gollux Pendant': 'Superior_Engraved_Gollux_Pendant',
   'Superior Gollux Belt':    'Superior_Engraved_Gollux_Belt',
+  'Reinforced Engraved Gollux Pendant': 'Reinforced_Engraved_Gollux_Pendant',
+  'Reinforced Engraved Gollux Belt':    'Reinforced_Engraved_Gollux_Belt',
+  'Reinforced Gollux Earrings':         'Reinforced_Gollux_Earrings',
+  'Reinforced Gollux Ring':             'Reinforced_Gollux_Ring',
   'Cursed Blue Spellbook':        'Cursed_Blue_Spellbook',
+  // Sweetwater (Commerci) - specific filenames
+  'Sweetwater Hat':               'Eqp_Sweetwater_Hat',
+  'Sweetwater Suit':              'Eqp_Sweetwater_Suit',
+  'Sweetwater Shoes':             'Eqp_Commerci_Boots',
+  'Sweetwater Gloves':            'Eqp_Commerci_Gloves',
+  'Sweetwater Cape':              'Eqp_Commerci_Cape',
+  // Elite Heliseum, Nova, Tyrant, and Enraged Zakum Cape
+  'Elite Heliseum Belt':          'Elite_Heliseum_Belt',
+  'Nova Belt':                    'Nova_Belt',
+  'Nova Boots':                   'Nova_Boots',
+  'Nova Cloak':                   'Nova_Cloak',
+  'Tyrant Cloak':                 'Tyrant_Cloak',
+  'Enraged Zakum Cape':           'Enraged_Zakum_Cape',
   // Badges
   'Ghost Ship Exorcist Badge':    'Ghost_Ship_Exorcist',
   'Sengoku High Badge':           'Sengoku_Hakase_Badge',
   'Seven Days Badge':             'Seven_Days_Badge',
   // Android Hearts
   'Glimmering Wondroid Heart':    'HeartWondroid',      // no dedicated icon; shares Wondroid art
+  'Black Heart':                  'Black_Heart',
+  'Fairy Heart':                  'Fairy_Heart',
+  'Lidium Heart':                 'Lidium_Heart',
+  'Outlaw Heart':                 'Outlaw_Heart',
+  'Wondroid Heart':               'Wondroid_Heart',
   // Medals
   'Generic Medal':               'The_Legend_of_Mitra',
   'Antellion Guardian':           'Antellion_Guardian',
@@ -512,8 +534,8 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
   if (slot === 'Android Heart') {
     const override = ITEM_ICON_OVERRIDE[itemLabel];
     const key = override ?? ('Heart' + itemLabel.replace(/\s*Heart\s*/gi, '').replace(/\s+/g, ''));
-    candidates.push(`MapleIcons/Gear Icons/${key}.webp`);
     candidates.push(`MapleIcons/Gear Icons/${key}.png`);
+    candidates.push(`MapleIcons/Gear Icons/${key}.webp`);
     return candidates;
   }
 
@@ -611,6 +633,20 @@ function itemIconCandidates(setName, slot, itemLabel, charClass) {
   if (slot === 'Hat' && itemLabel === 'Chaos Vellum Helmet') {
     const fname = ITEM_ICON_OVERRIDE[itemLabel] || labelToFilename(itemLabel);
     candidates.push(`MapleIcons/Gear Icons/${fname}.png`);
+  }
+
+  // ── Item-specific overrides for gear slots (before tier-based fallback) ──
+  if (itemLabel && itemLabel !== 'None' && ITEM_ICON_OVERRIDE[itemLabel]) {
+    const fname = ITEM_ICON_OVERRIDE[itemLabel];
+    // Try Accessories folder first, then root Gear Icons
+    const accessoryPath = `MapleIcons/Gear Icons/Accessories/${fname}.png`;
+    const rootPath = `MapleIcons/Gear Icons/${fname}.png`;
+    if (!candidates.includes(accessoryPath)) {
+      candidates.push(accessoryPath);
+    }
+    if (!candidates.includes(rootPath)) {
+      candidates.push(rootPath);
+    }
   }
 
   // ── Tier-based fallbacks (armor slots etc.) ────────────────────
