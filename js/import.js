@@ -1102,6 +1102,11 @@
           imageUrl:  r.imageUrl || null,
           collapsed: false,
           gear,
+          innerAbility: {
+            line1: { rarity: 'Epic', type: 'All Stats', value: '+15' },
+            line2: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+            line3: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+          },
         });
       });
       if (typeof trackCharactersAdded === 'function') trackCharactersAdded(capped.length);

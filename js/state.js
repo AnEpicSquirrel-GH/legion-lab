@@ -44,6 +44,31 @@ function load() {
     chars = [];
   }
 
+  // 1.5) Migrate characters to have default Inner Ability if missing or fix old format
+  let needsSave = false;
+  chars.forEach(char => {
+    if (!char.innerAbility || typeof char.innerAbility !== 'object') {
+      char.innerAbility = {
+        line1: { rarity: 'Epic', type: 'All Stats', value: '+15' },
+        line2: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+        line3: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+      };
+      needsSave = true;
+    } else {
+      // Fix old format: numeric values without '+' for All Stats
+      ['line1', 'line2', 'line3'].forEach(lineKey => {
+        const line = char.innerAbility[lineKey];
+        if (line && line.type === 'All Stats' && typeof line.value === 'number') {
+          line.value = '+' + line.value;
+          needsSave = true;
+        }
+      });
+    }
+  });
+  if (needsSave) {
+    save();
+  }
+
   // 2) Migrate from legacy/alternate keys if we have no characters
   if (chars.length === 0) {
     try {

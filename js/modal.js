@@ -830,6 +830,11 @@ function handleConfirmAdd() {
     collapsed: false,
     gear: {},
     symbols: {},
+    innerAbility: {
+      line1: { rarity: 'Epic', type: 'All Stats', value: '+15' },
+      line2: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+      line3: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+    },
   };
   SLOTS.forEach(s => { newChar.gear[s] = { item: 'None', stars: 0 }; });
   if (accPresets.length) applyAccessoryPresets(newChar.gear, accPresets);
@@ -1277,6 +1282,16 @@ function handleConfirmAdd() {
           gear[s] = { item: match ? match.label : 'None', stars: gear[s].stars ?? 0 };
         }
       });
+      
+      // Preserve Inner Ability data if present, or use defaults
+      const innerAbility = (c.innerAbility && typeof c.innerAbility === 'object' && !Array.isArray(c.innerAbility))
+        ? c.innerAbility
+        : {
+            line1: { rarity: 'Epic', type: 'All Stats', value: '+15' },
+            line2: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+            line3: { rarity: 'Rare', type: 'All Stats', value: '+5' },
+          };
+      
       return {
         id: c.id || Date.now().toString(36) + Math.random().toString(36).slice(2),
         name: c.name ?? '',
@@ -1286,6 +1301,11 @@ function handleConfirmAdd() {
         imageUrl: c.imageUrl ?? null,
         collapsed: c.collapsed ?? false,
         gear,
+        innerAbility,
+        // Preserve symbol data
+        arcaneSymbols: c.arcaneSymbols ?? {},
+        sacredSymbols: c.sacredSymbols ?? {},
+        grandSacredSymbols: c.grandSacredSymbols ?? {},
       };
     });
   }

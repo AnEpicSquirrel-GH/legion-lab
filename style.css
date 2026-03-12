@@ -190,9 +190,11 @@ body {
 }
 .char-section.collapsed .char-sprite-inner {
   position: static;
+  width: 100%;
 }
-.char-section.collapsed .char-sprite { max-height: none; height: auto; margin-top: -10px; }
-.char-section.collapsed .char-sprite-wrap .char-sprite[src*="Character_Self"] { margin-top: 0; } /* 10px lower when collapsed */
+.char-section.collapsed .char-sprite { max-height: none; height: auto; margin-top: 23px; }
+.char-section.collapsed .char-sprite-placeholder { margin-top: 0; align-self: center; }
+.char-section.collapsed .char-sprite-wrap .char-sprite[src*="Character_Self"] { margin-top: 23px; } /* matches other sprites when collapsed */
 /* Collapsed: info middle fills cell so no lighter band at bottom; section clips to row height */
 .char-section.collapsed .char-info-cell { min-height: 0; }
 .char-section.collapsed .char-info-middle { flex: 1; min-height: 0; border-bottom: none; }
@@ -496,6 +498,8 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
   overflow: hidden;
   border-right: 1px solid var(--border);
   background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
 }
 .char-sprite-inner {
   position: absolute;
@@ -506,6 +510,7 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 .char-sprite-wrap .grand-sacred-symbols-row {
   position: absolute;
@@ -517,6 +522,136 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
   grid-template-columns: 1fr;
   justify-items: center;
   width: 100%;
+  z-index: 2;
+}
+
+/* ── Inner Ability Table ──────────────────────────────── */
+.ia-table {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.ia-header {
+  padding: 4px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgb(40, 40, 40, 0.8);
+  color: #B4E500;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ia-line-btn {
+  display: block;
+  width: 100%;
+  min-height: 22px;
+  padding: 4px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(60, 60, 60, 0.7);
+  color: var(--text);
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.ia-line-btn:last-child {
+  border-bottom: none;
+}
+
+.ia-line-btn:hover:not(.ia-locked):not(.ia-configured) {
+  background: rgba(80, 80, 80, 0.8);
+}
+
+.ia-line-btn.ia-configured {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.ia-line-btn.ia-configured:hover {
+  filter: brightness(1.1);
+}
+
+.ia-line-btn.ia-locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+/* ── IA Panel (floating) ──────────────────────────────── */
+.ia-panel {
+  position: fixed;
+  z-index: 99999;
+  display: flex;
+  flex-direction: row;
+  background: #252525;
+  border: 1px solid var(--border-l);
+  border-radius: 4px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
+  max-height: 400px;
+}
+
+.ia-panel-section {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  min-width: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ia-panel-section:last-child {
+  border-right: none;
+}
+
+.ia-panel-opt {
+  padding: 6px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ia-panel-opt:last-child {
+  border-bottom: none;
+}
+
+.ia-panel-opt:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ia-panel-opt.ia-active {
+  background: rgba(99, 179, 237, 0.12);
+  font-weight: 600;
+}
+
+/* Collapsed state: hide IA table */
+.char-section.collapsed .ia-table {
+  display: none;
 }
 .char-sprite {
   max-width: 96px;
@@ -549,6 +684,9 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
   border-right: 1px solid var(--border);
   background: var(--bg-card);
   overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 /* When expanded, no top padding so Set Effects header aligns with Weapon row and the divider lines up */
 .char-section:not(.collapsed) .char-sets-cell {

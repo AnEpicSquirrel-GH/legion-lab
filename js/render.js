@@ -522,6 +522,13 @@ function buildSection(char, idx) {
 
   const spriteWrap = document.createElement('div');
   spriteWrap.className = 'char-sprite-wrap';
+  
+  // Inner Ability table (above sprite)
+  if (typeof buildInnerAbilityTable === 'function') {
+    const iaTable = buildInnerAbilityTable(char, idx);
+    spriteWrap.appendChild(iaTable);
+  }
+  
   const spriteInner = document.createElement('div');
   spriteInner.className = 'char-sprite-inner';
   if (char.imageUrl && isSafeImageUrl(char.imageUrl)) {

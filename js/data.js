@@ -262,22 +262,12 @@ const SLOT_ITEMS = {
     { label: "Princess No's Accursed Shield", tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
     { label: 'Ruin Force Shield',            tier: 'PrincessNo', cls: ['Demon Slayer', 'Demon Avenger'] },
     // ── Dual Blade Kataras ──
-    { label: 'Utgard Katara',                tier: 'Pensalir',  cls: ['Dual Blade'] },
-    { label: 'Sweetwater Katara',            tier: 'Pensalir',  cls: ['Dual Blade'] },
-    { label: 'Fafnir Rapid Edge',            tier: 'Fafnir',    cls: ['Dual Blade'] },
-    { label: 'AbsoLab Katara',               tier: 'Absolab',   cls: ['Dual Blade'] },
-    { label: 'Arcane Umbra Katara',          tier: 'Arcane',    cls: ['Dual Blade'] },
-    { label: 'Carte Frozen',                 tier: 'Frozen',    cls: ['Phantom'] },
-    { label: 'Frozen Katara',                tier: 'Frozen',    cls: ['Dual Blade'] },
-    // ── Kaiser only ──
-    { label: 'Frozen Dragon Essence',        tier: 'Frozen',    cls: ['Kaiser'] },
-    // ── Angelic Buster (Soul Ring) ──
-    { label: 'Green Soul Ring',              tier: 'Pensalir', cls: ['Angelic Buster'] },
-    // ── Cadena (Transmitter) ──
-    { label: 'Transmitter Type-A',           tier: 'Pensalir', cls: ['Cadena'] },
-    // ── Mercedes (Magic Arrows) ──
-    { label: 'Infinite Magic Arrows',       tier: 'Pensalir', cls: ['Mercedes'] },
-    { label: 'Frozen Magic Arrows',         tier: 'Frozen',   cls: ['Mercedes'] },
+    { label: 'Utgard Katara',                tier: 'Pensalir',  cls: ['Dual Blade'], hasStars: true },
+    { label: 'Sweetwater Katara',            tier: 'Pensalir',  cls: ['Dual Blade'], hasStars: true },
+    { label: 'Fafnir Rapid Edge',            tier: 'Fafnir',    cls: ['Dual Blade'], hasStars: true },
+    { label: 'AbsoLab Katara',               tier: 'Absolab',   cls: ['Dual Blade'], hasStars: true },
+    { label: 'Arcane Umbra Katara',          tier: 'Arcane',    cls: ['Dual Blade'], hasStars: true },
+    { label: 'Frozen Katara',                tier: 'Frozen',    cls: ['Dual Blade'], hasStars: true },
   ],
   'Emblem': [
     // ── Silver tier ─────────────────────────────────────────────
