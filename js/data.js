@@ -387,7 +387,7 @@ const SLOT_ITEMS = {
     { label: 'Generic Medal',                tier: 'Pensalir', hasStars: false },
     { label: 'Hyper Burning',                tier: 'Pensalir', hasStars: false },
     { label: 'Hyper Burning Max',            tier: 'Pensalir', hasStars: false },
-    { label: 'Victoria Cup (20)',            tier: 'Pensalir', hasStars: false },
+    { label: 'Victoria Cup',                 tier: 'Pensalir', hasStars: false },
     { label: 'One Who Has Godly Control',    tier: 'Pensalir', hasStars: false },
     { label: "Pollo's Friend",               tier: 'Pensalir', hasStars: false },
     { label: "Fritto's Friend",              tier: 'Pensalir', hasStars: false },

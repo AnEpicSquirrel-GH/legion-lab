@@ -1268,6 +1268,7 @@ function handleConfirmAdd() {
     a.download = 'legion-lab-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     a.click();
     URL.revokeObjectURL(a.href);
+    overlay.classList.add('hidden');
   }
 
   function normalizeImportedChars(arr) {
@@ -1303,6 +1304,7 @@ function handleConfirmAdd() {
         gear,
         innerAbility,
         // Preserve symbol data
+        symbols: c.symbols ?? {},
         arcaneSymbols: c.arcaneSymbols ?? {},
         sacredSymbols: c.sacredSymbols ?? {},
         grandSacredSymbols: c.grandSacredSymbols ?? {},
@@ -1313,33 +1315,18 @@ function handleConfirmAdd() {
   function importBackup(payload) {
     if (!payload || typeof payload !== 'object') return false;
     const arr = Array.isArray(payload.chars) ? payload.chars : [];
-    const replace = confirm(
-      'Import ' + arr.length + ' character(s) from backup.\n\n' +
-      'Choose OK to replace your current list, or Cancel to merge (add to existing).'
-    );
     const newChars = normalizeImportedChars(arr);
     const limit = typeof MAX_CHARACTERS !== 'undefined' ? MAX_CHARACTERS : 999;
-    if (replace) {
-      chars.length = 0;
-      const toImport = newChars.slice(0, limit);
-      toImport.forEach(c => chars.push(c));
-      if (typeof trackCharactersAdded === 'function') trackCharactersAdded(toImport.length);
-      if (newChars.length > limit) {
-        alert('Character limit is ' + limit + '. Only the first ' + limit + ' characters from the backup were imported.');
-      }
-    } else {
-      const slotsLeft = limit - chars.length;
-      if (slotsLeft <= 0) {
-        alert('Character limit (' + limit + ') reached. No characters from the backup were added.');
-      } else {
-        const toImport = newChars.slice(0, slotsLeft);
-        toImport.forEach(c => chars.push(c));
-        if (typeof trackCharactersAdded === 'function') trackCharactersAdded(toImport.length);
-        if (newChars.length > slotsLeft) {
-          alert('Character limit is ' + limit + '. Only ' + toImport.length + ' character(s) from the backup were added.');
-        }
-      }
+    
+    // Always replace (overwrite) the current character list
+    chars.length = 0;
+    const toImport = newChars.slice(0, limit);
+    toImport.forEach(c => chars.push(c));
+    if (typeof trackCharactersAdded === 'function') trackCharactersAdded(toImport.length);
+    if (newChars.length > limit) {
+      alert('Character limit is ' + limit + '. Only the first ' + limit + ' characters from the backup were imported.');
     }
+    
     if (Object.prototype.hasOwnProperty.call(payload, 'customGearPresets') && Array.isArray(payload.customGearPresets) && typeof saveCustomGearPresets === 'function') {
       saveCustomGearPresets(payload.customGearPresets);
     }
@@ -1349,7 +1336,6 @@ function handleConfirmAdd() {
     save();
     render();
     if (typeof updateMsBar === 'function') updateMsBar();
-    overlay.classList.add('hidden');
     return true;
   }
 
@@ -1370,12 +1356,15 @@ function handleConfirmAdd() {
       try {
         const payload = JSON.parse(reader.result);
         if (importBackup(payload)) {
-          alert('Backup imported successfully.');
+          // Success - just close the overlay, no alert
+          overlay.classList.add('hidden');
         } else {
           alert('Invalid backup file or no character data found.');
+          overlay.classList.add('hidden');
         }
       } catch (e) {
         alert('Could not read backup file: ' + (e.message || 'invalid JSON'));
+        overlay.classList.add('hidden');
       }
       fileInput.value = '';
     };

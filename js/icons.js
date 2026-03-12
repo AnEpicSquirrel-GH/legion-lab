@@ -30,7 +30,7 @@ const ITEM_ICON_OVERRIDE = {
   'Sengoku High Badge':           'Sengoku_Hakase_Badge',
   'Seven Days Badge':             'Seven_Days_Badge',
   // Android Hearts
-  'Glimmering Wondroid Heart':    'HeartWondroid',      // no dedicated icon; shares Wondroid art
+  'Glimmering Wondroid Heart':    'Wondroid_Heart',     // uses Wondroid Heart icon
   'Black Heart':                  'Black_Heart',
   'Fairy Heart':                  'Fairy_Heart',
   'Lidium Heart':                 'Lidium_Heart',
@@ -48,7 +48,7 @@ const ITEM_ICON_OVERRIDE = {
   'One Who Has Godly Control':    'One_Who_Has_Godly_Control',
   "Pollo's Friend":               "Pollo's_Friend",
   'Seven Day Monster Parker':     'Seven_Day_Monster_Parker',
-  'Victoria Cup (20)':            'Victoria_Cup_(20)',
+  'Victoria Cup':                 'Victoria_Cup_(20)',
   // Event Rings (Accessories/EventRings/)
   'Abyss Hunter Ring':               'Abyss_Hunter_Ring',
   'Adventure Deep Dark Critical Ring': 'Adventure_Deep_Dark_Critical_Ring',
