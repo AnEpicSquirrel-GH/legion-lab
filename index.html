@@ -248,6 +248,7 @@
         <button type="button" class="sf-quick" data-sf="10">10</button>
         <button type="button" class="sf-quick" data-sf="15">15</button>
         <button type="button" class="sf-quick" data-sf="18">18</button>
+        <button type="button" class="sf-quick" data-sf="21">21</button>
         <button type="button" class="sf-quick" data-sf="22">22</button>
         <input type="number" id="presetStarsCount" class="form-input stars-type-input" min="0" max="25" placeholder="—" style="width:65px">
       </div>
@@ -468,6 +469,7 @@
         <button type="button" class="sf-quick" data-sf="10">10</button>
         <button type="button" class="sf-quick" data-sf="15">15</button>
         <button type="button" class="sf-quick" data-sf="18">18</button>
+        <button type="button" class="sf-quick" data-sf="21">21</button>
         <button type="button" class="sf-quick" data-sf="22">22</button>
         <input type="number" id="inputStarsCount" class="form-input stars-type-input" min="0" max="25" placeholder="—" style="width:65px">
       </div>
@@ -512,16 +514,17 @@
 
 <!-- ── Set All Starforce modal ── -->
 <div class="overlay hidden" id="starsModal">
-  <div class="modal" role="dialog" aria-modal="true" style="max-width:320px;width:95vw">
+  <div class="modal stars-modal" role="dialog" aria-modal="true" style="max-width:320px;width:95vw">
     <h2 class="modal-title">☆ Set All Starforce</h2>
-    <p style="font-size:13px;color:var(--text-muted);margin:4px 0 16px">Apply a star count to every starred gear slot on this character.</p>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+    <p style="font-size:13px;color:var(--text-muted)">Apply a star count to every star-capable gear slot on this character.</p>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <span style="font-size:13px;font-weight:600">Stars</span>
       <button type="button" class="sf-quick" data-sf="10">10</button>
       <button type="button" class="sf-quick" data-sf="15">15</button>
       <button type="button" class="sf-quick" data-sf="18">18</button>
+      <button type="button" class="sf-quick" data-sf="21">21</button>
       <button type="button" class="sf-quick" data-sf="22">22</button>
-      <input type="number" id="starsModalInput" class="form-input" min="0" max="25" placeholder="—" style="width:65px">
+      <input type="number" id="starsModalInput" class="form-input stars-type-input" min="0" max="30" placeholder="—">
     </div>
     <div style="display:flex;gap:8px">
       <button class="btn btn-primary" id="starsModalApply">Apply</button>

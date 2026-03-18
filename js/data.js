@@ -71,7 +71,7 @@ const SETS = {
   Brilliant:  { name: 'Brilliant',   color: '#84CC16', level: 200,  abbr: 'BRL' },  // Brilliant Boss set
   Frozen:     { name: 'Frozen',      color: '#bed1e9', level: 130,  abbr: 'FRZ' },  // Frozen set
   Eternal:    { name: 'Eternal',     color: '#FFD700', level: 250,  abbr: 'ETN' },
-  Gollux:     { name: 'Gollux',      color: '#C2622D', level: 140,  abbr: 'GOL' },  // Superior Gollux only
+  SuperiorGollux:     { name: 'Superior Gollux',      color: '#C2622D', level: 140,  abbr: 'GOL' },  // Superior Gollux only
   ReinforcedGollux: { name: 'Reinforced Gollux', color: '#D4956E', level: 140, abbr: 'RGL' },  // Reinforced Gollux
   OzRing:     { name: 'Oz Ring',     color: '#3B82F6', level: 140,  abbr: 'OZR' },  // Oz Tower rings (level 1–6)
 };
@@ -129,7 +129,7 @@ const _RING_ITEMS = [
   { label: 'Dawn Guardian Angel Ring',     tier: 'Dawn'       },
   { label: "Kanna's Treasure",             tier: 'PrincessNo' },
   { label: 'Reinforced Gollux Ring',       tier: 'ReinforcedGollux' },
-  { label: 'Superior Gollux Ring',         tier: 'Gollux'     },
+  { label: 'Superior Gollux Ring',         tier: 'SuperiorGollux'     },
   { label: 'Endless Terror',               tier: 'Pitched'    },
   { label: 'Whisper of the Source',        tier: 'Brilliant'  },
   { label: 'Ring of Restraint',            tier: 'OzRing',    ozRing: true },
@@ -146,7 +146,7 @@ const _PENDANT_ITEMS = [
   { label: 'Dominator Pendant',            tier: 'Pensalir'   },
   { label: 'Daybreak Pendant',             tier: 'Dawn'       },
   { label: 'Reinforced Engraved Gollux Pendant', tier: 'ReinforcedGollux' },
-  { label: 'Superior Gollux Pendant',      tier: 'Gollux'     },
+  { label: 'Superior Gollux Pendant',      tier: 'SuperiorGollux'     },
   { label: 'Source of Suffering',          tier: 'Pitched'    },
   { label: 'Oath of Death',                tier: 'Brilliant'  },
 ];
@@ -238,7 +238,7 @@ const SLOT_ITEMS = {
     { label: 'Elite Heliseum Belt',          tier: 'None'       },
     { label: 'Nova Belt',                    tier: 'None'       },
     { label: 'Reinforced Engraved Gollux Belt', tier: 'ReinforcedGollux' },
-    { label: 'Superior Gollux Belt',         tier: 'Gollux'     },
+    { label: 'Superior Gollux Belt',         tier: 'SuperiorGollux'     },
     { label: 'Dreamy Belt',                  tier: 'Pitched'    },
   ],
   'Secondary Weapon': [
@@ -346,7 +346,7 @@ const SLOT_ITEMS = {
     { label: "Will o' the Wisps",            tier: 'Pensalir' },
     { label: 'Estella Earrings',             tier: 'Dawn'     },
     { label: 'Reinforced Gollux Earrings',   tier: 'ReinforcedGollux' },
-    { label: 'Superior Gollux Earrings',     tier: 'Gollux'   },
+    { label: 'Superior Gollux Earrings',     tier: 'SuperiorGollux'   },
     { label: 'Commanding Force Earring',     tier: 'Pitched'  },
   ],
   'Pendant 1': _PENDANT_ITEMS,
@@ -596,7 +596,7 @@ const GEAR_PRESET_CANONICAL_SLOTS = new Set(['Hat', 'Top/Overall', 'Bottom']);
 const GENERIC_CRA_ARMOR_LABELS = new Set(['CRA Hat', 'CRA Top', 'CRA Bottom']);
 
 /** Tier order for preset dropdowns: lowest tier first (Pensalir, then Absolab, Arcane, Eternal, etc.). */
-const PRESET_TIER_ORDER = ['Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'ReinforcedGollux', 'Gollux', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
+const PRESET_TIER_ORDER = ['Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'ReinforcedGollux', 'SuperiorGollux', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
 function presetTierRank(tier) {
   const i = PRESET_TIER_ORDER.indexOf(tier);
   return i >= 0 ? i : 999;
@@ -803,7 +803,7 @@ const SET_EFFECTS = {
     3: ['Max HP/MP +8%', 'Attack/Magic Attack +40'],
     4: ['Boss Damage +15%'],
   },
-  Gollux: {
+  SuperiorGollux: {
     2: ['STR/DEX/INT/LUK +25', 'Max HP/MP +1,000'],
     3: ['Boss Damage +30%', 'Ignore DEF +10%'],
     4: ['Damage +10%', 'Max HP/MP +15%'],
@@ -1124,7 +1124,7 @@ const GEAR_SETS = {
   },
   ReinforcedGollux: {
     name: 'Reinforced Gollux Set',
-    shortName: 'Reinforced Gollux',
+    shortName: 'Rei Gollux',
     color: SETS.ReinforcedGollux.color,
     slots: ['Earring', 'Ring 1', 'Ring 2', 'Ring 3', 'Ring 4', 'Pendant 1', 'Pendant 2', 'Belt'],
     items: {
@@ -1143,9 +1143,9 @@ const GEAR_SETS = {
       4: ['Boss Damage: +30%', 'Ignore Enemy DEF: +15%'],
     },
   },
-  Gollux: {
+  SuperiorGollux: {
     name: 'Superior Gollux Set',
-    shortName: 'Gollux',
+    shortName: 'Sup Gollux',
     color: '#C2622D',
     slots: ['Earring', 'Ring 1', 'Ring 2', 'Ring 3', 'Ring 4', 'Pendant 1', 'Pendant 2', 'Belt'],
     items: {
@@ -1298,7 +1298,7 @@ const SET_PREFIX = {
   Pitched:    'Pitched',
   Genesis:    'Genesis',   // weapon icons use Genesis_ prefix
   Eternal:    'Eternal',
-  Gollux:     'Gollux',
+  SuperiorGollux:     'Gollux',
   OzRing:     'Oz',
 };
 

@@ -1,12 +1,24 @@
 'use strict';
 
 try {
-  window.gearBgEnabled = localStorage.getItem('ll_gear_bg') !== '0';
+  const stored = localStorage.getItem('ll_gear_bg');
+  // Migrate old '0'/'1' to new mode system
+  if (stored === '0') window.gearBgMode = 'off';
+  else if (stored === '1') window.gearBgMode = 'on';
+  else window.gearBgMode = stored || 'off'; // 'off', 'on', or 'all'
+  window.gearBgEnabled = window.gearBgMode !== 'off'; // Backward compat
 } catch (e) {
+  window.gearBgMode = 'on';
   window.gearBgEnabled = true;
 }
 
-/** True if this item counts as Lucky for the given slot (e.g. Genesis/Destiny weapons by tier, or exact LUCKY_ITEMS match). */
+/**
+ * Checks if an item qualifies as "Lucky" for a given slot.
+ * Lucky items (Genesis/Destiny weapons) can count toward set bonuses even if not technically part of the set.
+ * @param {string} item - The item name
+ * @param {string} slot - The equipment slot
+ * @returns {boolean} True if the item counts as Lucky for this slot
+ */
 function isLuckyForSlot(item, slot) {
   if (!item || item === 'None') return false;
   if (typeof LUCKY_ITEMS !== 'undefined' && LUCKY_ITEMS[item] === slot) return true;
@@ -17,7 +29,12 @@ function isLuckyForSlot(item, slot) {
   return false;
 }
 
-/** Minimum piece count for this set to grant any bonus (e.g. 2 for CRA, 3 for Boss). */
+/**
+ * Gets the minimum number of pieces required for a set to grant any bonus.
+ * @param {Object} set - The gear set object
+ * @param {string} charCategory - Character category (e.g., 'Warrior', 'Mage')
+ * @returns {number} Minimum piece count (e.g., 2 for CRA, 3 for Boss)
+ */
 function getMinEffectTier(set, charCategory) {
   const effects = set.effectsByCategory?.[charCategory] || set.effectsByCategory?.Warrior || set.effects;
   if (!effects) return 999;
@@ -25,7 +42,13 @@ function getMinEffectTier(set, charCategory) {
   return keys.length ? Math.min(...keys) : 999;
 }
 
-/** Highest effect tier actually reached for this piece count (e.g. Boss with 4 pieces → 3 set, no 4 set exists). */
+/**
+ * Gets the highest bonus tier achieved for the given piece count.
+ * @param {Object} set - The gear set object
+ * @param {number} pieceCount - Number of set pieces equipped
+ * @param {string} charCategory - Character category
+ * @returns {number} Highest tier reached (e.g., 3 for Boss set with 4 pieces)
+ */
 function getAchievedBonusTier(set, pieceCount, charCategory) {
   const effects = set.effectsByCategory?.[charCategory] || set.effectsByCategory?.Warrior || set.effects;
   if (!effects) return 0;
@@ -33,7 +56,11 @@ function getAchievedBonusTier(set, pieceCount, charCategory) {
   return keys.length ? Math.max(...keys) : 0;
 }
 
-/** Returns { setId: count } for each predefined gear set that has at least the minimum pieces for one bonus. */
+/**
+ * Counts equipped pieces for each gear set that meets minimum requirements.
+ * @param {Object} char - Character object with gear data
+ * @returns {Object} Map of setId to piece count (only sets meeting minimum requirements)
+ */
 function getSetCounts(char) {
   const counts = {};
   if (!char.gear || typeof GEAR_SETS === 'undefined') return counts;
@@ -334,6 +361,11 @@ function hideSetTooltip() {
   if (setsTooltipEl) setsTooltipEl.style.display = 'none';
 }
 
+/**
+ * Main render function - rebuilds the entire character list UI.
+ * Clears existing content and creates fresh DOM elements for all characters.
+ * Also updates toggle buttons and enforces character limits.
+ */
 function render() {
   document.querySelectorAll('.gear-sel-panel').forEach(p => p.remove());
   const list = document.getElementById('char-list');
@@ -447,7 +479,8 @@ function buildSymbolRow(symbolsList, char, charIdx, charLevel) {
 
 function buildSection(char, idx) {
   const section = document.createElement('div');
-  section.className = 'char-section' + (char.collapsed ? ' collapsed' : '') + (idx % 2 === 1 ? ' zebra-odd' : '');
+  const viewMode = char.viewMode || 'expanded';
+  section.className = 'char-section ' + viewMode + (idx % 2 === 1 ? ' zebra-odd' : '');
   section.dataset.idx = idx;
 
   /* ── left meta strip ── */
@@ -498,7 +531,8 @@ function buildSection(char, idx) {
   const toggleBtn = document.createElement('button');
   toggleBtn.className = 'toggle-btn';
   toggleBtn.innerHTML = '&#9660;';
-  toggleBtn.title = char.collapsed ? 'Expand' : 'Collapse';
+  const titles = { expanded: 'Compact', compact: 'Collapse', collapsed: 'Expand' };
+  toggleBtn.title = titles[viewMode] || 'Toggle';
   toggleBtn.addEventListener('click', () => { toggleChar(idx); });
 
   const selCb = document.createElement('input');
@@ -638,6 +672,138 @@ function buildSection(char, idx) {
 
   gearContent.append(gearRows, summary);
 
+  // Build dedicated compact mode structure
+  const compactGear = document.createElement('div');
+  compactGear.className = 'compact-gear';
+  
+  [ROW_1_SLOTS, ROW_2_SLOTS].forEach((rowSlots, rowIndex) => {
+    // Chip row
+    const compactChipRow = document.createElement('div');
+    compactChipRow.className = 'compact-chip-row';
+    rowSlots.forEach(slot => {
+      const gd = char.gear[slot] || { item: 'None', stars: 0 };
+      const compactChip = document.createElement('div');
+      compactChip.className = 'compact-chip';
+      compactChip.dataset.slot = slot;
+      const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(gd.item, slot) : null;
+      compactChip.textContent = gd.item === 'None' ? `NO ${SLOT_ABBR[slot] ?? slot.toUpperCase()}` : gd.item;
+      if (gearSet?.color) {
+        compactChip.style.color = gearSet.color;
+        compactChip.style.background = gearSet.color + '1A';
+      } else {
+        compactChip.style.background = '#373737';
+      }
+      compactChipRow.appendChild(compactChip);
+    });
+    compactGear.appendChild(compactChipRow);
+    
+    // Star row
+    const compactStarRow = document.createElement('div');
+    compactStarRow.className = 'compact-star-row';
+    rowSlots.forEach(slot => {
+      const gd = char.gear[slot] || { item: 'None', stars: 0 };
+      const compactStarWrap = document.createElement('div');
+      compactStarWrap.className = 'compact-star-wrap';
+      compactStarWrap.dataset.slot = slot;
+      
+      const isOz = typeof isOzRing === 'function' && isOzRing(gd.item);
+      
+      // Check if this item can have stars
+      const canHaveStar = (slot === 'Secondary Weapon' && char.cls === 'Zero') || 
+                          (typeof itemHasStars === 'function' && itemHasStars(slot, gd.item));
+      
+      if (isOz) {
+        // Oz Ring dropdown with wrapper and chevron to match Expanded
+        const compactOzWrap = document.createElement('div');
+        compactOzWrap.className = 'compact-oz-wrap';
+        const ozSelect = document.createElement('select');
+        ozSelect.className = 'compact-oz-select gear-select';
+        [1, 2, 3, 4, 5, 6].forEach(n => {
+          const opt = document.createElement('option');
+          opt.value = n;
+          opt.textContent = `Level ${n}`;
+          const ozVal = (gd.stars >= 1 && gd.stars <= 6) ? gd.stars : 4;
+          if (ozVal === n) opt.selected = true;
+          ozSelect.appendChild(opt);
+        });
+        ozSelect.addEventListener('change', (e) => {
+          const val = parseInt(e.target.value, 10);
+          chars[idx].gear[slot] = chars[idx].gear[slot] || {};
+          chars[idx].gear[slot].stars = val;
+          save();
+          const mainSelect = section.querySelector(`.gear-slot[data-slot="${slot}"] .oz-level-select`);
+          if (mainSelect) mainSelect.value = val;
+        });
+        const ozChevron = document.createElement('span');
+        ozChevron.className = 'compact-oz-chevron';
+        ozChevron.setAttribute('aria-hidden', 'true');
+        ozChevron.textContent = '▼';
+        compactOzWrap.append(ozSelect, ozChevron);
+        compactStarWrap.appendChild(compactOzWrap);
+      } else if (canHaveStar) {
+        // Regular star input - only show if item can have stars
+        const compactStarInput = document.createElement('input');
+        compactStarInput.type = 'text';
+        compactStarInput.inputMode = 'numeric';
+        compactStarInput.className = 'compact-star-input';
+        compactStarInput.value = gd.stars || 0;
+        
+        // Check if this is Zero's secondary weapon or has fixed stars
+        const isZeroHeavy = char.cls === 'Zero' && slot === 'Secondary Weapon';
+        const fixedStars = typeof getFixedStars === 'function' ? getFixedStars(slot, gd.item) : null;
+        
+        if (isZeroHeavy || fixedStars != null) {
+          compactStarInput.readOnly = true;
+          compactStarInput.disabled = true;
+        }
+        
+        compactStarInput.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value, 10) || 0;
+          const maxStars = typeof getMaxStars === 'function' ? getMaxStars(slot, gd.item) : 25;
+          const clamped = Math.max(0, Math.min(maxStars, val));
+          e.target.value = clamped;
+        });
+        
+        compactStarInput.addEventListener('change', () => {
+          const val = parseInt(compactStarInput.value, 10) || 0;
+          const maxStars = typeof getMaxStars === 'function' ? getMaxStars(slot, gd.item) : 25;
+          const clamped = Math.max(0, Math.min(maxStars, val));
+          compactStarInput.value = clamped;
+          chars[idx].gear[slot] = chars[idx].gear[slot] || {};
+          chars[idx].gear[slot].stars = clamped;
+          
+          // If Zero's weapon changed, update secondary weapon
+          if (char.cls === 'Zero' && slot === 'Weapon') {
+            syncZeroWeapons(idx, clamped, section);
+          }
+          
+          save();
+          const mainStarInput = section.querySelector(`.gear-slot[data-slot="${slot}"] .star-input`);
+          if (mainStarInput) mainStarInput.value = clamped;
+          const mainChip = section.querySelector(`.summary-chip[data-slot="${slot}"]`);
+          if (mainChip) applyChipStyle(mainChip, gd.item, clamped);
+        });
+        compactStarWrap.appendChild(compactStarInput);
+        
+        const starsLabel = document.createElement('span');
+        starsLabel.className = 'compact-stars-label';
+        starsLabel.textContent = 'Stars';
+        compactStarWrap.appendChild(starsLabel);
+      }
+      
+      const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(gd.item, slot) : null;
+      if (gearSet?.color) {
+        compactStarWrap.style.background = gearSet.color + '1A';
+      } else {
+        compactStarWrap.style.background = '#373737';
+      }
+      compactStarRow.appendChild(compactStarWrap);
+    });
+    compactGear.appendChild(compactStarRow);
+  });
+  
+  gearContent.appendChild(compactGear);
+
   const setsCell = buildSetsCell(char, idx, section);
 
   const charRow = document.createElement('div');
@@ -645,6 +811,12 @@ function buildSection(char, idx) {
   charRow.append(meta, infoCell, spriteWrap, setsCell, gearContent);
   section.appendChild(charRow);
   syncSetsCell(section);
+
+  // Sync gear-slot border colors after section is built
+  [ROW_1_SLOTS, ROW_2_SLOTS].flat().forEach(slot => {
+    const gd = char.gear[slot] || { item: 'None', stars: 0 };
+    syncChip(section, slot, gd.item ?? 'None', gd.stars ?? 0);
+  });
 
   wireExclusiveSlots(section, ['Ring 1', 'Ring 2', 'Ring 3', 'Ring 4'], idx);
   wireExclusiveSlots(section, ['Pendant 1', 'Pendant 2'], idx);
@@ -748,12 +920,25 @@ function applyChipStyle(chip, itemLabel, stars) {
 
   if (!isNone && gearSet?.color) {
     chip.style.color       = gearSet.color;
-    chip.style.borderColor = gearSet.color + '88';
+    chip.style.borderRightColor = '';
     chip.style.background  = gearSet.color + '1A';
   } else {
     chip.style.color = '';
-    chip.style.borderColor = 'rgba(255,255,255,0.12)';
+    chip.style.borderRightColor = '';
     chip.style.background  = 'rgba(255,255,255,0.06)';
+  }
+
+  // Apply matching background color to gear-slot in compact mode only
+  const section = chip.closest('.char-section');
+  if (section && section.classList.contains('compact') && slot) {
+    const gearSlot = section.querySelector(`.gear-slot[data-slot="${slot}"]`);
+    if (gearSlot) {
+      if (!isNone && gearSet?.color) {
+        gearSlot.style.background = gearSet.color + '1A';
+      } else {
+        gearSlot.style.background = '';
+      }
+    }
   }
 }
 
@@ -975,15 +1160,7 @@ function buildSlot(char, charIdx, slot, section) {
     starInput.value = String(v);
     chars[charIdx].gear[slot].stars = v;
     if (slot === 'Weapon' && chars[charIdx].cls === 'Zero') {
-      if (chars[charIdx].gear['Secondary Weapon']) {
-        chars[charIdx].gear['Secondary Weapon'].stars = v;
-        const secSlot = section.querySelector('[data-slot="Secondary Weapon"]');
-        if (secSlot) {
-          const si = secSlot.querySelector('.star-input');
-          if (si) si.value = String(v);
-        }
-      }
-      syncChip(section, 'Secondary Weapon', chars[charIdx].gear['Secondary Weapon']?.item, v);
+      syncZeroWeapons(charIdx, v, section);
     }
     save();
     syncChip(section, slot, chars[charIdx].gear[slot].item, v);
@@ -1153,6 +1330,7 @@ function renderGearIcon(wrap, setName, slot, itemLabel, charClass) {
   const img = document.createElement('img');
   img.className = 'gear-img';
   img.alt = itemLabel || slot;
+  img.loading = 'lazy';
 
   function tryNext(remaining) {
     if (remaining.length === 0) { wrap.innerHTML = ''; wrap.appendChild(badgeSet ? makeBadge(badgeSet) : makeNaBadge()); return; }
@@ -1180,7 +1358,26 @@ function makeNaBadge() {
 function updateToggleBtn() {
   const btn = document.getElementById('toggleAllBtn');
   if (!btn) return;
-  const anyExpanded = chars.some(c => !c.collapsed);
-  btn.textContent = anyExpanded ? 'Collapse All' : 'Expand All';
+  
+  // Determine the most common mode among all characters
+  const modeCounts = { expanded: 0, compact: 0, collapsed: 0 };
+  chars.forEach(c => {
+    const mode = c.viewMode || 'expanded';
+    modeCounts[mode]++;
+  });
+  
+  let currentMode = 'expanded';
+  let maxCount = 0;
+  for (const [mode, count] of Object.entries(modeCounts)) {
+    if (count > maxCount) {
+      maxCount = count;
+      currentMode = mode;
+    }
+  }
+  
+  // Show what action will happen when clicked (next state + "All")
+  const nextMode = currentMode === 'expanded' ? 'compact' : currentMode === 'compact' ? 'collapsed' : 'expanded';
+  const labels = { expanded: 'Expand', compact: 'Compact', collapsed: 'Collapse' };
+  btn.textContent = labels[nextMode] + ' All';
 }
 if (typeof window !== 'undefined') window.updateToggleBtn = updateToggleBtn;

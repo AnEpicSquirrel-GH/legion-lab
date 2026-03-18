@@ -3,6 +3,10 @@
 /** Maximum number of characters that can be registered. */
 const MAX_CHARACTERS = 60;
 
+/**
+ * Tracks character additions for analytics (Google Analytics 4).
+ * @param {number} n - Number of characters added
+ */
 function trackCharactersAdded(n) {
   const count = Number(n || 0);
   if (!count || count <= 0) return;
@@ -17,8 +21,12 @@ let dragSrcIdx  = null;
 let editingIdx  = null;  // null = adding new, number = editing existing
 
 // character shape:
-// { id, name, level, cls, world, imageUrl, collapsed, gear: { slot: { item, stars } } }
+// { id, name, level, cls, world, imageUrl, viewMode, gear: { slot: { item, stars } }, symbols, innerAbility }
 
+/**
+ * Saves the current character list to localStorage.
+ * Handles errors gracefully and logs warnings if save fails.
+ */
 function save() {
   if (!Array.isArray(chars)) {
     console.warn('Legion Lab: save() skipped — chars is not an array');
@@ -31,6 +39,10 @@ function save() {
   }
 }
 
+/**
+ * Loads character data from localStorage with fallback migration from legacy formats.
+ * Normalizes data structure and applies necessary migrations.
+ */
 function load() {
   // 1) Load from ll_v1 (or empty on parse error / non-array)
   try {

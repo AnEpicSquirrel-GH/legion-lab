@@ -383,7 +383,7 @@ const RING_SLOTS = ['Ring 1', 'Ring 2', 'Ring 3', 'Ring 4'];
 const PENDANT_SLOTS = ['Pendant 1', 'Pendant 2'];
 
 // Tier order for overwrite: lower index = lower tier (replaced first when no space).
-const TIER_ORDER = ['None', 'Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'Gollux', 'OzRing', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
+const TIER_ORDER = ['None', 'Frozen', 'Pensalir', 'Dawn', 'PrincessNo', 'SuperiorGollux', 'OzRing', 'Fafnir', 'Sweetwater', 'Absolab', 'Arcane', 'Pitched', 'Brilliant', 'Eternal'];
 function tierRank(itemLabel) {
   if (!itemLabel || itemLabel === 'None') return 0;
   const tier = typeof ITEM_TIER !== 'undefined' ? ITEM_TIER[itemLabel] : null;

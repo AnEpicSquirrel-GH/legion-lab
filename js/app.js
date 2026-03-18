@@ -100,6 +100,22 @@ if (toggleSymbolSpinnersBtn) {
     opt.value = p.name; opt.textContent = p.name;
     gSel.appendChild(opt);
   });
+  
+  /* ────────────────────────────────────────────────────────────────
+     Gear Preset Dropdown Initialization (Add Character Modal)
+     
+     NOTE: This code is intentionally duplicated in modal.js for the 
+     preset modal. The duplication exists because:
+     
+     1. Different variable scoping (gSel vs gearSel)
+     2. Different initialization timing (static vs dynamic refresh)
+     3. Different callback contexts (window._updateInputPresetPlaceholder)
+     4. Different panel population strategies
+     
+     Extracting to a shared function would require complex parameterization
+     and increase fragility. The duplication is acceptable given the 
+     isolated, working nature of each implementation.
+  ──────────────────────────────────────────────────────────────── */
   (function initGearPresetDropdown() {
     if (gSel.closest('.gear-preset-dropdown-wrap')) return;
     const gearWrap = document.createElement('div');
@@ -188,6 +204,18 @@ if (toggleSymbolSpinnersBtn) {
   }
   updateGearPresetPlaceholder();
   window._updateInputPresetPlaceholder = updateGearPresetPlaceholder;
+  
+  /* ────────────────────────────────────────────────────────────────
+     Accessory Preset Multi-Select Dropdown (Add Character Modal)
+     
+     NOTE: Similar multi-select dropdown pattern is also used in:
+     - modal.js (preset modal)
+     - modal.js (mass edit table)
+     
+     These are intentionally duplicated for the same reasons as the 
+     gear preset dropdown (see comment above). Each context requires
+     different variable scoping and callback handling.
+  ──────────────────────────────────────────────────────────────── */
   const accWrap = document.getElementById('inputAccessoryPresetWrap');
   if (accWrap) {
     function accSummary(selected) {
@@ -698,25 +726,66 @@ massEditOverlay.addEventListener('click', e => { if (e.target === massEditOverla
 
 /* ────────────────────────────────────────────────────────────────
    GEAR BACKGROUND TOGGLE (persisted in localStorage as ll_gear_bg)
+   Cycles: Off -> On (icon bg) -> All (full slot bg)
 ──────────────────────────────────────────────────────────────── */
+function applyGearBackgrounds() {
+  // Apply to full slot backgrounds (only in 'all' mode)
+  document.querySelectorAll('.gear-slot').forEach(slot => {
+    if (window.gearBgMode === 'all') {
+      const charSection = slot.closest('[data-idx]');
+      if (!charSection) return;
+      const idx = parseInt(charSection.dataset.idx, 10);
+      const slotName = slot.dataset.slot;
+      const char = chars[idx];
+      if (!char) return;
+      const itemLabel = char.gear[slotName]?.item ?? 'None';
+      const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(itemLabel, slotName) : null;
+      if (gearSet?.color) {
+        slot.style.background = gearSet.color + '1A';
+      } else {
+        slot.style.background = '';
+      }
+    } else {
+      slot.style.background = '';
+    }
+  });
+}
+
 (function initGearBgButton() {
   const btn = document.getElementById('toggleBgBtn');
   if (!btn) return;
-  const on = window.gearBgEnabled;
-  btn.textContent = `Gear Backgrounds: ${on ? 'On' : 'Off'}`;
-  btn.classList.toggle('btn-primary', on);
+  const mode = window.gearBgMode || 'off';
+  const labels = { off: 'Off', on: 'On', all: 'All' };
+  btn.textContent = `Gear Backgrounds: ${labels[mode]}`;
+  btn.classList.toggle('btn-primary', mode !== 'off');
+  
+  // Apply backgrounds on page load if in 'all' mode
+  if (mode === 'all') {
+    // Wait for render to complete
+    setTimeout(applyGearBackgrounds, 100);
+  }
 })();
 
 document.getElementById('toggleBgBtn').addEventListener('click', () => {
-  window.gearBgEnabled = !window.gearBgEnabled;
+  // Cycle through: off -> on -> all -> off
+  const modes = ['off', 'on', 'all'];
+  const currentIndex = modes.indexOf(window.gearBgMode || 'off');
+  const nextIndex = (currentIndex + 1) % modes.length;
+  window.gearBgMode = modes[nextIndex];
+  window.gearBgEnabled = window.gearBgMode !== 'off'; // Backward compat
+  
   try {
-    localStorage.setItem('ll_gear_bg', window.gearBgEnabled ? '1' : '0');
+    localStorage.setItem('ll_gear_bg', window.gearBgMode);
   } catch (e) {}
+  
+  const labels = { off: 'Off', on: 'On', all: 'All' };
   document.getElementById('toggleBgBtn').textContent =
-    `Gear Backgrounds: ${window.gearBgEnabled ? 'On' : 'Off'}`;
-  document.getElementById('toggleBgBtn').classList.toggle('btn-primary', window.gearBgEnabled);
+    `Gear Backgrounds: ${labels[window.gearBgMode]}`;
+  document.getElementById('toggleBgBtn').classList.toggle('btn-primary', window.gearBgMode !== 'off');
+  
+  // Apply to gear icon wraps
   document.querySelectorAll('.gear-icon-wrap').forEach(wrap => {
-    if (!window.gearBgEnabled) {
+    if (window.gearBgMode === 'off') {
       wrap.style.background   = '';
       wrap.style.borderRadius = '';
     } else {
@@ -734,6 +803,9 @@ document.getElementById('toggleBgBtn').addEventListener('click', () => {
       renderGearIcon(wrap, setName, slotName, itemLabel, canonicalClass);
     }
   });
+  
+  // Apply full slot backgrounds
+  applyGearBackgrounds();
 });
 
 /* ── Select-all on focus for stars number inputs ── */

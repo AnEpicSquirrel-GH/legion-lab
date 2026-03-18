@@ -200,6 +200,170 @@ body {
 .char-section.collapsed .char-info-middle { flex: 1; min-height: 0; border-bottom: none; }
 .char-section.collapsed { overflow: hidden; height: fit-content; max-height: none; }
 
+/* ── Compact mode: dedicated 4-row grid structure ── */
+.compact-gear {
+  display: none; /* Hidden by default, shown only in compact mode */
+}
+.char-section.compact .gear-rows,
+.char-section.compact .gear-summary {
+  display: none; /* Hide default structures in compact mode */
+}
+.char-section.compact .compact-gear {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  width: min-content;
+  height: 96px;
+}
+.compact-chip-row {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+}
+.compact-chip {
+  min-width: 115px;
+  width: 115px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 6px;
+  border-right: 1px solid var(--border);
+  background: #373737;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: default;
+  transition: opacity .1s;
+  line-height: 1.2;
+  height: 100%;
+}
+.compact-chip-row:nth-child(3) {
+  border-top: 1px solid var(--border);
+}
+.compact-star-row {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+}
+.compact-star-wrap {
+  min-width: 115px;
+  width: 115px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-right: 1px solid var(--border);
+  padding: 0 0 4px 0;
+  margin: 0;
+  height: 100%;
+  box-sizing: border-box;
+  background: #373737;
+}
+.compact-star-input {
+  width: 40px;
+  height: auto;
+  font-size: 11px;
+  padding: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  text-align: center;
+  color: var(--text);
+}
+.compact-stars-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.compact-oz-wrap {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+}
+.compact-oz-select {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg) !important;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 18px 2px 4px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 18px;
+  line-height: 1;
+}
+.compact-oz-select:focus {
+  outline: 1px solid var(--accent);
+  border-color: var(--accent);
+}
+.compact-oz-chevron {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9px;
+  opacity: 0.9;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+/* Compact: constrain row height and info cells */
+.char-section.compact .char-row {
+  min-height: 96px;
+  height: 96px;
+}
+/* Compact: hide symbols and Inner Ability */
+.char-section.compact .symbols-row { display: none; }
+.char-section.compact .ia-table { display: none; }
+/* Compact: hide only the Total Cumulative Set Bonuses section */
+.char-section.compact .sets-total-cumulative-head { display: none; }
+.char-section.compact .sets-total-cumulative { display: none; }
+/* Compact: set column should only scroll if content exceeds height */
+.char-section.compact .char-sets-cell {
+  overflow-y: auto;
+  min-height: 0;
+  justify-content: flex-start;
+  max-height: 96px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+/* Compact: constrain row height and info cells */
+.char-section.compact .char-row {
+  min-height: 96px;
+  height: 96px;
+}
+.char-section.compact .char-info-cell { min-height: 0; }
+.char-section.compact .char-info-middle { border-bottom: none; min-height: 0; }
+.char-section.compact { overflow: hidden; }
+/* Compact: sprite positioning - no offset, row matches sprite height */
+.char-section.compact .char-sprite-wrap {
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.char-section.compact .char-sprite-inner {
+  position: static;
+  width: 100%;
+}
+.char-section.compact .char-sprite { max-height: none; height: auto; }
+.char-section.compact .char-sprite-placeholder { align-self: center; }
+.char-section.compact .char-sprite-wrap .char-sprite[src*="Character_Self"] { margin-top: 0; }
+/* Compact: toggle button slightly rotated */
+.char-section.compact .toggle-btn { transform: rotate(-45deg); }
+/* Compact: hide grand sacred symbols row (Tallahart) */
+.char-section.compact .grand-sacred-symbols-row { display: none; }
+
 /* ── Character row (top bar) ──────────────────────────────── */
 .char-row {
   display: flex;
@@ -697,6 +861,8 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
   overflow-y: auto;
   min-height: 0;
   justify-content: flex-start;
+  padding-top: 2px;
+  padding-bottom: 1px;
 }
 .char-sets-cell .sets-line {
   font-size: 11px;
@@ -716,9 +882,10 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
 .char-sets-cell .set-tag {
   cursor: help;
   white-space: nowrap;
-  display: inline-block;
-  padding: 2px 4px;
-  margin-bottom: 2px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 4px 3px 4px;
+  margin-bottom: 4px;
   border-radius: 3px;
   border: 1px solid transparent;
   font-size: 9px;
@@ -992,10 +1159,12 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
   width: 100%;
   box-sizing: border-box;
   background-color: var(--bg);
-  padding-right: 18px;
+  padding: 2px 18px 2px 4px;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  height: 18px;
+  line-height: 1;
 }
 .star-row select.oz-level-select:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
 .oz-level-chevron {
@@ -1773,7 +1942,11 @@ body.symbol-spinners-enabled .symbol-spinner { display: flex; }
 .stars-type-input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
 #presetStarsCount,
 #inputStarsCount,
-#starsModalInput { cursor: text; text-align: center; }
+#starsModalInput { cursor: text; text-align: center; width: 56px; }
+.stars-modal { padding-top: 26px; padding-bottom: 32px; }
+.stars-modal h2.modal-title { margin-bottom: 8px; }
+.stars-modal p { margin-bottom: 22px !important; }
+.stars-modal > div:nth-child(3) { margin-bottom: 26px; }
 /* Import modal: wide layout for table, not narrow like other modals */
 .import-modal {
   width: min(1150px, 92vw);

@@ -1100,7 +1100,7 @@
           cls:       r.cls   || null,
           world:     r.world || lastWorld,
           imageUrl:  r.imageUrl || null,
-          collapsed: false,
+          viewMode: 'expanded',
           gear,
           innerAbility: {
             line1: { rarity: 'Epic', type: 'All Stats', value: '+15' },

@@ -204,6 +204,18 @@ function updateAddCharSectionVisibility() {
 
   const accCheckboxes = document.getElementById('presetAccCheckboxes');
 
+  /* ────────────────────────────────────────────────────────────────
+     Gear Preset Dropdown Initialization (Preset Modal)
+     
+     NOTE: This code is intentionally duplicated from app.js. See the 
+     comment block in app.js for why this duplication is necessary and
+     why extraction to a shared function would be risky.
+     
+     Key differences from app.js version:
+     - Uses gearSel instead of gSel
+     - Panel population happens in separate refreshPresetOptions() function
+     - Called dynamically when modal opens, not on page load
+  ──────────────────────────────────────────────────────────────── */
   (function initGearPresetDropdown() {
     if (gearSel.closest('.gear-preset-dropdown-wrap')) return;
     const gearWrap = document.createElement('div');
@@ -497,10 +509,23 @@ function updateAddCharSectionVisibility() {
     const c = chars[targetIdx];
     if (!c) { modal.classList.add('hidden'); return; }
     c.gear = c.gear || {};
-    setAllStars(c.gear, input.value);
+    // Clamp input value to 0-30
+    let starVal = parseInt(input.value, 10);
+    if (isNaN(starVal)) starVal = 0;
+    starVal = Math.max(0, Math.min(30, starVal));
+    setAllStars(c.gear, starVal);
     save(); render();
     modal.classList.add('hidden');
     targetIdx = null;
+  });
+
+  // Clamp input on change
+  input.addEventListener('input', () => {
+    let val = parseInt(input.value, 10);
+    if (!isNaN(val)) {
+      if (val > 30) input.value = 30;
+      if (val < 0) input.value = 0;
+    }
   });
 
   cancelBtn.addEventListener('click', () => { modal.classList.add('hidden'); targetIdx = null; });
@@ -827,7 +852,7 @@ function handleConfirmAdd() {
     cls,
     world,
     imageUrl,
-    collapsed: false,
+    viewMode: 'expanded',
     gear: {},
     symbols: {},
     innerAbility: {
@@ -1300,7 +1325,7 @@ function handleConfirmAdd() {
         cls: c.cls ?? null,
         world: c.world ?? null,
         imageUrl: c.imageUrl ?? null,
-        collapsed: c.collapsed ?? false,
+        viewMode: (['expanded', 'collapsed', 'compact'].includes(c.viewMode)) ? c.viewMode : (c.collapsed ? 'collapsed' : 'expanded'),
         gear,
         innerAbility,
         // Preserve symbol data

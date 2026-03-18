@@ -3,28 +3,155 @@
 /* ────────────────────────────────────────────────────────────────
    CHARACTER ACTIONS
 ──────────────────────────────────────────────────────────────── */
+
+/**
+ * Toggles a character's view mode through the cycle: expanded → compact → collapsed → expanded.
+ * Updates the DOM without re-rendering by applying/removing CSS classes and inline styles.
+ * @param {number} idx - Index of the character in the chars array
+ */
 function toggleChar(idx) {
-  chars[idx].collapsed = !chars[idx].collapsed;
+  // Cycle through: expanded -> compact -> collapsed -> expanded
+  const current = chars[idx].viewMode || 'expanded';
+  const modes = ['expanded', 'compact', 'collapsed'];
+  const currentIndex = modes.indexOf(current);
+  const nextIndex = (currentIndex + 1) % modes.length;
+  const previousMode = chars[idx].viewMode;
+  chars[idx].viewMode = modes[nextIndex];
+  
   save();
   const section = document.querySelector(`#char-list .char-section[data-idx="${idx}"]`);
   if (section) {
-    section.classList.toggle('collapsed', chars[idx].collapsed);
+    // Clear inline styles from compact mode if switching away from it
+    if (previousMode === 'compact') {
+      section.querySelectorAll('.compact-chip, .compact-star-wrap').forEach(el => {
+        el.style.background = '';
+        el.style.color = '';
+      });
+      section.querySelectorAll('.gear-slot').forEach(slot => {
+        slot.style.background = '';
+      });
+    }
+    
+    section.classList.remove('expanded', 'compact', 'collapsed');
+    section.classList.add(chars[idx].viewMode);
+    
+    // Re-apply inline styles when switching TO compact mode
+    if (chars[idx].viewMode === 'compact') {
+      const char = chars[idx];
+      section.querySelectorAll('.compact-chip').forEach(chip => {
+        const slot = chip.dataset.slot;
+        const gd = char.gear[slot] || { item: 'None', stars: 0 };
+        const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(gd.item, slot) : null;
+        if (gearSet?.color) {
+          chip.style.color = gearSet.color;
+          chip.style.background = gearSet.color + '1A';
+        } else {
+          chip.style.background = '#373737';
+        }
+      });
+      section.querySelectorAll('.compact-star-wrap').forEach(wrap => {
+        const slot = wrap.dataset.slot;
+        const gd = char.gear[slot] || { item: 'None', stars: 0 };
+        const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(gd.item, slot) : null;
+        if (gearSet?.color) {
+          wrap.style.background = gearSet.color + '1A';
+        } else {
+          wrap.style.background = '#373737';
+        }
+      });
+    }
+    
     const btn = section.querySelector('.toggle-btn');
-    if (btn) btn.title = chars[idx].collapsed ? 'Expand' : 'Collapse';
+    if (btn) {
+      const titles = { expanded: 'Compact', compact: 'Collapse', collapsed: 'Expand' };
+      btn.title = titles[chars[idx].viewMode] || 'Toggle';
+    }
   }
   if (typeof updateToggleBtn === 'function') updateToggleBtn();
 }
 
+/**
+ * Toggles all characters to the next view mode in the cycle.
+ * Determines the most common current mode and cycles all characters to the next mode.
+ * Optimized to avoid full re-render by manipulating CSS classes and inline styles.
+ */
 function toggleAll() {
-  const anyExpanded = chars.some(c => !c.collapsed);
-  chars.forEach(c => { c.collapsed = anyExpanded; });
+  // Cycle through all three modes: expanded -> compact -> collapsed -> expanded
+  // Determine the most common mode, or default to expanded
+  const modeCounts = { expanded: 0, compact: 0, collapsed: 0 };
+  chars.forEach(c => {
+    const mode = c.viewMode || 'expanded';
+    modeCounts[mode]++;
+  });
+  
+  // Find the most common mode
+  let currentMode = 'expanded';
+  let maxCount = 0;
+  for (const [mode, count] of Object.entries(modeCounts)) {
+    if (count > maxCount) {
+      maxCount = count;
+      currentMode = mode;
+    }
+  }
+  
+  // Cycle to next mode
+  const modes = ['expanded', 'compact', 'collapsed'];
+  const currentIndex = modes.indexOf(currentMode);
+  const nextIndex = (currentIndex + 1) % modes.length;
+  const targetMode = modes[nextIndex];
+  
+  chars.forEach(c => { c.viewMode = targetMode; });
   save();
+  
   document.querySelectorAll('#char-list .char-section').forEach((section, i) => {
     const idx = parseInt(section.dataset.idx, 10);
     if (isNaN(idx)) return;
-    section.classList.toggle('collapsed', chars[idx].collapsed);
+    
+    // Clear inline styles from compact mode if switching away from it
+    if (currentMode === 'compact') {
+      section.querySelectorAll('.compact-chip, .compact-star-wrap').forEach(el => {
+        el.style.background = '';
+        el.style.color = '';
+      });
+      section.querySelectorAll('.gear-slot').forEach(slot => {
+        slot.style.background = '';
+      });
+    }
+    
+    section.classList.remove('expanded', 'compact', 'collapsed');
+    section.classList.add(chars[idx].viewMode);
+    
+    // Re-apply inline styles when switching TO compact mode
+    if (targetMode === 'compact') {
+      const char = chars[idx];
+      section.querySelectorAll('.compact-chip').forEach(chip => {
+        const slot = chip.dataset.slot;
+        const gd = char.gear[slot] || { item: 'None', stars: 0 };
+        const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(gd.item, slot) : null;
+        if (gearSet?.color) {
+          chip.style.color = gearSet.color;
+          chip.style.background = gearSet.color + '1A';
+        } else {
+          chip.style.background = '#373737';
+        }
+      });
+      section.querySelectorAll('.compact-star-wrap').forEach(wrap => {
+        const slot = wrap.dataset.slot;
+        const gd = char.gear[slot] || { item: 'None', stars: 0 };
+        const gearSet = typeof getSetForItem !== 'undefined' ? getSetForItem(gd.item, slot) : null;
+        if (gearSet?.color) {
+          wrap.style.background = gearSet.color + '1A';
+        } else {
+          wrap.style.background = '#373737';
+        }
+      });
+    }
+    
     const btn = section.querySelector('.toggle-btn');
-    if (btn) btn.title = chars[idx].collapsed ? 'Expand' : 'Collapse';
+    if (btn) {
+      const titles = { expanded: 'Compact', compact: 'Collapse', collapsed: 'Expand' };
+      btn.title = titles[chars[idx].viewMode] || 'Toggle';
+    }
   });
   if (typeof updateToggleBtn === 'function') updateToggleBtn();
 }
